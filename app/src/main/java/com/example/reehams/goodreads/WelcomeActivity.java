@@ -19,4 +19,9 @@ public class WelcomeActivity extends AppCompatActivity {
         System.out.println("yooo");
         System.out.println("Rahul");
     }
+
+    private void test1() {
+        System.out.println("yooo");
+        System.out.println("Rahul");
+    }
 }
