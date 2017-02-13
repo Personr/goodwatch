@@ -14,4 +14,8 @@ public class WelcomeActivity extends AppCompatActivity {
         v = new WelcomeView(this);
         setContentView(v);
     }
+
+    private void test() {
+        System.out.println("Rahul");
+    }
 }
