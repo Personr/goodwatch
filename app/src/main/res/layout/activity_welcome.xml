@@ -23,7 +23,7 @@
     <TextView
         android:text="Welcome to the Good Reads App!"
         android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_height="230dp"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
