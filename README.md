@@ -1,2 +1,2 @@
-# 350S17-34-GoodreadsTV
-Goodreads for TV
+# 350S17.34.GoodreadsTV
+Our CIS 350 Project. Goodreads but for movies.
