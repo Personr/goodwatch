@@ -1,4 +1,4 @@
-package rahulkooverjee.a350project;
+package com.example.reehams.goodreads;
 
 import org.junit.Test;
 
