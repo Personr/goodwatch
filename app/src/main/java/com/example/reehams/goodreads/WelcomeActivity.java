@@ -1,8 +1,7 @@
 package com.example.reehams.goodreads;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
     WelcomeView v;
@@ -17,6 +16,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void test() {
         System.out.println("yooo");
-        System.out.println("Reeham"); 
+        System.out.println("Ameya");
     }
 }
