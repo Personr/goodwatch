@@ -11,9 +11,24 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.reehams.goodreads.WelcomeActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
 
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/clapper_final"
+        android:id="@+id/imageView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="Welcome to the Good Reads App!"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="63dp"
+        android:layout_marginEnd="63dp"
+        android:layout_marginTop="60dp" />
 </RelativeLayout>
