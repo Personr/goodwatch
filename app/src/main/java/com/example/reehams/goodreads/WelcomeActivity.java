@@ -16,6 +16,7 @@ public class WelcomeActivity extends AppCompatActivity {
     LoginButton loginButton;
     TextView textView;
     CallbackManager callbackManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,8 +31,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 textView.setText("Login success \n" +
                         loginResult.getAccessToken().getUserId() + "\n"
                         + loginResult.getAccessToken().getToken());
-            }
 
+            }
             @Override
             public void onCancel() {
                 textView.setText("Login cancelled");
@@ -47,5 +48,7 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
+        Intent i = new Intent(this, AboutUs.class);
+        startActivityForResult(i, 1);
     }
-    }
+}
