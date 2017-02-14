@@ -60,7 +60,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/alex"
+        android:src="@drawable/rahul"
         android:id="@+id/imageView10"
         android:layout_alignLeft="@+id/imageView9"
         android:layout_alignStart="@+id/imageView9"
@@ -92,7 +92,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ameya"
+        android:src="@drawable/reeham"
         android:id="@+id/imageView11"
         android:layout_alignTop="@+id/imageView9"
         android:layout_alignLeft="@+id/imageView8"

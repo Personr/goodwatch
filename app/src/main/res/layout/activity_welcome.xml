@@ -15,9 +15,17 @@
         android:textAlignment="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
+        android:id="@+id/textView2"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="Login Status"
+        android:id="@+id/textView"
+        android:gravity="center"
+        android:textStyle="bold"/>
 
     <ImageView
         android:layout_width="wrap_content"
@@ -27,4 +35,11 @@
         android:layout_below="@+id/textView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp" />
+
+    <com.facebook.login.widget.LoginButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fb_login_bn"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"></com.facebook.login.widget.LoginButton>
 </RelativeLayout>
