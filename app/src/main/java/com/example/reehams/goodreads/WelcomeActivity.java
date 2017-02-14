@@ -9,9 +9,9 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        v = new WelcomeView(this);
+//        setContentView(v);
         setContentView(R.layout.activity_welcome);
-        v = new WelcomeView(this);
-        setContentView(v);
     }
 
     private void test() {
