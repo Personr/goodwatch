@@ -57,6 +57,13 @@
             android:textStyle="bold"
             android:textColor="@android:color/background_light" />
 
+        <Button
+            android:text="Search page"
+            android:layout_width="199dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/button2"
+            android:layout_gravity="center"
+            android:onClick="onButtonPress" />
     </LinearLayout>
 
 </RelativeLayout>
