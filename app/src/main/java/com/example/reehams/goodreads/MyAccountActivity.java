@@ -34,92 +34,24 @@ import java.util.Arrays;
  */
 
 public class MyAccountActivity extends AppCompatActivity {
-    private LoginButton btnLogin;
-    private CallbackManager callbackManager;
-    private ProfilePictureView profilePictureView;
-    private LinearLayout infoLayout;
-    private TextView email;
-    private TextView gender;
-    private TextView facebookName;
-    private boolean loggedIn;
+    TextView email;
+    TextView gender;
+    TextView userName;
+    ProfilePictureView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
-
         setContentView(R.layout.my_account);
-
-        btnLogin = (LoginButton)findViewById(R.id.login_button);
-        email = (TextView)findViewById(R.id.email);
-        facebookName = (TextView)findViewById(R.id.name);
-        gender = (TextView)findViewById(R.id.gender);
-        infoLayout = (LinearLayout)findViewById(R.id.layout_info);
-        profilePictureView = (ProfilePictureView)findViewById(R.id.image);
-
-        btnLogin.setReadPermissions(Arrays.asList("public_profile, email, user_birthday"));
-        callbackManager = CallbackManager.Factory.create();
-
-        // Callback registration
-        btnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                GraphRequest request = GraphRequest.newMeRequest(
-                        loginResult.getAccessToken(),
-                        new GraphRequest.GraphJSONObjectCallback() {
-
-                            @Override
-                            public void onCompleted(JSONObject object, GraphResponse response) {
-                                Log.v("Main", response.toString());
-                                setProfileToView(object);
-                            }
-                        });
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,email,gender, birthday");
-                request.setParameters(parameters);
-                request.executeAsync();
-                loggedIn = true;
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Toast.makeText(MyAccountActivity.this, "error to Login to Facebook", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-            callbackManager.onActivityResult(requestCode, resultCode, data);
-
-    }
-
-    private void welcomePage() {
-        AccessToken token = AccessToken.getCurrentAccessToken();
-        if (token == null) {
-            Intent i = new Intent(MyAccountActivity.this, WelcomeActivity.class);
-            startActivity(i);
-        }
-    }
-
-    private void setProfileToView(JSONObject jsonObject) {
-        try {
-            email.setText(jsonObject.getString("email"));
-            gender.setText(jsonObject.getString("gender"));
-            facebookName.setText(jsonObject.getString("name"));
-
-            profilePictureView.setPresetSize(ProfilePictureView.NORMAL);
-            profilePictureView.setProfileId(jsonObject.getString("id"));
-            infoLayout.setVisibility(View.VISIBLE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        email = (TextView) findViewById(R.id.email);
+        email.setText("Email:" + " " + WelcomeActivity.email);
+        gender = (TextView) findViewById(R.id.gender);
+        gender.setText("Gender:" + " " +WelcomeActivity.gender);
+        userName = (TextView) findViewById(R.id.userName);
+        userName.setText("Name:" + " " + WelcomeActivity.facebookName);
+        image = (ProfilePictureView) findViewById(R.id.image);
+        image.setPresetSize(ProfilePictureView.NORMAL);
+        image.setProfileId(WelcomeActivity.profilePicId);
     }
 }

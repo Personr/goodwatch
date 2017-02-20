@@ -49,11 +49,15 @@ public class SideBar extends AppCompatActivity {
                     Intent i = new Intent(SideBar.this,  MyAccountActivity.class);
                     startActivity(i);
                 }
-                if (position ==2) {
+                if (position == 2) {
                     //Rahul put your intent for your page here
                 }
                 if (position == 3) {
                     Intent i = new Intent(SideBar.this,  AboutUs.class);
+                    startActivity(i);
+                }
+                if (position == 4) {
+                    Intent i = new Intent(SideBar.this, LogOutActivity.class);
                     startActivity(i);
                 }
             }
