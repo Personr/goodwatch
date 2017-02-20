@@ -39,23 +39,17 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.79" />
 
-        <com.facebook.login.widget.LoginButton
-            android:layout_width="271dp"
-            android:id="@+id/fb_login_bn"
+        <Button
+            android:layout_width="wrap_content"
+            android:id="@+id/sign_up_button"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_weight="0.06"
-            android:layout_height="match_parent"></com.facebook.login.widget.LoginButton>
-
-        <TextView
-            android:layout_width="match_parent"
+            android:backgroundTint="@color/com_facebook_blue"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="Login Status"
-            android:id="@+id/textView"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="@android:color/background_light" />
+            android:text="Sign up using facebook!"
+            ></Button>
+
 
     </LinearLayout>
 
