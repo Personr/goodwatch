@@ -41,6 +41,7 @@ public class MyAccountActivity extends AppCompatActivity {
     private TextView email;
     private TextView gender;
     private TextView facebookName;
+    private boolean loggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class MyAccountActivity extends AppCompatActivity {
                 parameters.putString("fields", "id,name,email,gender, birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
+                loggedIn = true;
             }
 
             @Override
@@ -87,16 +89,16 @@ public class MyAccountActivity extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException exception) {
-                Toast.makeText(MyAccountActivity.this, "error to Login Facebook", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MyAccountActivity.this, "error to Login to Facebook", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-        //welcomePage();
+            super.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+
     }
 
     private void welcomePage() {

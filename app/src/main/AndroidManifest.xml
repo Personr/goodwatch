@@ -22,7 +22,10 @@
             android:label="About" />
         <activity
             android:name=".MyAccountActivity"
-            android:label="About" />
+            android:label="MyAccount" />
+        <activity
+            android:name=".SideBar"
+            android:label="HomePage" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
