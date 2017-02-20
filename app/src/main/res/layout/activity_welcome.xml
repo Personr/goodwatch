@@ -40,22 +40,12 @@
             android:layout_weight="0.79" />
 
         <com.facebook.login.widget.LoginButton
-            android:layout_width="271dp"
-            android:id="@+id/fb_login_bn"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="0.06"
-            android:layout_height="match_parent"></com.facebook.login.widget.LoginButton>
-
-        <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/login_button2"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="Login Status"
-            android:id="@+id/textView"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="@android:color/background_light" />
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal" />
+
 
         <Button
             android:text="Search page"

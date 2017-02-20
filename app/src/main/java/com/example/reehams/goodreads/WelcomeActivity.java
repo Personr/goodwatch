@@ -1,65 +1,96 @@
 package com.example.reehams.goodreads;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.facebook.login.widget.ProfilePictureView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+
 
 public class WelcomeActivity extends AppCompatActivity {
-    LoginButton loginButton;
-    TextView textView;
-    CallbackManager callbackManager;
+    private LoginButton btnLogin;
+    private CallbackManager callbackManager;
+    static String email;
+    static String facebookName;
+    static String gender;
+    static String profilePicId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_welcome);
-        loginButton = (LoginButton) findViewById(R.id.fb_login_bn);
-        textView = (TextView) findViewById(R.id.textView);
+        btnLogin = (LoginButton)findViewById(R.id.login_button2);
+
+
+        btnLogin.setReadPermissions(Arrays.asList("public_profile, email, user_birthday"));
+
         callbackManager = CallbackManager.Factory.create();
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        btnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
             @Override
             public void onSuccess(LoginResult loginResult) {
-                textView.setText("Login success \n" +
-                        loginResult.getAccessToken().getUserId() + "\n"
-                        + loginResult.getAccessToken().getToken());
-
+                Intent i = new Intent(WelcomeActivity.this, SideBar.class);
+                startActivity(i);
+                GraphRequest request = GraphRequest.newMeRequest(
+                        loginResult.getAccessToken(),
+                        new GraphRequest.GraphJSONObjectCallback() {
+                            @Override
+                            public void onCompleted(JSONObject object, GraphResponse response) {
+                                Log.v("Main", response.toString());
+                                setProfileToView(object);
+                            }
+                        });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,email,gender, birthday");
+                request.setParameters(parameters);
+                request.executeAsync();
             }
+
             @Override
             public void onCancel() {
-                textView.setText("Login cancelled");
+
             }
 
             @Override
-            public void onError(FacebookException error) {
-
+            public void onError(FacebookException exception) {
+                Toast.makeText(WelcomeActivity.this, "error to Login to Facebook", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-        Intent i = new Intent(this, AboutUs.class);
-        startActivityForResult(i, 1);
     }
-
-    /**
-     * Handle button presses by starting the game
-     * @param view
-     */
-    public void onButtonPress(View view) {
-        Intent i = new Intent(this, MovieSearch.class);
-        // i.putExtra("numPoints", numPoints);
-        startActivityForResult(i, 1);
+    private void setProfileToView(JSONObject jsonObject) {
+        try {
+            this.email = (jsonObject.getString("email"));
+            this.gender = (jsonObject.getString("gender"));
+            this.facebookName = (jsonObject.getString("name"));
+            this.profilePicId = (jsonObject.getString("id"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
+

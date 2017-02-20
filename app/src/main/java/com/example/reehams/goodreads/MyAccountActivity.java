@@ -1,0 +1,57 @@
+package com.example.reehams.goodreads;
+
+import android.content.Intent;
+import android.content.pm.PackageInstaller;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.facebook.login.widget.ProfilePictureView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Arrays;
+
+
+/**
+ * Created by reehams on 2/17/17.
+ */
+
+public class MyAccountActivity extends AppCompatActivity {
+    TextView email;
+    TextView gender;
+    TextView userName;
+    ProfilePictureView image;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        setContentView(R.layout.my_account);
+        email = (TextView) findViewById(R.id.email);
+        email.setText("Email:" + " " + WelcomeActivity.email);
+        gender = (TextView) findViewById(R.id.gender);
+        gender.setText("Gender:" + " " +WelcomeActivity.gender);
+        userName = (TextView) findViewById(R.id.userName);
+        userName.setText("Name:" + " " + WelcomeActivity.facebookName);
+        image = (ProfilePictureView) findViewById(R.id.image);
+        image.setPresetSize(ProfilePictureView.NORMAL);
+        image.setProfileId(WelcomeActivity.profilePicId);
+    }
+}
