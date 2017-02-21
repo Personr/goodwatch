@@ -19,16 +19,19 @@
         </activity>
         <activity
             android:name=".AboutUs"
-            android:label="About" />
+            android:label="About Us" />
         <activity
             android:name=".MyAccountActivity"
-            android:label="MyAccount" />
+            android:label="My Account" />
         <activity
             android:name=".SideBar"
-            android:label="HomePage" />
+            android:label="Home Page" />
         <activity
             android:name=".LogOutActivity"
-            android:label="LogOut" />
+            android:label="Log Out" />
+        <activity
+            android:name=".MovieActivity"
+            android:label="Movie Search" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

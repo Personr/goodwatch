@@ -1,5 +1,6 @@
 package com.example.reehams.goodreads;
 import android.content.Intent;
+import android.graphics.Movie;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -82,6 +83,7 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
     private void setProfileToView(JSONObject jsonObject) {
         try {
             this.email = (jsonObject.getString("email"));

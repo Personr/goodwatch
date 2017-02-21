@@ -46,14 +46,6 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center_horizontal" />
 
-
-        <Button
-            android:text="Search page"
-            android:layout_width="199dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/button2"
-            android:layout_gravity="center"
-            android:onClick="onButtonPress" />
     </LinearLayout>
 
 </RelativeLayout>

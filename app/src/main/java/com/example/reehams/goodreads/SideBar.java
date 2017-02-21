@@ -29,7 +29,8 @@ public class SideBar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.side_bar);
-        mDrawerList = (ListView)findViewById(R.id.navList);mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView)findViewById(R.id.navList);
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
 
         addDrawerItems();
@@ -38,6 +39,7 @@ public class SideBar extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
     }
+
     private void addDrawerItems() {
         String[] osArray = { "Home", "My Account", "Movies", "About Us", "Log Out" };
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
@@ -50,7 +52,8 @@ public class SideBar extends AppCompatActivity {
                     startActivity(i);
                 }
                 if (position == 2) {
-                    //Rahul put your intent for your page here
+                    Intent i = new Intent(SideBar.this,  MovieActivity.class);
+                    startActivity(i);
                 }
                 if (position == 3) {
                     Intent i = new Intent(SideBar.this,  AboutUs.class);
