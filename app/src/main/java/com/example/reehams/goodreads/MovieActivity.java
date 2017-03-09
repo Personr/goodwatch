@@ -1,12 +1,15 @@
 package com.example.reehams.goodreads;
 
+import android.content.Intent;
+import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.*;
+import android.widget.AdapterView;
 import org.json.*;
 
 
@@ -61,6 +64,24 @@ public class MovieActivity extends AppCompatActivity {
                 R.layout.movie_list, searchResults);
         ListView listView = (ListView) findViewById(R.id.mobile_list);
         listView.setAdapter(adapter);
+        // Make it clickable
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // If first result is clicked
+                if(position==0){
+                    Toast.makeText(MovieActivity.this, "Hi", Toast.LENGTH_SHORT).show();
+                    Intent i = new Intent(MovieActivity.this,  SideBar.class);
+                    startActivity(i);
+                }
+                // If second result is clicked
+                if(position==1){
+                    Toast.makeText(MovieActivity.this, "Hello", Toast.LENGTH_SHORT).show();
+                    //Intent i=new Intent(MainActivity.this,Main3Activity.class);
+                    //startActivity(i);
+                }
+            }
+        });
     }
 
 
