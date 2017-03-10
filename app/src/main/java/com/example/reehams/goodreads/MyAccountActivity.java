@@ -1,32 +1,17 @@
 package com.example.reehams.goodreads;
 
-import android.content.Intent;
-import android.content.pm.PackageInstaller;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
+import android.os.Bundle;
+
+import android.support.v7.app.AppCompatActivity;
+
+import android.widget.TextView;
+
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
+
 import com.facebook.login.widget.ProfilePictureView;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
-import java.util.Arrays;
 
 
 /**
