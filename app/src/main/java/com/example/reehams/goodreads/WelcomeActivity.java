@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
+import com.facebook.*;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
@@ -36,10 +36,26 @@ public class WelcomeActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_welcome);
         btnLogin = (LoginButton)findViewById(R.id.login_button2);
-
+        // Testing TODO DELETE THIS
+        if (isLoggedIn()) {
+            Intent i = new Intent(WelcomeActivity.this, SideBar.class);
+            startActivity(i);
+            GraphRequest request = GraphRequest.newMeRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            Log.v("Main", response.toString());
+                            setProfileToView(object);
+                        }
+                    });
+            Bundle parameters = new Bundle();
+            parameters.putString("fields", "id,name,email,gender, birthday");
+            request.setParameters(parameters);
+            request.executeAsync();
+        }
 
         btnLogin.setReadPermissions(Arrays.asList("public_profile, email, user_birthday"));
-
         callbackManager = CallbackManager.Factory.create();
         btnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
@@ -89,6 +105,11 @@ public class WelcomeActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean isLoggedIn() {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken != null;
     }
 }
 

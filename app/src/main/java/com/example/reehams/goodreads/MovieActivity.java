@@ -12,6 +12,9 @@ import android.widget.*;
 import android.widget.AdapterView;
 import org.json.*;
 
+import java.io.InputStream;
+import java.util.Scanner;
+
 
 /**
  * Created by rahulkooverjee on 2/20/17.
@@ -53,9 +56,19 @@ public class MovieActivity extends AppCompatActivity {
     public void displayResults() {
         int max = Math.min(resultsArr.length(), 5);
         try {
+            // Display the max of 5 or the number of search results
             for (int i = 0; i < max; i++) {
                 searchResults[i] = resultsArr.getJSONObject(i).get("title").toString() + "  (" +
                         resultsArr.getJSONObject(i).get("release_date").toString().substring(0, 4) + ")";
+            }
+            // Fill the rest of the spaces if the number of results < 5
+            for (int i = max; i < 5; i++) {
+                // If there are no results, say so
+                if (i == 0) {
+                    searchResults[i] = "No Results Found";
+                    continue;
+                }
+                searchResults[i] = "";
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -68,18 +81,26 @@ public class MovieActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // If first result is clicked
-                if(position==0){
-                    Toast.makeText(MovieActivity.this, "Hi", Toast.LENGTH_SHORT).show();
-                    Intent i = new Intent(MovieActivity.this,  SideBar.class);
-                    startActivity(i);
+                // Do nothing if there is no result
+                if (searchResults[position].equals("") || searchResults[position].equals("No Results Found")) {
+                    return;
                 }
-                // If second result is clicked
-                if(position==1){
-                    Toast.makeText(MovieActivity.this, "Hello", Toast.LENGTH_SHORT).show();
-                    //Intent i=new Intent(MainActivity.this,Main3Activity.class);
-                    //startActivity(i);
+                // Pass the data of the clicked movie to the movieDetails class
+                Intent i = new Intent(MovieActivity.this,  MovieDetailsActivity.class);
+                try {
+                    // Pass the IMBD movie id to the details page
+                    String movieId = resultsArr.getJSONObject(position).get("id").toString();
+                    String[] queryArr = new String[1];
+                    queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
+                            "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
+                    AsyncTask search = new MovieBackend().execute(queryArr);
+                    JSONObject json = null;
+                    json = (JSONObject) search.get();
+                    i.putExtra("JSON_Data", json.get("imdb_id").toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+                startActivity(i);
             }
         });
     }
@@ -88,6 +109,9 @@ public class MovieActivity extends AppCompatActivity {
     // Search button - performs search
     protected void onButtonPressed(View view) {
         String searchText = editText.getText().toString();
+        if (searchText.equals("")) {
+            return;
+        }
         searchText = searchText.replace(" ", "%20");
         search(searchText);
         displayResults();

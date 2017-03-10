@@ -30,6 +30,9 @@
             android:name=".LogOutActivity"
             android:label="Log Out" />
         <activity
+            android:name=".MovieDetailsActivity"
+            android:label="Movie Info" />
+        <activity
             android:name=".MovieActivity"
             android:label="Movie Search" />
         <activity
