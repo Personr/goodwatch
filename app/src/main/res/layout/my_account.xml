@@ -58,22 +58,19 @@
         android:text="Followers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textView"
-        android:layout_toRightOf="@+id/gender"
-        android:layout_toEndOf="@+id/gender"
-        android:layout_marginLeft="14dp"
-        android:layout_marginStart="14dp"
-        android:id="@+id/button5" />
+        android:id="@+id/button5"
+        android:layout_centerVertical="true"
+        android:layout_alignLeft="@+id/gender"
+        android:layout_alignStart="@+id/gender" />
 
     <Button
         android:text="Following"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/button5"
-        android:layout_toRightOf="@+id/button5"
-        android:layout_toEndOf="@+id/button5"
-        android:layout_marginLeft="20dp"
-        android:layout_marginStart="20dp"
-        android:id="@+id/button6" />
+        android:id="@+id/button6"
+        android:layout_below="@+id/button5"
+        android:layout_alignRight="@+id/button5"
+        android:layout_alignEnd="@+id/button5"
+        android:layout_marginTop="24dp" />
 </RelativeLayout>
 
