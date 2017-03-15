@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -53,9 +54,19 @@ public class MovieActivity extends AppCompatActivity {
     // This is where we display the results in the listView
     public void displayResults() {
         int max = Math.min(resultsArr.length(), 5);
+        int offSet = 0;
         try {
             // Display the max of 5 or the number of search results
             for (int i = 0; i < max; i++) {
+                // Pass the IMBD movie id to the details page
+                String movieId = resultsArr.getJSONObject(i).get("id").toString();
+                String[] queryArr = new String[1];
+                queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
+                        "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
+                AsyncTask search = new MovieBackend().execute(queryArr);
+                JSONObject json = null;
+                json = (JSONObject) search.get();
+                String imbdId = json.get("imdb_id").toString();
                 String title = resultsArr.getJSONObject(i).get("title").toString();
                 String date = resultsArr.getJSONObject(i).get("release_date").toString();
                 if (date.length() > 4) {
@@ -81,7 +92,6 @@ public class MovieActivity extends AppCompatActivity {
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 R.layout.movie_list, searchResults);
         ListView listView = (ListView) findViewById(R.id.mobile_list);
-        // Toast.makeText(this, listView.toString(), Toast.LENGTH_SHORT).show();
         listView.setAdapter(adapter);
         // Make it clickable
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -103,6 +113,15 @@ public class MovieActivity extends AppCompatActivity {
                     JSONObject json = null;
                     json = (JSONObject) search.get();
                     String imbdId = json.get("imdb_id").toString();
+                    boolean isInvalid = (imbdId == null);
+                    if (!isInvalid) {
+                        isInvalid = imbdId.equals("") || imbdId.equals("null");
+                    }
+                    if (isInvalid) {
+                        Toast.makeText(MovieActivity.this, "More movie details cannot be found in IMBD Database",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (imbdId.charAt(imbdId.length() - 1) == '/') {
                         imbdId = imbdId.substring(0, imbdId.length() - 1);
                     }
