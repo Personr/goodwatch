@@ -41,7 +41,7 @@ public class SideBar extends AppCompatActivity {
     }
 
     private void addDrawerItems() {
-        String[] osArray = { "Home", "My Account", "Movies", "About Us", "Log Out" };
+        String[] osArray = { "Home", "My Account", "Movies", "About Us", "Log Out", "WatchList" };
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
         mDrawerList.setAdapter(mAdapter);
         mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -61,6 +61,10 @@ public class SideBar extends AppCompatActivity {
                 }
                 if (position == 4) {
                     Intent i = new Intent(SideBar.this, LogOutActivity.class);
+                    startActivity(i);
+                }
+                if (position == 5) {
+                    Intent i = new Intent(SideBar.this, WatchlistActivity.class);
                     startActivity(i);
                 }
             }

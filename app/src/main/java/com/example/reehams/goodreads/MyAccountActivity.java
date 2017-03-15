@@ -1,11 +1,14 @@
 package com.example.reehams.goodreads;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
 
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 
@@ -38,5 +41,10 @@ public class MyAccountActivity extends AppCompatActivity {
         image = (ProfilePictureView) findViewById(R.id.image);
         image.setPresetSize(ProfilePictureView.NORMAL);
         image.setProfileId(WelcomeActivity.profilePicId);
+    }
+
+    protected void watchlistOnButtonPressed(View view) {
+        Intent i = new Intent(this,WatchlistActivity.class);
+        startActivity(i);
     }
 }

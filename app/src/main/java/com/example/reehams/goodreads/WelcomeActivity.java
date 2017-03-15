@@ -40,11 +40,9 @@ public class WelcomeActivity extends AppCompatActivity {
     static String gender;
     static String profilePicId;
 
-
-    //Firebase
+    //Firebase Stuff
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener firebaseAuthListner;
-
 
 
     @Override
@@ -62,6 +60,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         // Testing TODO DELETE THIS
         if (isLoggedIn()) {
+
             Intent i = new Intent(WelcomeActivity.this, SideBar.class);
             startActivity(i);
             GraphRequest request = GraphRequest.newMeRequest(
@@ -132,7 +131,7 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(!task.isSuccessful()){
-                    //Toast.makeText(getApplicationContext(),R.string.firebase_error_login, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Firebase error login", Toast.LENGTH_LONG).show();
                 }
             }
         });
