@@ -1,19 +1,17 @@
 package com.example.reehams.goodreads;
 
 import android.content.Intent;
-import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.*;
-import android.widget.AdapterView;
-import org.json.*;
+import android.widget.ListView;
 
-import java.io.InputStream;
-import java.util.Scanner;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 /**
@@ -58,8 +56,15 @@ public class MovieActivity extends AppCompatActivity {
         try {
             // Display the max of 5 or the number of search results
             for (int i = 0; i < max; i++) {
-                searchResults[i] = resultsArr.getJSONObject(i).get("title").toString() + "  (" +
-                        resultsArr.getJSONObject(i).get("release_date").toString().substring(0, 4) + ")";
+                String title = resultsArr.getJSONObject(i).get("title").toString();
+                String date = resultsArr.getJSONObject(i).get("release_date").toString();
+                if (date.length() > 4) {
+                    date = date.substring(0, 4);
+                }
+                else {
+                    date = "N/A";
+                }
+                searchResults[i] = title + "  (" + date + ")";
             }
             // Fill the rest of the spaces if the number of results < 5
             for (int i = max; i < 5; i++) {
@@ -70,12 +75,13 @@ public class MovieActivity extends AppCompatActivity {
                 }
                 searchResults[i] = "";
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 R.layout.movie_list, searchResults);
         ListView listView = (ListView) findViewById(R.id.mobile_list);
+        // Toast.makeText(this, listView.toString(), Toast.LENGTH_SHORT).show();
         listView.setAdapter(adapter);
         // Make it clickable
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -96,7 +102,11 @@ public class MovieActivity extends AppCompatActivity {
                     AsyncTask search = new MovieBackend().execute(queryArr);
                     JSONObject json = null;
                     json = (JSONObject) search.get();
-                    i.putExtra("JSON_Data", json.get("imdb_id").toString());
+                    String imbdId = json.get("imdb_id").toString();
+                    if (imbdId.charAt(imbdId.length() - 1) == '/') {
+                        imbdId = imbdId.substring(0, imbdId.length() - 1);
+                    }
+                    i.putExtra("JSON_Data", imbdId);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

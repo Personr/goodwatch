@@ -1,8 +1,5 @@
 package com.example.reehams.goodreads;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Movie;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,11 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.URL;
 
 /**
  * Created by rahulkooverjee on 3/9/17.
@@ -63,6 +56,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             Toast.makeText(MovieDetailsActivity.this, e + "", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
+
         // Set movie info to view
         ((TextView) findViewById(R.id.movie_name)).setText(name);
         ((TextView) findViewById(R.id.movie_description)).setText(description);
