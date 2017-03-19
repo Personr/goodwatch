@@ -20,10 +20,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FacebookAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 import org.json.JSONException;
@@ -32,18 +31,18 @@ import org.json.JSONObject;
 import java.util.Arrays;
 
 
+
 public class WelcomeActivity extends AppCompatActivity {
+
+
+
     private LoginButton btnLogin;
     private CallbackManager callbackManager;
     static String email;
     static String facebookName;
     static String gender;
     static String profilePicId;
-
-    //Firebase Stuff
-    private FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener firebaseAuthListner;
-
+    private DatabaseReference myDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +52,14 @@ public class WelcomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_welcome);
         btnLogin = (LoginButton)findViewById(R.id.login_button2);
 
-
         btnLogin.setReadPermissions(Arrays.asList("public_profile, email, user_birthday"));
         callbackManager = CallbackManager.Factory.create();
+
+        myDatabase = FirebaseDatabase.getInstance().getReference();
 
 
         // Testing TODO DELETE THIS
         if (isLoggedIn()) {
-
             Intent i = new Intent(WelcomeActivity.this, SideBar.class);
             startActivity(i);
             GraphRequest request = GraphRequest.newMeRequest(
@@ -78,15 +77,15 @@ public class WelcomeActivity extends AppCompatActivity {
             request.executeAsync();
 
         }
-        
+
 
         btnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
 
             @Override
             public void onSuccess(LoginResult loginResult) {
-                handleFacebookAccessToken(loginResult.getAccessToken());
+
                 Intent i = new Intent(WelcomeActivity.this, SideBar.class);
-                startActivity(i);
+               startActivity(i);
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -94,13 +93,21 @@ public class WelcomeActivity extends AppCompatActivity {
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 Log.v("Main", response.toString());
                                 setProfileToView(object);
+                                String userId = myDatabase.push().getKey();
+                                try {
+                                    String name = object.getString("name");
+                                    String email = object.getString("email");
+                                    User user = new User(name, email);
+                                    myDatabase.child(userId).setValue(user);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         });
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,gender, birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
-
             }
 
             @Override
@@ -109,45 +116,15 @@ public class WelcomeActivity extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException exception) {
-                Toast.makeText(WelcomeActivity.this, "error to Login to Facebook", Toast.LENGTH_SHORT).show();
+
             }
         });
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseAuthListner = new FirebaseAuth.AuthStateListener(){
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
-                    //goMainScreen();
-                }
-            }
-        };
     }
 
-    private void handleFacebookAccessToken(AccessToken accessToken) {
-        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
-        firebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(!task.isSuccessful()){
-                    Toast.makeText(getApplicationContext(),"Firebase error login", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        firebaseAuth.addAuthStateListener(firebaseAuthListner);
-    }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        firebaseAuth.removeAuthStateListener(firebaseAuthListner);
-    }
+
 
 
     @Override
@@ -155,6 +132,8 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
+
+
 
 
 
@@ -173,5 +152,6 @@ public class WelcomeActivity extends AppCompatActivity {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }
+
 }
 
