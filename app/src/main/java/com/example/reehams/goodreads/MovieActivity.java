@@ -24,12 +24,14 @@ public class MovieActivity extends AppCompatActivity {
     EditText editText; // the input textbox
     String[] searchResults = new String[5]; // Options to be shown in list view
     JSONArray resultsArr; // the results of the query
+    String userId; // retrieves user's unique Id from previous intent for use
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_activity);
         editText = (EditText) findViewById(R.id.editText);
+        userId = getIntent().getStringExtra("user_id");
     }
 
     // Get JSON Object
@@ -103,6 +105,7 @@ public class MovieActivity extends AppCompatActivity {
                 }
                 // Pass the data of the clicked movie to the movieDetails class
                 Intent i = new Intent(MovieActivity.this,  MovieDetailsActivity.class);
+                i.putExtra("user_id", userId);
                 try {
                     // Pass the IMBD movie id to the details page
                     String movieId = resultsArr.getJSONObject(position).get("id").toString();

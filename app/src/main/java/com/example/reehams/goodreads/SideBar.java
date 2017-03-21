@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
 /**
@@ -24,6 +25,7 @@ public class SideBar extends AppCompatActivity {
     private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
     private String mActivityTitle;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,9 @@ public class SideBar extends AppCompatActivity {
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
+        userId = getIntent().getStringExtra("user_id");
+        //Toast.makeText(SideBar.this, "USERID SIDE: " + userId,
+         //       Toast.LENGTH_SHORT).show();
 
         addDrawerItems();
         setupDrawer();
@@ -49,22 +54,28 @@ public class SideBar extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 1) {
                     Intent i = new Intent(SideBar.this,  MyAccountActivity.class);
+                    i.putExtra("user_id", userId);
                     startActivity(i);
                 }
                 if (position == 2) {
                     Intent i = new Intent(SideBar.this,  WatchlistActivity.class);
+                    i.putExtra("user_id", userId);
                     startActivity(i);
                 }
                 if (position == 3) {
                     Intent i = new Intent(SideBar.this,  MovieActivity.class);
+                    i.putExtra("user_id", userId);
+                    Toast.makeText(getApplicationContext(), "USER ID MOVIE: " + userId, Toast.LENGTH_SHORT).show();
                     startActivity(i);
                 }
                 if (position == 4) {
                     Intent i = new Intent(SideBar.this, AboutUs.class);
+                    i.putExtra("user_id", userId);
                     startActivity(i);
                 }
                 if (position == 5) {
                     Intent i = new Intent(SideBar.this, LogOutActivity.class);
+                    i.putExtra("user_id", userId);
                     startActivity(i);
                 }
             }
