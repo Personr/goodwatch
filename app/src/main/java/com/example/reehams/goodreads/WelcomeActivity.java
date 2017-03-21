@@ -43,6 +43,7 @@ public class WelcomeActivity extends AppCompatActivity {
     static String gender;
     static String profilePicId;
     private DatabaseReference myDatabase;
+    static String userId1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,9 +84,10 @@ public class WelcomeActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(LoginResult loginResult) {
-
                 Intent i = new Intent(WelcomeActivity.this, SideBar.class);
                startActivity(i);
+                //Facebook userId(the numerical one)
+                userId1 = loginResult.getAccessToken().getUserId();
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -95,9 +97,10 @@ public class WelcomeActivity extends AppCompatActivity {
                                 setProfileToView(object);
                                 String userId = myDatabase.push().getKey();
                                 try {
+                                    //Firebase databse stuff
                                     String name = object.getString("name");
                                     String email = object.getString("email");
-                                    User user = new User(name, email);
+                                    User user = new User(name, email, userId1);
                                     myDatabase.child(userId).setValue(user);
                                 } catch (JSONException e) {
                                     e.printStackTrace();

@@ -7,9 +7,11 @@ package com.example.reehams.goodreads;
 public class User {
     public String email;
     public String name;
+    public String userId;
 
-    public User(String email, String name) {
+    public User(String name, String email, String userId) {
         this.email = email;
         this.name = name;
+        this.userId = userId;
     }
 }
