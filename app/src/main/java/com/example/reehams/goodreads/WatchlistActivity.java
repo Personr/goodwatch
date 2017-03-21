@@ -37,7 +37,7 @@ public class WatchlistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watchlist);
-        mListView = (ListView) findViewById(R.id.listView);
+        mListView = (ListView) findViewById(R.id.watchlistView);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myMovies);
         mListView.setAdapter(arrayAdapter);
         userId = getIntent().getStringExtra("user_id");

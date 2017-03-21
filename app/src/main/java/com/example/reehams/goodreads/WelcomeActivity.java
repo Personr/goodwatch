@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -57,14 +58,27 @@ public class WelcomeActivity extends AppCompatActivity {
         /*
         if (isLoggedIn()) {
             Intent i = new Intent(WelcomeActivity.this, SideBar.class);
+            AccessToken accessToken = AccessToken.getCurrentAccessToken();
+            userId1 = accessToken.getUserId();
+            i.putExtra("user_id", userId1);
             startActivity(i);
             GraphRequest request = GraphRequest.newMeRequest(
-                    AccessToken.getCurrentAccessToken(),
+                    accessToken,
                     new GraphRequest.GraphJSONObjectCallback() {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
                             Log.v("Main", response.toString());
                             setProfileToView(object);
+                            //String userId = myDatabase.push().getKey();
+                            try {
+                                String name = object.getString("name");
+                                String email = object.getString("email");
+                                User user = new User(name, email, userId1);
+                                myDatabase.child(userId1).setValue(user);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
             Bundle parameters = new Bundle();
@@ -81,9 +95,10 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Intent i = new Intent(WelcomeActivity.this, SideBar.class);
-               startActivity(i);
                 //Facebook userId(the numerical one)
                 userId1 = loginResult.getAccessToken().getUserId();
+                i.putExtra("user_id", userId1);
+                startActivity(i);
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {

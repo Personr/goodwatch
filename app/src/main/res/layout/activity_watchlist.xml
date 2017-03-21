@@ -16,5 +16,5 @@
         android:layout_marginTop="48dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/listView" />
+        android:id="@+id/watchlistView" />
 </RelativeLayout>
