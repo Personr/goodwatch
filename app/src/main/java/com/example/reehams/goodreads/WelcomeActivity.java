@@ -95,13 +95,14 @@ public class WelcomeActivity extends AppCompatActivity {
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 Log.v("Main", response.toString());
                                 setProfileToView(object);
-                                String userId = myDatabase.push().getKey();
+                                //String userId = myDatabase.push().getKey();
                                 try {
-                                    //Firebase databse stuff
-                                    String name = object.getString("name");
-                                    String email = object.getString("email");
-                                    User user = new User(name, email, userId1);
-                                    myDatabase.child(userId).setValue(user);
+
+                                        String name = object.getString("name");
+                                        String email = object.getString("email");
+                                        User user = new User(name, email, userId1);
+                                        myDatabase.child(userId1).setValue(user);
+
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
