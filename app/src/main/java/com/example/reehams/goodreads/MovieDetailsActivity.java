@@ -9,7 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+
+import static com.example.reehams.goodreads.WelcomeActivity.facebookName;
+import static com.example.reehams.goodreads.WelcomeActivity.userId1;
 
 /**
  * Created by rahulkooverjee on 3/9/17.
@@ -19,11 +27,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     String userId;
     String movieId;
+    String nameId;
+
+    private DatabaseReference myDatabase;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_details_activity);
+        myDatabase = FirebaseDatabase.getInstance().getReference();
         // Variables to save movie data
         String name = "n/a";
         String releaseDate = "n/a";
@@ -47,6 +60,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             json = (JSONObject) search.get();
             // Set movie info
             name = json.get("Title").toString();
+            nameId = name;
             releaseDate = json.get("Released").toString();
             runtime = json.get("Runtime").toString();
             posterURL = json.get("Poster").toString();
@@ -77,85 +91,16 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
     // TODO IMPLEMENT LATER ONCE WE HAVE FUNCTIONALITY
     protected void watchlistOnButtonPressed(View view) {
-        Toast.makeText(MovieDetailsActivity.this, "Watchlist Coming Soon!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(MovieDetailsActivity.this, movieId, Toast.LENGTH_SHORT).show();
+        Movie currentMovie = new Movie(userId1, nameId);
+        myDatabase.child(movieId).setValue(currentMovie);
+        //myDatabase.child(userId1).child("watchlist").setValue(currentMovie);
         Intent i = new Intent(this,WatchlistActivity.class);
-
         Bundle extras = new Bundle();
         extras.putString("user_id", userId);
         extras.putString("movie_id", movieId);
         i.putExtras(extras);
-
-
-
-        /*DatabaseReference myDatabase;
-        myDatabase = FirebaseDatabase.getInstance().getReference();
-
-        String userId = myDatabase.push().getKey();
-        myDatabase.child(userId).child("movie1").setValue(getIntent().getStringExtra("JSON_Data"));
-
-        String movieID = getIntent().getStringExtra("JSON_Data");*/
-
         startActivity(i);
-
-        /*Movie m = new Movie();
-        m.setMovie(getIntent().getStringExtra("JSON_Data"));*/
-
-        /*myDatabase.addValueEventListener(new ValueEventListener() {
-            DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
-            String userId = myDatabase.push().getKey();
-
-            String current = "";
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (int index = 1; index <= 10; index++) {
-                    current = "Movie" + index;
-                    String val = dataSnapshot.child("movie" + index).getValue().toString();
-                    Toast.makeText(MovieDetailsActivity.this, "Key: " + current, Toast.LENGTH_SHORT).show();
-                    Toast.makeText(MovieDetailsActivity.this, "Value: " + val, Toast.LENGTH_SHORT).show();
-                    if (current != null) {
-                        if (!current.isEmpty()) {
-                            current = myDatabase.child(userId).child("movie" + index).child("").getKey();
-                        }
-                    }
-                    else {
-                        current = myDatabase.child(userId).child("movie" + index).child("").getKey();
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The read failed: " + databaseError.getCode());
-            }
-        });
-
-        /*String current = myDatabase.child(userId).child("movie1").child("").getKey();
-        Toast.makeText(MovieDetailsActivity.this, "First value: " + current, Toast.LENGTH_SHORT).show();
-        for (int index = 2; index <= 10; index++) {
-            if (current != null) {
-                if (!current.isEmpty()) {
-                    current = myDatabase.child(userId).child("movie" + index).child("").getKey();
-                }
-            }
-            else {
-                current = myDatabase.child(userId).child("movie" + index).child("").getKey();
-            }
-        }
-        if (!current.isEmpty()) {
-            if (current == null) {
-                Toast.makeText(MovieDetailsActivity.this, "Null!", Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(MovieDetailsActivity.this, "Your watchlist is full!", Toast.LENGTH_SHORT).show();
-                Toast.makeText(MovieDetailsActivity.this, current, Toast.LENGTH_SHORT).show();
-            }
-        }
-        else {
-            myDatabase.child(userId).child(current).setValue(getIntent().getStringExtra("JSON_Data"));
-        }*/
-
-
-
 
     }
 

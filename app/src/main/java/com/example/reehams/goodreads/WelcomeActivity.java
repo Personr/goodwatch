@@ -28,7 +28,6 @@ import java.util.List;
 public class WelcomeActivity extends AppCompatActivity {
 
 
-
     private LoginButton btnLogin;
     private CallbackManager callbackManager;
     static String email;
@@ -38,7 +37,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private DatabaseReference myDatabase;
     static String userId1;
 
-    static List<Movie> watchlist;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +51,6 @@ public class WelcomeActivity extends AppCompatActivity {
         callbackManager = CallbackManager.Factory.create();
 
         myDatabase = FirebaseDatabase.getInstance().getReference();
-        watchlist = new ArrayList<Movie>();
 
 
         // Testing TODO DELETE THIS
@@ -93,10 +91,9 @@ public class WelcomeActivity extends AppCompatActivity {
                                 setProfileToView(object);
                                 //String userId = myDatabase.push().getKey();
                                 try {
-
                                         String name = object.getString("name");
                                         String email = object.getString("email");
-                                        User user = new User(name, email, userId1, "watchlist");
+                                        User user = new User(name, email, userId1);
                                         myDatabase.child(userId1).setValue(user);
 
                                 } catch (JSONException e) {
