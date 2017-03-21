@@ -1,20 +1,27 @@
 package com.example.reehams.goodreads;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.example.reehams.goodreads.WelcomeActivity.facebookName;
 import static com.example.reehams.goodreads.WelcomeActivity.userId1;
@@ -87,22 +94,110 @@ public class MovieDetailsActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.movie_director)).setText(director);
         ((TextView) findViewById(R.id.movie_rating)).setText(rating + " / 10");
         ((TextView) findViewById(R.id.movie_actors)).setText(actors);
+        myDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Set<String> set = new HashSet<String>();
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    //set.add(childSnapshot.getKey());
+                    if (childSnapshot.child("id").getValue(String.class).equals(userId1)) {
+                        if (!childSnapshot.child("name").getValue(String.class).equals(facebookName)) {
+                            set.add(childSnapshot.child("name").getValue(String.class));
+                        }
+                    }
+                }
+                Button watchButton = (Button) findViewById(R.id.watchlist_button);
+                if (set.contains(((TextView)findViewById(R.id.movie_name)).getText())) {
+                    watchButton.setText("Remove from Watchlist");
+                }
+                else {
+                    watchButton.setText("Add to Watchlist");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     // TODO IMPLEMENT LATER ONCE WE HAVE FUNCTIONALITY
     protected void watchlistOnButtonPressed(View view) {
+        myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                 @Override
+                 public void onDataChange(DataSnapshot dataSnapshot) {
+                     Set<String> set = new HashSet<String>();
+                     for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                         //set.add(childSnapshot.getKey());
+                         if (childSnapshot.child("id").getValue(String.class).equals(userId1)) {
+                             if (!childSnapshot.child("name").getValue(String.class).equals(facebookName)) {
+                                 set.add(childSnapshot.child("name").getValue(String.class));
+                             }
+                         }
+                     }
+                     Button watchButton = (Button) findViewById(R.id.watchlist_button);
+                     if (set.contains(((TextView)findViewById(R.id.movie_name)).getText())) {
+                         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                                 MovieDetailsActivity.this);
+
+                         // set title
+                         alertDialogBuilder.setTitle("Remove from Watchlist");
+
+                         // set dialog message
+                         alertDialogBuilder
+                                 .setMessage("Are you sure you want to remove the movie from your watchlist?")
+                                 .setCancelable(false)
+                                 .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                                     public void onClick(DialogInterface dialog,int id) {
+                                         // if this button is clicked, close
+                                         // current activity
+                                         myDatabase.child(movieId).removeValue();
+                                         Intent i = new Intent(MovieDetailsActivity.this,WatchlistActivity.class);
+                                         Bundle extras = new Bundle();
+                                         extras.putString("user_id", userId);
+                                         extras.putString("movie_id", movieId);
+                                         i.putExtras(extras);
+                                         startActivity(i);
+                                     }
+                                 })
+                                 .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                                     public void onClick(DialogInterface dialog,int id) {
+                                         // if this button is clicked, just close
+                                         // the dialog box and do nothing
+                                         dialog.cancel();
+                                     }
+                                 });
+                         // create alert dialog
+                         AlertDialog alertDialog = alertDialogBuilder.create();
+
+                         // show it
+                         alertDialog.show();
+
+                     }
+                     else {
+                         Movie currentMovie = new Movie(userId1, nameId);
+                         myDatabase.child(movieId).setValue(currentMovie);
+                         Intent i = new Intent(MovieDetailsActivity.this,WatchlistActivity.class);
+                         Bundle extras = new Bundle();
+                         extras.putString("user_id", userId);
+                         extras.putString("movie_id", movieId);
+                         i.putExtras(extras);
+                         startActivity(i);
+                     }
+                 }
+
+                 @Override
+                 public void onCancelled(DatabaseError databaseError) {
+                 }
+            });
         //Toast.makeText(MovieDetailsActivity.this, movieId, Toast.LENGTH_SHORT).show();
-        Movie currentMovie = new Movie(userId1, nameId);
-        myDatabase.child(movieId).setValue(currentMovie);
+
         //myDatabase.child(userId1).child("watchlist").setValue(currentMovie);
-        Intent i = new Intent(this,WatchlistActivity.class);
-        Bundle extras = new Bundle();
-        extras.putString("user_id", userId);
-        extras.putString("movie_id", movieId);
-        i.putExtras(extras);
-        startActivity(i);
+
 
     }
+
+
 
     // TODO IMPLEMENT LATER ONCE WE HAVE FUNCTIONALITY
     protected void reviewOnButtonPressed(View view) {
