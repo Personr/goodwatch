@@ -54,6 +54,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
         // Testing TODO DELETE THIS
+        /*
         if (isLoggedIn()) {
             Intent i = new Intent(WelcomeActivity.this, SideBar.class);
             startActivity(i);
@@ -72,6 +73,7 @@ public class WelcomeActivity extends AppCompatActivity {
             request.executeAsync();
 
         }
+        */
 
 
         btnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

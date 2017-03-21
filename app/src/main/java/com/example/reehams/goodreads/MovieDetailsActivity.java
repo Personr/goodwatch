@@ -151,7 +151,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                                      public void onClick(DialogInterface dialog,int id) {
                                          // if this button is clicked, close
                                          // current activity
-                                         myDatabase.child(movieId).removeValue();
+                                         myDatabase.child(movieId + userId1).removeValue();
                                          Intent i = new Intent(MovieDetailsActivity.this,WatchlistActivity.class);
                                          Bundle extras = new Bundle();
                                          extras.putString("user_id", userId);
@@ -176,7 +176,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
                      }
                      else {
                          Movie currentMovie = new Movie(userId1, nameId);
-                         myDatabase.child(movieId).setValue(currentMovie);
+                         myDatabase.child(movieId + userId1).setValue(currentMovie);
                          Intent i = new Intent(MovieDetailsActivity.this,WatchlistActivity.class);
                          Bundle extras = new Bundle();
                          extras.putString("user_id", userId);
@@ -190,11 +190,6 @@ public class MovieDetailsActivity extends AppCompatActivity {
                  public void onCancelled(DatabaseError databaseError) {
                  }
             });
-        //Toast.makeText(MovieDetailsActivity.this, movieId, Toast.LENGTH_SHORT).show();
-
-        //myDatabase.child(userId1).child("watchlist").setValue(currentMovie);
-
-
     }
 
 

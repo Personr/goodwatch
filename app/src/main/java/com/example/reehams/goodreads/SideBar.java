@@ -35,8 +35,6 @@ public class SideBar extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
         userId = getIntent().getStringExtra("user_id");
-        //Toast.makeText(SideBar.this, "USERID SIDE: " + userId,
-         //       Toast.LENGTH_SHORT).show();
 
         addDrawerItems();
         setupDrawer();
@@ -65,7 +63,6 @@ public class SideBar extends AppCompatActivity {
                 if (position == 3) {
                     Intent i = new Intent(SideBar.this,  MovieActivity.class);
                     i.putExtra("user_id", userId);
-                    Toast.makeText(getApplicationContext(), "USER ID MOVIE: " + userId, Toast.LENGTH_SHORT).show();
                     startActivity(i);
                 }
                 if (position == 4) {

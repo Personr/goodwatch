@@ -64,11 +64,11 @@ public class WatchlistActivity extends AppCompatActivity {
                 int i = 1;
                 for (String movie : myMovies) {
                     try {
-                        Toast.makeText(WatchlistActivity.this, "/" + movie + "/ Index: " + myMovies.indexOf(movie), Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(WatchlistActivity.this, "/" + movie + "/ Index: " + myMovies.indexOf(movie), Toast.LENGTH_SHORT).show();
                         String movieId = search(movie.replace(" ", "%20")).getJSONObject(0).get("id").toString();
                         searchResults[myMovies.indexOf(movie)] = movieId;
                         //Toast.makeText(WatchlistActivity.this, movie + " Index: " + myMovies.indexOf(movie), Toast.LENGTH_SHORT).show();
-                        Toast.makeText(WatchlistActivity.this, movie + "Search Results value: " + movieId, Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(WatchlistActivity.this, movie + "Search Results value: " + movieId, Toast.LENGTH_SHORT).show();
                         //Toast.makeText(WatchlistActivity.this, "Movies shown: " + i, Toast.LENGTH_SHORT).show();
                         i++;
                     }
@@ -87,7 +87,7 @@ public class WatchlistActivity extends AppCompatActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
                 // Do nothing if there is no result
                 if (searchResults[position] == null) {
                     Toast.makeText(WatchlistActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
