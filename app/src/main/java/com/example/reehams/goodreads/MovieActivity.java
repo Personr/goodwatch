@@ -83,7 +83,7 @@ public class MovieActivity extends AppCompatActivity {
             for (int i = max; i < 5; i++) {
                 // If there are no results, say so
                 if (i == 0) {
-                    searchResults[i] = "No Results Found";
+                    searchResults[i] = "No Movies Found";
                     continue;
                 }
                 searchResults[i] = "";
@@ -100,7 +100,7 @@ public class MovieActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Do nothing if there is no result
-                if (searchResults[position].equals("") || searchResults[position].equals("No Results Found")) {
+                if (searchResults[position].equals("") || searchResults[position].equals("No Movies Found")) {
                     return;
                 }
                 // Pass the data of the clicked movie to the movieDetails class

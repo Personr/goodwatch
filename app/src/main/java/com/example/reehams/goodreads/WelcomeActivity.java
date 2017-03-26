@@ -54,8 +54,7 @@ public class WelcomeActivity extends AppCompatActivity {
         myDatabase = FirebaseDatabase.getInstance().getReference();
 
 
-        // Testing TODO DELETE THIS
-        /*
+
         if (isLoggedIn()) {
             Intent i = new Intent(WelcomeActivity.this, SideBar.class);
             AccessToken accessToken = AccessToken.getCurrentAccessToken();
@@ -87,7 +86,7 @@ public class WelcomeActivity extends AppCompatActivity {
             request.executeAsync();
 
         }
-        */
+
 
 
         btnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

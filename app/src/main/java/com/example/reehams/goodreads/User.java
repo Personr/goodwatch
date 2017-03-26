@@ -14,4 +14,8 @@ public class User {
         this.name = name;
         this.id = id;
     }
+
+    public String toString() {
+        return this.name;
+    }
 }
