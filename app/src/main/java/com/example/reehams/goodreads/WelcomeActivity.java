@@ -68,10 +68,10 @@ public class WelcomeActivity extends AppCompatActivity {
                         public void onCompleted(JSONObject object, GraphResponse response) {
                             Log.v("Main", response.toString());
                             setProfileToView(object);
-                            //String userId = myDatabase.push().getKey();
                             try {
                                 String name = object.getString("name");
                                 String email = object.getString("email");
+                                String profilePicId = object.getString("id");
                                 User user = new User(name, email, userId1);
                                 myDatabase.child(userId1).setValue(user);
 
@@ -86,6 +86,7 @@ public class WelcomeActivity extends AppCompatActivity {
             request.executeAsync();
 
         }
+
 
 
 

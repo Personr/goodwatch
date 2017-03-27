@@ -35,6 +35,9 @@ public class UserSearch extends AppCompatActivity {
     private boolean hasResults = true;
     private ArrayList<User> results = new ArrayList<>();
     private static String[] searchResultsIds = new String[5]; // Options to be shown in list view
+    String name;
+    String email;
+    String id2;
 
 
     @Override
@@ -105,8 +108,15 @@ public class UserSearch extends AppCompatActivity {
                 if(!hasResults) {
                     return;
                 }
-                Toast.makeText(UserSearch.this, "Value: " + results.get(position), Toast.LENGTH_SHORT).show();
-
+                //Toast.makeText(UserSearch.this, "Value: " + results.get(position), Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(UserSearch.this, FollowActivity.class);
+                name = results.get(position).name;
+                email = results.get(position).email;
+                id2 = results.get(position).id;
+                i.putExtra("name", name);
+                i.putExtra("email", email);
+                i.putExtra("id", id2);
+                startActivity(i);
                 // Do nothing if there is no result
                 if (results.get(position) == null) {
                     Toast.makeText(UserSearch.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();

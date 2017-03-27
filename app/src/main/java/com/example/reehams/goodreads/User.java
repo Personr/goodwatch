@@ -8,6 +8,7 @@ public class User {
     public String email;
     public String name;
     public String id;
+    public String profilePicId;
 
     public User(String name, String email, String id) {
         this.email = email;
