@@ -8,14 +8,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class ReviewFormActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
     private String[] ratingSpinner;
     private double rating;
-    private EditText reviewText;
+    private EditText review;
     private Button submitBtn;
+    private String reviewText;
+    private String movieName;
+    private TextView reviewHeader;
 
 
     @Override
@@ -23,14 +28,21 @@ public class ReviewFormActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_form);
 
-        reviewText = (EditText) findViewById(R.id.reviewEditText);
+        reviewHeader = (TextView) findViewById(R.id.reviewheader);
+        movieName = getIntent().getStringExtra("movie_name");
+        reviewHeader.setText("Review " + movieName + " below!");
+
+        review = (EditText) findViewById(R.id.reviewEditText);
 
         // Saving user review text from form to Firebase
         submitBtn = (Button) findViewById(R.id.button2);
+
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TO DO:
+                reviewText = review.getText().toString();
+                Toast.makeText(getApplicationContext(), "RATING: " + rating + "\nReview: " + reviewText, Toast.LENGTH_SHORT).show();
             }
         });
 

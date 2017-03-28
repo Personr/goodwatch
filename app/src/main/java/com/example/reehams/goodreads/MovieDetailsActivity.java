@@ -36,6 +36,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
     String movieId;
     String nameId;
 
+    String movieName;
+
     private DatabaseReference myDatabase;
 
 
@@ -67,6 +69,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             json = (JSONObject) search.get();
             // Set movie info
             name = json.get("Title").toString();
+            movieName = name;
             nameId = name;
             releaseDate = json.get("Released").toString();
             runtime = json.get("Runtime").toString();
@@ -197,6 +200,13 @@ public class MovieDetailsActivity extends AppCompatActivity {
     // TODO IMPLEMENT LATER ONCE WE HAVE FUNCTIONALITY
     protected void reviewOnButtonPressed(View view) {
         Toast.makeText(MovieDetailsActivity.this, "Reviews Coming Soon!", Toast.LENGTH_SHORT).show();
+        Intent i = new Intent(MovieDetailsActivity.this, ReviewFormActivity.class);
+        Bundle extras = new Bundle();
+        extras.putString("user_id", userId);
+        extras.putString("movie_id", movieId);
+        extras.putString("movie_name", movieName);
+        i.putExtras(extras);
+        startActivity(i);
     }
 
     private String getActorString(String actors) {

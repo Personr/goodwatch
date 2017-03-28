@@ -70,8 +70,7 @@ public class SideBar extends AppCompatActivity {
                     startActivity(i);
                 }
                 if (position == 5) {
-//                    Intent i = new Intent(SideBar.this, AboutUs.class);
-                    Intent i = new Intent(SideBar.this, ReviewFormActivity.class);
+                    Intent i = new Intent(SideBar.this, AboutUs.class);
                     i.putExtra("user_id", userId);
                     startActivity(i);
                 }
