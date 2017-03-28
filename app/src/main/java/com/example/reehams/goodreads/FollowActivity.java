@@ -42,7 +42,7 @@ public class FollowActivity extends AppCompatActivity {
     protected void followThisUser(View view) {
         String personId = getIntent().getStringExtra("id");
         String userName2 = getIntent().getStringExtra("name");
-        Following nowFollowing = new Following(WelcomeActivity.userId1, WelcomeActivity.facebookName, userName2);
+        Following nowFollowing = new Following(WelcomeActivity.userId1, personId,WelcomeActivity.facebookName, userName2);
         myDatabase.child(WelcomeActivity.userId1 + " " + personId).setValue(nowFollowing);
         Intent i = new Intent(FollowActivity.this, FollowingListActivity.class);
         startActivity(i);

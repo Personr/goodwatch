@@ -6,12 +6,14 @@ package com.example.reehams.goodreads;
 
 public class Following {
     String id;
+    String personId;
     String personName;
     String name;
 
-    public Following(String id, String name,String personName) {
+    public Following(String id, String personId, String name,String personName) {
         this.id = id;
         this.name = name;
         this.personName = personName;
+        this.personId = personId;
     }
 }

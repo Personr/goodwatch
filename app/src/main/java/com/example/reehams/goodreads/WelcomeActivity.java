@@ -74,7 +74,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                 String name = object.getString("name");
                                 String email = object.getString("email");
                                 String profilePicId = object.getString("id");
-                                User user = new User(name, email, userId1, " ");
+                                User user = new User(name, email, userId1, " ", " ");
                                 myDatabase.child(userId1).setValue(user);
 
                             } catch (JSONException e) {
@@ -112,7 +112,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                 try {
                                         String name = object.getString("name");
                                         String email = object.getString("email");
-                                        User user = new User(name, email, userId1, " ");
+                                        User user = new User(name, email, userId1," ", " ");
                                         myDatabase.child(userId1).setValue(user);
 
                                 } catch (JSONException e) {

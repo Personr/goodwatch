@@ -9,12 +9,14 @@ public class User {
     public String name;
     public String id;
     public String personName;
+    String personId;
 
-    public User(String name, String email, String id, String personName) {
+    public User(String name, String email,  String id, String personId, String personName) {
         this.email = email;
         this.name = name;
         this.id = id;
         this.personName = personName;
+        this.personId = personId;
     }
 
     public String toString() {
