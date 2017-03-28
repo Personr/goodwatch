@@ -35,7 +35,6 @@
         <activity
             android:name=".MovieActivity"
             android:label="Movie Search" />
-
         <activity
             android:name=".UserSearch"
             android:label="User Search" />
@@ -58,8 +57,10 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".WatchlistActivity"
-            android:label="Watchlist"></activity>
+        <activity
+            android:name=".WatchlistActivity"
+            android:label="Watchlist" />
+        <activity android:name=".ReviewFormActivity"></activity>
     </application>
 
 </manifest>

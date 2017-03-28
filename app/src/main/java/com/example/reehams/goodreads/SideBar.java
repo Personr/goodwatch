@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 
 /**
@@ -71,7 +70,8 @@ public class SideBar extends AppCompatActivity {
                     startActivity(i);
                 }
                 if (position == 5) {
-                    Intent i = new Intent(SideBar.this, AboutUs.class);
+//                    Intent i = new Intent(SideBar.this, AboutUs.class);
+                    Intent i = new Intent(SideBar.this, ReviewFormActivity.class);
                     i.putExtra("user_id", userId);
                     startActivity(i);
                 }
