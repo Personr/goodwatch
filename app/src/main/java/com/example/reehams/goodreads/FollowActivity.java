@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +20,10 @@ import com.google.firebase.database.FirebaseDatabase;
 public class FollowActivity extends AppCompatActivity {
     TextView email;
     TextView userName;
+    Button followButton;
     ProfilePictureView image;
     private DatabaseReference myDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +47,8 @@ public class FollowActivity extends AppCompatActivity {
         String userName2 = getIntent().getStringExtra("name");
         Following nowFollowing = new Following(WelcomeActivity.userId1, personId,WelcomeActivity.facebookName, userName2);
         myDatabase.child(WelcomeActivity.userId1 + " " + personId).setValue(nowFollowing);
+        followButton = (Button) findViewById(R.id.followbotton);
+        followButton.setText("Unfollow");
         Intent i = new Intent(FollowActivity.this, FollowingListActivity.class);
         startActivity(i);
     }
