@@ -175,7 +175,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
 
                      }
                      else {
-                         Movie currentMovie = new Movie(userId1, nameId);
+                         Movie currentMovie = new Movie(userId1, nameId, " ");
                          myDatabase.child(movieId + userId1).setValue(currentMovie);
                          Intent i = new Intent(MovieDetailsActivity.this,WatchlistActivity.class);
                          Bundle extras = new Bundle();

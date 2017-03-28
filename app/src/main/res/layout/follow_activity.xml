@@ -75,7 +75,8 @@
         android:layout_marginLeft="35dp"
         android:layout_marginStart="35dp"
         android:layout_marginTop="24dp"
-        android:id="@+id/followbotton" />
+        android:id="@+id/followbotton"
+        android:onClick="followThisUser"/>
 
 
 </RelativeLayout>

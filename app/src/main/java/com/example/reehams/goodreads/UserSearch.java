@@ -77,7 +77,7 @@ public class UserSearch extends AppCompatActivity {
                             continue;
                         }
                         String id = childSnapshot.child("id").getValue(String.class);
-                        User user = new User(userName, email, id);
+                        User user = new User(userName, email, id, "");
                         list.add(user);
                         UserSearch.searchResultsIds[i] = childSnapshot.child("id").getValue(String.class);
                         i++;

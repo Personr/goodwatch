@@ -57,9 +57,11 @@ public class WelcomeActivity extends AppCompatActivity {
 
         if (isLoggedIn()) {
             Intent i = new Intent(WelcomeActivity.this, SideBar.class);
+            Intent i2 = new Intent(WelcomeActivity.this, FollowActivity.class);
             AccessToken accessToken = AccessToken.getCurrentAccessToken();
             userId1 = accessToken.getUserId();
             i.putExtra("user_id", userId1);
+            i2.putExtra("user_id", userId1);
             startActivity(i);
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
@@ -72,7 +74,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                 String name = object.getString("name");
                                 String email = object.getString("email");
                                 String profilePicId = object.getString("id");
-                                User user = new User(name, email, userId1);
+                                User user = new User(name, email, userId1, " ");
                                 myDatabase.child(userId1).setValue(user);
 
                             } catch (JSONException e) {
@@ -110,7 +112,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                 try {
                                         String name = object.getString("name");
                                         String email = object.getString("email");
-                                        User user = new User(name, email, userId1);
+                                        User user = new User(name, email, userId1, " ");
                                         myDatabase.child(userId1).setValue(user);
 
                                 } catch (JSONException e) {

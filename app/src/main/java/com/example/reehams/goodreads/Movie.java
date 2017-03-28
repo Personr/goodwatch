@@ -7,10 +7,12 @@ package com.example.reehams.goodreads;
 public class Movie {
     public String id;
     public String name;
+    public String personName;
 
-    public Movie(String id, String name) {
+    public Movie(String id, String name, String personName) {
         this.id = id;
         this.name = name;
+        this.personName = personName;
     }
 
     public String returnID() {

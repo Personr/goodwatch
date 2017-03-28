@@ -8,12 +8,13 @@ public class User {
     public String email;
     public String name;
     public String id;
-    public String profilePicId;
+    public String personName;
 
-    public User(String name, String email, String id) {
+    public User(String name, String email, String id, String personName) {
         this.email = email;
         this.name = name;
         this.id = id;
+        this.personName = personName;
     }
 
     public String toString() {
