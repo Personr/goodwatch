@@ -51,4 +51,8 @@ public class MyAccountActivity extends AppCompatActivity {
         Intent i = new Intent(this, FollowingListActivity.class);
         startActivity(i);
     }
+    protected void myFollowers(View view) {
+        Intent i = new Intent(this, FollowerListActivity.class);
+        startActivity(i);
+    }
 }
