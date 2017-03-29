@@ -11,25 +11,32 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 public class ReviewFormActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
     private String[] ratingSpinner;
-    private double rating;
+    private String rating;
     private EditText review;
     private Button submitBtn;
     private String reviewText;
     private String movieName;
     private TextView reviewHeader;
+    private DatabaseReference myDatabase;
+    private String movieId;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_form);
+        myDatabase = FirebaseDatabase.getInstance().getReference();
 
         reviewHeader = (TextView) findViewById(R.id.reviewheader);
         movieName = getIntent().getStringExtra("movie_name");
+        movieId = getIntent().getStringExtra("movie_id");
         reviewHeader.setText("Review " + movieName + " below!");
 
         review = (EditText) findViewById(R.id.reviewEditText);
@@ -42,12 +49,16 @@ public class ReviewFormActivity extends AppCompatActivity implements AdapterView
             public void onClick(View v) {
                 // TO DO:
                 reviewText = review.getText().toString();
-                Toast.makeText(getApplicationContext(), "RATING: " + rating + "\nReview: " + reviewText, Toast.LENGTH_SHORT).show();
+                String name = WelcomeActivity.facebookName;
+                String userId = WelcomeActivity.userId1;
+                Review review1 = new Review(movieId, userId, " ", " ",rating, reviewText);
+                myDatabase.child(movieId + " " + userId + "review").setValue(review1);
+
             }
         });
 
 
-        this.ratingSpinner = new String[] {"0", "0.5", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.5", "5"};
+        this.ratingSpinner = new String[] {"0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0"};
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -62,37 +73,37 @@ public class ReviewFormActivity extends AppCompatActivity implements AdapterView
         // parent.getItemAtPosition(pos)
         switch(pos) {
             case 0:
-                rating = 0;
+                rating = "0.0";
                 break;
             case 1:
-                rating = 0.5;
+                rating = "0.5";
                 break;
             case 2:
-                rating = 1;
+                rating = "1.0";
                 break;
             case 3:
-                rating = 1.5;
+                rating = "1.5";
                 break;
             case 4:
-                rating = 2;
+                rating = "2.0";
                 break;
             case 5:
-                rating = 2.5;
+                rating = "2.5";
                 break;
             case 6:
-                rating = 3;
+                rating = "3.0";
                 break;
             case 7:
-                rating = 3.5;
+                rating = "3.5";
                 break;
             case 8:
-                rating = 4;
+                rating = "4.0";
                 break;
             case 9:
-                rating = 4.5;
+                rating = "4.5";
                 break;
             case 10:
-                rating = 5;
+                rating = "5.0";
                 break;
         }
     }

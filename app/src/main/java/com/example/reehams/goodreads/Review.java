@@ -11,14 +11,16 @@ public class Review {
     String personId;
     String personName;
     String reviewText;
+    String rating;
 
 
-    public Review(String id, String name, String personId, String personName, String reviewText) {
+    public Review(String id, String name, String personId, String personName, String rating, String reviewText) {
         this.id = id;
         this.name = name;
         this.personId = personId;
         this.personName = personName;
         this.reviewText = reviewText;
+        this.rating = rating;
     }
 
 }

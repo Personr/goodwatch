@@ -28,6 +28,11 @@ public class FollowActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
+        String imageUsed = getIntent().getStringExtra("id");
+        if(imageUsed == WelcomeActivity.userId1) {
+            Intent i = new Intent(FollowActivity.this, MyAccountActivity.class);
+            startActivity(i);
+        }
         myDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(R.layout.follow_activity);
         String userName2 = getIntent().getStringExtra("name");
@@ -38,7 +43,6 @@ public class FollowActivity extends AppCompatActivity {
         userName.setText("Name:" + " " + userName2);
         image = (ProfilePictureView) findViewById(R.id.image2);
         image.setPresetSize(ProfilePictureView.NORMAL);
-        String imageUsed = getIntent().getStringExtra("id");
         image.setProfileId(imageUsed);
     }
 

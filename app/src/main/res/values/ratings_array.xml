@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="ratings_array">
-    <item>0</item>
+    <item>0.0</item>
     <item>0.5</item>
-    <item>1</item>
+    <item>1.0</item>
     <item>1.5</item>
-    <item>2</item>
+    <item>2.0</item>
     <item>2.5</item>
-    <item>3</item>
+    <item>3.0</item>
     <item>3.5</item>
-    <item>4</item>
+    <item>4.0</item>
     <item>4.5</item>
-    <item>5</item>
+    <item>5.0</item>
     </string-array>
 </resources>
