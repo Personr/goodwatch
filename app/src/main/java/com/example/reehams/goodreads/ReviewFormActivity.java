@@ -1,6 +1,9 @@
 package com.example.reehams.goodreads;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -21,11 +23,13 @@ public class ReviewFormActivity extends AppCompatActivity implements AdapterView
     private String rating;
     private EditText review;
     private Button submitBtn;
+    private Button cancelBtn;
     private String reviewText;
     private String movieName;
     private TextView reviewHeader;
     private DatabaseReference myDatabase;
     private String movieId;
+    private String userId;
 
 
     @Override
@@ -33,27 +37,100 @@ public class ReviewFormActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_form);
         myDatabase = FirebaseDatabase.getInstance().getReference();
-
         reviewHeader = (TextView) findViewById(R.id.reviewheader);
         movieName = getIntent().getStringExtra("movie_name");
         movieId = getIntent().getStringExtra("movie_id");
+        userId = getIntent().getStringExtra("user_id");
         reviewHeader.setText("Review " + movieName + " below!");
 
         review = (EditText) findViewById(R.id.reviewEditText);
 
         // Saving user review text from form to Firebase
         submitBtn = (Button) findViewById(R.id.button2);
+        cancelBtn = (Button) findViewById(R.id.button3);
 
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TO DO:
-                reviewText = review.getText().toString();
-                String name = WelcomeActivity.facebookName;
-                String userId = WelcomeActivity.userId1;
-                Review review1 = new Review(movieId, userId, " ", " ",rating, reviewText);
-                myDatabase.child(movieId + " " + userId + "review").setValue(review1);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        ReviewFormActivity.this);
 
+                // set title
+                alertDialogBuilder.setTitle("Submit Review");
+
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage("Are you sure you want to submit this review?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, close
+                                // current activity
+                                reviewText = review.getText().toString();
+                                String name = WelcomeActivity.facebookName;
+                                String userId = WelcomeActivity.userId1;
+                                Review review1 = new Review(movieId, userId, " ", " ",rating, reviewText);
+                                myDatabase.child(movieId + " " + userId + "review").setValue(review1);
+                                Intent i = new Intent(ReviewFormActivity.this,MovieDetailsActivity.class);
+                                Bundle extras = new Bundle();
+                                extras.putString("user_id", userId);
+                                extras.putString("JSON_Data", movieId);
+                                i.putExtras(extras);
+                                startActivity(i);
+                            }
+                        })
+                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        ReviewFormActivity.this);
+
+                // set title
+                alertDialogBuilder.setTitle("Cancel Review");
+
+                // set dialog message
+                alertDialogBuilder
+                        .setMessage("Are you sure you want to cancel your review?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, close
+                                // current activity
+                                Intent i = new Intent(ReviewFormActivity.this, MovieDetailsActivity.class);
+                                Bundle extras = new Bundle();
+                                extras.putString("user_id", userId);
+                                extras.putString("JSON_Data", movieId);
+                                i.putExtras(extras);
+                                startActivity(i);
+                            }
+                        })
+                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                            }
+                        });
+                // create alert dialog
+                AlertDialog alertDialog = alertDialogBuilder.create();
+
+                // show it
+                alertDialog.show();
             }
         });
 
