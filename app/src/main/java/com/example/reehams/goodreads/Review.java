@@ -5,7 +5,7 @@ package com.example.reehams.goodreads;
  */
 
 public class Review {
-
+//For firebase reviews
     String id;
     String name;
     String personId;
