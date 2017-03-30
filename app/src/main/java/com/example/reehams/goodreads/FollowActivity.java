@@ -55,7 +55,7 @@ public class FollowActivity extends AppCompatActivity {
         image.setPresetSize(ProfilePictureView.NORMAL);
         image.setProfileId(imageUsed);
 
-        myDatabase.addValueEventListener(new ValueEventListener() {
+        myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new HashSet<String>();
@@ -86,7 +86,8 @@ public class FollowActivity extends AppCompatActivity {
     protected void followThisUser(View view) {
         userName = (TextView) findViewById(R.id.userName2);
         final String personId = getIntent().getStringExtra("id");
-        myDatabase.addValueEventListener(new ValueEventListener() {
+
+        myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
            @Override
            public void onDataChange(DataSnapshot dataSnapshot) {
                Set<String> set = new HashSet<String>();
@@ -114,11 +115,11 @@ public class FollowActivity extends AppCompatActivity {
                                    // if this button is clicked, close
                                    // current activity
                                    myDatabase.child(userId1 + " " + getIntent().getStringExtra("id")).removeValue();
-                                   Intent i = new Intent(FollowActivity.this,FollowingListActivity.class);
-                                   Bundle extras = new Bundle();
+                                  Intent i = new Intent(FollowActivity.this,FollowingListActivity.class);
+                                  Bundle extras = new Bundle();
                                    extras.putString("user_id", userId1);
-                                   extras.putString("person_id", getIntent().getStringExtra("id"));
-                                   i.putExtras(extras);
+                                  extras.putString("person_id", getIntent().getStringExtra("id"));
+                                  i.putExtras(extras);
                                    startActivity(i);
                                }
                            })
