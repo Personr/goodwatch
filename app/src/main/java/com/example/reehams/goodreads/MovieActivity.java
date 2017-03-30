@@ -19,7 +19,7 @@ import org.json.JSONObject;
  * Created by rahulkooverjee on 2/20/17.
  */
 
-public class MovieActivity extends AppCompatActivity {
+public class MovieActivity extends SideBar {
 
     EditText editText; // the input textbox
     String[] searchResults = new String[5]; // Options to be shown in list view
@@ -30,6 +30,7 @@ public class MovieActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_activity);
+        super.onCreateDrawer();
         editText = (EditText) findViewById(R.id.editText);
         userId = getIntent().getStringExtra("user_id");
     }

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class ReviewFormActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSelectedListener {
 
 
     private String[] ratingSpinner;
@@ -36,6 +36,7 @@ public class ReviewFormActivity extends AppCompatActivity implements AdapterView
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_form);
+        super.onCreateDrawer();
         myDatabase = FirebaseDatabase.getInstance().getReference();
         reviewHeader = (TextView) findViewById(R.id.reviewheader);
         movieName = getIntent().getStringExtra("movie_name");

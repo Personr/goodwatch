@@ -21,7 +21,7 @@ import java.util.Set;
  * Created by reehams on 3/29/17.
  */
 
-public class FollowersofUser extends AppCompatActivity {
+public class FollowersofUser extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
     private ArrayList<String> whouserIsFollowing = new ArrayList<>();
@@ -34,6 +34,7 @@ public class FollowersofUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.followersofuser);
+        super.onCreateDrawer();
         mListView = (ListView) findViewById(R.id.FollowersofUserList);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whouserIsFollowing);
         mListView.setAdapter(arrayAdapter2);

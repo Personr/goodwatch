@@ -34,7 +34,7 @@ import static com.example.reehams.goodreads.WelcomeActivity.userId1;
  * Created by reehams on 3/27/17.
  */
 
-public class FollowingListActivity extends AppCompatActivity {
+public class FollowingListActivity extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
     private ArrayList<String> whoIAmFollowing = new ArrayList<>();
@@ -47,6 +47,7 @@ public class FollowingListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.following_list);
+        super.onCreateDrawer();
         mListView = (ListView) findViewById(R.id.followingListView);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whoIAmFollowing);
         mListView.setAdapter(arrayAdapter2);

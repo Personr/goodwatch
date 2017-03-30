@@ -30,7 +30,7 @@ import static com.example.reehams.goodreads.WelcomeActivity.userId1;
  * Created by rahulkooverjee on 3/9/17.
  */
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends SideBar {
 
     String userId;
     String movieId;
@@ -45,6 +45,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_details_activity);
+        super.onCreateDrawer();
         myDatabase = FirebaseDatabase.getInstance().getReference();
         // Variables to save movie data
         String name = "n/a";

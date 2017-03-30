@@ -26,7 +26,7 @@ import java.util.Set;
 import static com.example.reehams.goodreads.WelcomeActivity.facebookName;
 import static com.example.reehams.goodreads.WelcomeActivity.userId1;
 
-public class WatchlistActivity extends AppCompatActivity {
+public class WatchlistActivity extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
     String[] searchResults; // Options to be shown in list view
@@ -37,6 +37,7 @@ public class WatchlistActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watchlist);
+        super.onCreateDrawer();
         mListView = (ListView) findViewById(R.id.watchlistView);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myMovies);
         mListView.setAdapter(arrayAdapter);

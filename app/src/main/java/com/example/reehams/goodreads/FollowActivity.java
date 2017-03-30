@@ -27,7 +27,7 @@ import static com.example.reehams.goodreads.WelcomeActivity.userId1;
  * Created by reehams on 3/26/17.
  */
 
-public class FollowActivity extends AppCompatActivity {
+public class FollowActivity extends SideBar {
     TextView email;
     TextView userName;
     Button followButton;
@@ -37,6 +37,8 @@ public class FollowActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.follow_activity);
+        super.onCreateDrawer();
         FacebookSdk.sdkInitialize(getApplicationContext());
         String imageUsed = getIntent().getStringExtra("id");
         if(imageUsed.equals(WelcomeActivity.userId1)) {
@@ -44,7 +46,6 @@ public class FollowActivity extends AppCompatActivity {
             startActivity(i);
         }
         myDatabase = FirebaseDatabase.getInstance().getReference();
-        setContentView(R.layout.follow_activity);
         String userName2 = getIntent().getStringExtra("name");
         String userEmail = getIntent().getStringExtra("email");
         email = (TextView) findViewById(R.id.email2);

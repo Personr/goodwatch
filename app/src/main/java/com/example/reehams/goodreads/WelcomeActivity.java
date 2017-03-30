@@ -56,7 +56,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
         if (isLoggedIn()) {
-            Intent i = new Intent(WelcomeActivity.this, SideBar.class);
+            Intent i = new Intent(WelcomeActivity.this, HomeActivity.class);
             Intent i2 = new Intent(WelcomeActivity.this, FollowActivity.class);
             AccessToken accessToken = AccessToken.getCurrentAccessToken();
             userId1 = accessToken.getUserId();

@@ -1,17 +1,16 @@
 package com.example.reehams.goodreads;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
+/**
+ * Created by rahulkooverjee on 3/30/17.
+ */
 
-public class AboutUs extends SideBar {
-
+public class HomeActivity extends SideBar {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about_us);
+        setContentView(R.layout.home_activity_layout);
         super.onCreateDrawer();
     }
 }

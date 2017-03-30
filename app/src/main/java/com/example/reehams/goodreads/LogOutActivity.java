@@ -17,7 +17,7 @@ import com.facebook.login.LoginManager;
  * Created by reehams on 2/20/17.
  */
 
-public class LogOutActivity extends AppCompatActivity {
+public class LogOutActivity extends SideBar {
     private CallbackManager callbackManager;
     final Context context = this;
 
@@ -26,6 +26,7 @@ public class LogOutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.logout_activity);
+        super.onCreateDrawer();
         callbackManager = CallbackManager.Factory.create();
     }
 

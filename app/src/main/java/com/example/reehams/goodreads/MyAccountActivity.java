@@ -21,7 +21,7 @@ import com.facebook.login.widget.ProfilePictureView;
  * Created by reehams on 2/17/17.
  */
 
-public class MyAccountActivity extends AppCompatActivity {
+public class MyAccountActivity extends SideBar {
     TextView email;
     TextView gender;
     TextView userName;
@@ -32,6 +32,7 @@ public class MyAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.my_account);
+        super.onCreateDrawer();
         email = (TextView) findViewById(R.id.email);
         email.setText("Email:" + " " + WelcomeActivity.email);
         gender = (TextView) findViewById(R.id.gender);

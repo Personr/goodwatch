@@ -23,7 +23,7 @@ import static com.example.reehams.goodreads.WelcomeActivity.userId1;
  * Created by reehams on 3/29/17.
  */
 
-public class WhoIsFollowingUser extends AppCompatActivity {
+public class WhoIsFollowingUser extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
     private ArrayList<String> whouserIsFollowing = new ArrayList<>();
@@ -36,6 +36,7 @@ public class WhoIsFollowingUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.whoisfollowinguser);
+        super.onCreateDrawer();
         mListView = (ListView) findViewById(R.id.whoisfollowinguserList);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whouserIsFollowing);
         mListView.setAdapter(arrayAdapter2);

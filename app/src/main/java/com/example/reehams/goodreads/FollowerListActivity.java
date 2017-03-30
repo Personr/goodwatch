@@ -21,7 +21,7 @@ import static com.example.reehams.goodreads.WelcomeActivity.userId1;
  * Created by reehams on 3/27/17.
  */
 
-public class FollowerListActivity extends AppCompatActivity {
+public class FollowerListActivity extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
     private ArrayList<String> myFollowers = new ArrayList<>();
@@ -30,6 +30,7 @@ public class FollowerListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.follower_list);
+        super.onCreateDrawer();
         mListView = (ListView) findViewById(R.id.followerListView);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myFollowers);
         mListView.setAdapter(arrayAdapter2);

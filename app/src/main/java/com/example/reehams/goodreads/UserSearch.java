@@ -28,7 +28,7 @@ import static com.example.reehams.goodreads.WelcomeActivity.userId1;
  * Created by rahulkooverjee on 3/26/17.
  */
 
-public class UserSearch extends AppCompatActivity {
+public class UserSearch extends SideBar {
 
     EditText editText; // the input textbox
     ListView listView;
@@ -44,6 +44,7 @@ public class UserSearch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_search);
+        super.onCreateDrawer();
         listView = (ListView) findViewById(R.id.user_search_list);
         editText = (EditText) findViewById(R.id.editText);
     }
