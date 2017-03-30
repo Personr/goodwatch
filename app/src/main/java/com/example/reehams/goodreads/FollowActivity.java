@@ -39,7 +39,7 @@ public class FollowActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         String imageUsed = getIntent().getStringExtra("id");
-        if(imageUsed == WelcomeActivity.userId1) {
+        if(imageUsed.equals(WelcomeActivity.userId1)) {
             Intent i = new Intent(FollowActivity.this, MyAccountActivity.class);
             startActivity(i);
         }
