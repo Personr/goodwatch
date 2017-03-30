@@ -33,6 +33,9 @@ public class FollowingListActivity extends AppCompatActivity {
     DatabaseReference reference;
     private ListView mListView;
     private ArrayList<String> whoIAmFollowing = new ArrayList<>();
+    String[] searchResults; // Options to be shown in list view
+    String userId;
+    String personId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +44,15 @@ public class FollowingListActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.followingListView);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whoIAmFollowing);
         mListView.setAdapter(arrayAdapter2);
+        userId = getIntent().getStringExtra("user_id");
         reference = FirebaseDatabase.getInstance().getReference();
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new HashSet<String>();
-                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     //set.add(childSnapshot.getKey());
-                    if(childSnapshot.child("id").getValue(String.class).equals(userId1)) {
+                    if (childSnapshot.child("id").getValue(String.class).equals(userId1)) {
                         if (!childSnapshot.child("personName").getValue(String.class).equals(" ")) {
                             set.add(childSnapshot.child("personName").getValue(String.class));
                         }
@@ -58,7 +62,6 @@ public class FollowingListActivity extends AppCompatActivity {
                 whoIAmFollowing.addAll(set);
                 arrayAdapter2.notifyDataSetChanged();
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
