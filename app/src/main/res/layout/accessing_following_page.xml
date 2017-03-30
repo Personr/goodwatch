@@ -11,7 +11,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.reehams.goodreads.MyAccountActivity">
     <com.facebook.login.widget.ProfilePictureView
-        android:id="@+id/image2"
+        android:id="@+id/image3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"/>
@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/textView2" />
+        android:id="@+id/textView3" />
 
     <TextView
         android:text="User's email: "
@@ -32,7 +32,7 @@
         android:layout_marginLeft="21dp"
         android:layout_marginStart="21dp"
         android:layout_marginTop="117dp"
-        android:id="@+id/email2" />
+        android:id="@+id/email3" />
 
     <TextView
         android:text="User's Name: "
@@ -42,7 +42,7 @@
         android:layout_alignLeft="@+id/email2"
         android:layout_alignStart="@+id/email2"
         android:layout_marginTop="11dp"
-        android:id="@+id/userName2" />
+        android:id="@+id/userName3" />
 
 
 
@@ -54,7 +54,7 @@
         android:layout_centerVertical="true"
         android:layout_alignLeft="@+id/userName2"
         android:layout_alignStart="@+id/userName2"
-        android:onClick="followersOfTheUser"/>
+        android:onClick="followersOfTheUser2"/>
 
     <Button
         android:text="Following"
@@ -65,7 +65,7 @@
         android:layout_alignRight="@+id/button8"
         android:layout_alignEnd="@+id/button8"
         android:layout_marginTop="24dp"
-        android:onClick="followingOfTheUser"/>
+        android:onClick="followingOfTheUser2"/>
 
     <Button
         android:text="+Follow"
@@ -78,7 +78,7 @@
         android:layout_marginStart="35dp"
         android:layout_marginTop="24dp"
         android:id="@+id/followbotton"
-        android:onClick="followThisUser"/>
+        android:onClick="followThisUser2"/>
 
 
 </RelativeLayout>

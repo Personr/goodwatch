@@ -1,43 +1,32 @@
 package com.example.reehams.goodreads;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.appindexing.Thing;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.example.reehams.goodreads.WelcomeActivity.facebookName;
 import static com.example.reehams.goodreads.WelcomeActivity.userId1;
 
 /**
- * Created by reehams on 3/27/17.
+ * Created by reehams on 3/29/17.
  */
 
-public class FollowingListActivity extends AppCompatActivity {
+public class WhoIsFollowingUser extends AppCompatActivity {
     DatabaseReference reference;
     private ListView mListView;
-    private ArrayList<String> whoIAmFollowing = new ArrayList<>();
+    private ArrayList<String> whouserIsFollowing = new ArrayList<>();
     String[] searchResults; // Options to be shown in list view
     String userId;
 
@@ -46,11 +35,11 @@ public class FollowingListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.following_list);
-        mListView = (ListView) findViewById(R.id.followingListView);
-        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whoIAmFollowing);
+        setContentView(R.layout.whoisfollowinguser);
+        mListView = (ListView) findViewById(R.id.whoisfollowinguserList);
+        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whouserIsFollowing);
         mListView.setAdapter(arrayAdapter2);
-        userId = getIntent().getStringExtra("user_id");
+        userId = getIntent().getStringExtra("idOfCurrentPage");
         reference = FirebaseDatabase.getInstance().getReference();
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -58,14 +47,14 @@ public class FollowingListActivity extends AppCompatActivity {
                 Set<String> set = new HashSet<String>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     //set.add(childSnapshot.getKey());
-                    if (childSnapshot.child("id").getValue(String.class).equals(userId1)) {
+                    if (childSnapshot.child("id").getValue(String.class).equals(userId)) {
                         if (!childSnapshot.child("personName").getValue(String.class).equals(" ")) {
                             set.add(childSnapshot.child("personName").getValue(String.class));
                         }
                     }
                 }
-                whoIAmFollowing.clear();
-                whoIAmFollowing.addAll(set);
+                whouserIsFollowing.clear();
+                whouserIsFollowing.addAll(set);
                 arrayAdapter2.notifyDataSetChanged();
             }
 
