@@ -40,15 +40,15 @@ public class FollowersofUser extends SideBar {
         mListView.setAdapter(arrayAdapter2);
         userId = getIntent().getStringExtra("idOfCurrentPage");
         reference = FirebaseDatabase.getInstance().getReference();
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(userId).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new HashSet<String>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    //set.add(childSnapshot.getKey());
-                    if (childSnapshot.child("personId").getValue(String.class).equals(userId)) {
-                            set.add(childSnapshot.child("name").getValue(String.class));
-                        }
+                    String following = childSnapshot.getValue(String.class);
+                    int idx = following.indexOf(",");
+                    following = following.substring(idx + 1, following.length());
+                    set.add(following);
                 }
                 whouserIsFollowing.clear();
                 whouserIsFollowing.addAll(set);

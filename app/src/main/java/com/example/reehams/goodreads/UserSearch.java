@@ -75,6 +75,7 @@ public class UserSearch extends SideBar {
                     String userName = childSnapshot.child("name").getValue(String.class);
                     if (userName != null && userName.toLowerCase().contains(searchQuery.toLowerCase())) {
                         String id = childSnapshot.child("id").getValue(String.class);
+                        String email = childSnapshot.child("email").getValue(String.class);
                         User user = new User(userName, email, id);
                         list.add(user);
                         UserSearch.searchResultsIds[i] = childSnapshot.child("id").getValue(String.class);
@@ -114,6 +115,10 @@ public class UserSearch extends SideBar {
                 i.putExtra("name", name);
                 i.putExtra("email", email);
                 i.putExtra("id", id2);
+                i.putExtra("userId1", userId1);
+                i.putExtra("userName1", WelcomeActivity.facebookName);
+
+
                 startActivity(i);
                 // Do nothing if there is no result
                 if (results.get(position) == null) {

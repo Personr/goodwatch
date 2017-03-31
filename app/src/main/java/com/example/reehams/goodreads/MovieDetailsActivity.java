@@ -105,7 +105,7 @@ public class MovieDetailsActivity extends SideBar {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         List<String> l = (ArrayList<String>) dataSnapshot.getValue();
                         Button watchButton = (Button) findViewById(R.id.watchlist_button);
-                        if (l.contains(movieId)) {
+                        if (l.contains(movieId + "," + movieName)) {
                             watchButton.setText("Remove from Watchlist");
                         }
                         else {
@@ -142,14 +142,17 @@ public class MovieDetailsActivity extends SideBar {
                                             public void onClick(DialogInterface dialog,int id) {
                                                 // if this button is clicked, close
                                                 // current activity
-                                                l.remove(movieId);
+                                                String s = movieId + "," + movieName;
+                                                l.remove(s);
+                                                if (l.isEmpty()) {
+                                                    l.add("null");
+                                                }
                                                 myDatabase.child(userId).child("watchlist").setValue(l);
                                                 Intent i = new Intent(MovieDetailsActivity.this,WatchlistActivity.class);
                                                 Bundle extras = new Bundle();
                                                 extras.putString("user_id", userId);
                                                 extras.putString("movie_id", movieId);
                                                 i.putExtras(extras);
-                                               // startActivity(i);
                                             }
                                         })
                                         .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -174,12 +177,11 @@ public class MovieDetailsActivity extends SideBar {
                                             if (l.get(0).equals("null")) {
                                                 l.remove(0);
                                             }
-                                            if (!l.contains(movieId)) {
-                                                String s = movieId + "," + movieName;
+                                            String s = movieId + "," + movieName;
+                                            if (!l.contains(s)) {
                                                 l.add(s);
                                             }
                                             myDatabase.child(userId).child("watchlist").setValue(l);
-                                            Toast.makeText(MovieDetailsActivity.this, l.toString(), Toast.LENGTH_SHORT).show();
                                         }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {
@@ -191,7 +193,6 @@ public class MovieDetailsActivity extends SideBar {
                             extras.putString("user_id", userId);
                             extras.putString("movie_id", movieId);
                             i.putExtras(extras);
-                            // startActivity(i);
                         }
                     }
 

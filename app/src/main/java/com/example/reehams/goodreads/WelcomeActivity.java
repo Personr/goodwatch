@@ -75,10 +75,11 @@ public class WelcomeActivity extends AppCompatActivity {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
                             Log.v("Main", response.toString());
-                            setProfileToView(object);
+
                             try {
                                 WelcomeActivity.this.facebookName = object.getString("name");
                                 WelcomeActivity.this.email = object.getString("email");
+                                setProfileToView(object);
 
                                 myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -130,7 +131,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Intent i = new Intent(WelcomeActivity.this, SideBar.class);
+                Intent i = new Intent(WelcomeActivity.this, HomeActivity.class);
                 //Facebook userId(the numerical one)
                 userId1 = loginResult.getAccessToken().getUserId();
                 i.putExtra("user_id", userId1);

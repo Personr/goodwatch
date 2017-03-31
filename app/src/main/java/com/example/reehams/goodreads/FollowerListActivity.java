@@ -2,6 +2,8 @@ package com.example.reehams.goodreads;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -35,17 +37,16 @@ public class FollowerListActivity extends SideBar {
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myFollowers);
         mListView.setAdapter(arrayAdapter2);
         reference = FirebaseDatabase.getInstance().getReference();
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        String userId = getIntent().getStringExtra("user_id");
+        reference.child(userId).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new HashSet<String>();
-                for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                    //set.add(childSnapshot.getKey());
-                    if(childSnapshot.child("personId").getValue(String.class).equals(userId1)) {
-                        if (!childSnapshot.child("personName").getValue(String.class).equals(" ")) {
-                            set.add(childSnapshot.child("name").getValue(String.class));
-                        }
-                    }
+                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    String following = childSnapshot.getValue(String.class);
+                    int idx = following.indexOf(",");
+                    following = following.substring(idx + 1, following.length());
+                    set.add(following);
                 }
                 myFollowers.clear();
                 myFollowers.addAll(set);
@@ -54,6 +55,12 @@ public class FollowerListActivity extends SideBar {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
             }
         });

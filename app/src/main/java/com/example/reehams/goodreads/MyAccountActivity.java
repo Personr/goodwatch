@@ -48,12 +48,15 @@ public class MyAccountActivity extends SideBar {
         Intent i = new Intent(this,WatchlistActivity.class);
         startActivity(i);
     }
+
     protected void whoIamFollowing(View view) {
         Intent i = new Intent(this, FollowingListActivity.class);
+        i.putExtra("user_id", WelcomeActivity.userId1);
         startActivity(i);
     }
     protected void myFollowers(View view) {
         Intent i = new Intent(this, FollowerListActivity.class);
+        i.putExtra("user_id", WelcomeActivity.userId1);
         startActivity(i);
     }
 }
