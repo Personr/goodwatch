@@ -15,15 +15,20 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -37,6 +42,7 @@ public class WelcomeActivity extends AppCompatActivity {
     static String profilePicId;
     private DatabaseReference myDatabase;
     static String userId1;
+    final boolean[] isInDataBase = new boolean[1];
 
 
 
@@ -47,7 +53,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_welcome);
         btnLogin = (LoginButton)findViewById(R.id.login_button2);
-
         btnLogin.setReadPermissions(Arrays.asList("public_profile, email, user_birthday"));
         callbackManager = CallbackManager.Factory.create();
 
@@ -60,9 +65,10 @@ public class WelcomeActivity extends AppCompatActivity {
             Intent i2 = new Intent(WelcomeActivity.this, FollowActivity.class);
             AccessToken accessToken = AccessToken.getCurrentAccessToken();
             userId1 = accessToken.getUserId();
+
             i.putExtra("user_id", userId1);
             i2.putExtra("user_id", userId1);
-            startActivity(i);
+
             GraphRequest request = GraphRequest.newMeRequest(
                     accessToken,
                     new GraphRequest.GraphJSONObjectCallback() {
@@ -71,14 +77,42 @@ public class WelcomeActivity extends AppCompatActivity {
                             Log.v("Main", response.toString());
                             setProfileToView(object);
                             try {
-                                String name = object.getString("name");
-                                String email = object.getString("email");
-                                String profilePicId = object.getString("id");
-                                User user = new User(name, email, userId1, " ", " ");
-                                myDatabase.child(userId1).setValue(user);
+                                WelcomeActivity.this.facebookName = object.getString("name");
+                                WelcomeActivity.this.email = object.getString("email");
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        List<String> watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
+                                        List<String> reviews = (ArrayList<String>) dataSnapshot.child(userId1).child("reviews").getValue();
+                                        List<String> following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
+                                        List<String> followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
+                                        if (watchlist == null) {
+                                            watchlist = new ArrayList<String>();
+                                            watchlist.add("null");
+                                        }
+                                        if (reviews == null) {
+                                            reviews = new ArrayList<String>();
+                                            reviews.add("null");
+                                        }
+                                        if (following == null) {
+                                            following = new ArrayList<String>();
+                                            following.add("null");
+                                        }
+                                        if (followers == null) {
+                                            followers = new ArrayList<String>();
+                                            followers.add("null");
+                                        }
+                                        User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
+                                        myDatabase.child(userId1).setValue(user);
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+                            } catch (Exception e) {
                             }
                         }
                     });
@@ -86,7 +120,7 @@ public class WelcomeActivity extends AppCompatActivity {
             parameters.putString("fields", "id,name,email,gender, birthday");
             request.setParameters(parameters);
             request.executeAsync();
-
+            startActivity(i);
         }
 
 
@@ -108,12 +142,42 @@ public class WelcomeActivity extends AppCompatActivity {
                             public void onCompleted(JSONObject object, GraphResponse response) {
                                 Log.v("Main", response.toString());
                                 setProfileToView(object);
-                                //String userId = myDatabase.push().getKey();
                                 try {
-                                        String name = object.getString("name");
-                                        String email = object.getString("email");
-                                        User user = new User(name, email, userId1," ", " ");
-                                        myDatabase.child(userId1).setValue(user);
+                                    WelcomeActivity.this.facebookName = object.getString("name");
+                                    WelcomeActivity.this.email = object.getString("email");
+
+                                    myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            List<String> watchlist = new ArrayList<String>();
+                                            List<String> reviews = new ArrayList<String>();
+                                            List<String> following = new ArrayList<String>();
+                                            List<String> followers = new ArrayList<String>();
+
+                                            // Handle case where user is in database alread
+                                            if (dataSnapshot.hasChild(userId1)) {
+                                                watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
+                                                reviews = (ArrayList<String>) dataSnapshot.child(userId1).child("reviews").getValue();
+                                                following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
+                                                followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
+                                            }
+                                            // Handle case where user is not database alread
+                                            else {
+                                                watchlist.add("null");
+                                                reviews.add("null");
+                                                following.add("null");
+                                                followers.add("null");
+                                            }
+                                            User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
+                                            myDatabase.child(userId1).setValue(user);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -164,7 +228,25 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isLoggedIn() {
+
+    private List<String> getWatchlist(final String id) {
+        final List<String>[] lArr = new List[1];
+        myDatabase.child(id).child("watchList").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<String> l = (ArrayList<String>) dataSnapshot.getValue();
+                lArr[0]= l;
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return lArr[0];
+    }
+
+    private boolean isLoggedIn() {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }

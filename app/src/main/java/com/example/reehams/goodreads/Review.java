@@ -6,21 +6,19 @@ package com.example.reehams.goodreads;
 
 public class Review {
 //For firebase reviews
-    String id;
-    String name;
-    String personId;
-    String personName;
+    String movieId;
     String reviewText;
     String rating;
 
 
-    public Review(String id, String name, String personId, String personName, String rating, String reviewText) {
-        this.id = id;
-        this.name = name;
-        this.personId = personId;
-        this.personName = personName;
+    public Review(String movieId, String rating, String reviewText) {
+        this.movieId = movieId;
         this.reviewText = reviewText;
         this.rating = rating;
+    }
+
+    public String toString() {
+        return movieId + "," + rating + "," + reviewText;
     }
 
 }

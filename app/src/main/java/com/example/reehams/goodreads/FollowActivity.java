@@ -41,7 +41,7 @@ public class FollowActivity extends SideBar {
         super.onCreateDrawer();
         FacebookSdk.sdkInitialize(getApplicationContext());
         String imageUsed = getIntent().getStringExtra("id");
-        if(imageUsed.equals(WelcomeActivity.userId1)) {
+        if (imageUsed.equals(WelcomeActivity.userId1)) {
             Intent i = new Intent(FollowActivity.this, MyAccountActivity.class);
             startActivity(i);
         }
@@ -55,7 +55,8 @@ public class FollowActivity extends SideBar {
         image = (ProfilePictureView) findViewById(R.id.image2);
         image.setPresetSize(ProfilePictureView.NORMAL);
         image.setProfileId(imageUsed);
-
+    }
+/*
         myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -82,7 +83,7 @@ public class FollowActivity extends SideBar {
 
             }
         });
-    }
+    } */
 
     protected void followThisUser(View view) {
         userName = (TextView) findViewById(R.id.userName2);

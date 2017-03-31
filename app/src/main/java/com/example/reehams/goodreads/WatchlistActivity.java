@@ -43,35 +43,27 @@ public class WatchlistActivity extends SideBar {
         mListView.setAdapter(arrayAdapter);
         userId = getIntent().getStringExtra("user_id");
         reference = FirebaseDatabase.getInstance().getReference();
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(userId).child("watchlist").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new HashSet<String>();
                 for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                    //set.add(childSnapshot.getKey());
-                    if(childSnapshot.child("id").getValue(String.class).equals(userId1)) {
-                        if (!childSnapshot.child("name").getValue(String.class).equals(facebookName)) {
-                            set.add(childSnapshot.child("name").getValue(String.class));
-                        }
-                    }
+                    String movieTitle = childSnapshot.getValue(String.class);
+                    int idx = movieTitle.indexOf(',');
+                    movieTitle = movieTitle.substring(idx + 1, movieTitle.length());
+                    set.add(movieTitle);
                 }
                 myMovies.clear();
                 myMovies.addAll(set);
                 arrayAdapter.notifyDataSetChanged();
-
-
-
                 searchResults = new String[myMovies.size()];
-                int i = 1;
                 for (String movie : myMovies) {
                     try {
-                        //Toast.makeText(WatchlistActivity.this, "/" + movie + "/ Index: " + myMovies.indexOf(movie), Toast.LENGTH_SHORT).show();
                         String movieId = search(movie.replace(" ", "%20")).getJSONObject(0).get("id").toString();
                         searchResults[myMovies.indexOf(movie)] = movieId;
                         //Toast.makeText(WatchlistActivity.this, movie + " Index: " + myMovies.indexOf(movie), Toast.LENGTH_SHORT).show();
                         //Toast.makeText(WatchlistActivity.this, movie + "Search Results value: " + movieId, Toast.LENGTH_SHORT).show();
                         //Toast.makeText(WatchlistActivity.this, "Movies shown: " + i, Toast.LENGTH_SHORT).show();
-                        i++;
                     }
                     catch (Exception e) {
                         e.printStackTrace();

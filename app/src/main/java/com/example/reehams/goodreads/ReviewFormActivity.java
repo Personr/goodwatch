@@ -12,9 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import java.util.*;
+import com.google.firebase.database.*;
 
 public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSelectedListener {
 
@@ -70,8 +69,29 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 reviewText = review.getText().toString();
                                 String name = WelcomeActivity.facebookName;
                                 String userId = WelcomeActivity.userId1;
-                                Review review1 = new Review(movieId, userId, " ", " ",rating, reviewText);
-                                myDatabase.child(movieId + " " + userId + "review").setValue(review1);
+                                final Review review1 = new Review(movieId, rating, reviewText);
+                                // TODO THING WITH LISTS
+                                myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(
+                                        new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                // Get user value
+                                                //List l = dataSnapshot.getValue(List.class);
+
+                                                List<String> l = (ArrayList<String>) dataSnapshot.getValue();
+                                                if (l.get(0).equals("null")) {
+                                                    l.remove(0);
+                                                }
+                                                l.add(review1.toString());
+                                                myDatabase.child(ReviewFormActivity.this.userId).child("reviews").setValue(l);
+
+                                                //user.email now has your email value
+                                            }
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
                                 Intent i = new Intent(ReviewFormActivity.this,MovieDetailsActivity.class);
                                 Bundle extras = new Bundle();
                                 extras.putString("user_id", userId);
