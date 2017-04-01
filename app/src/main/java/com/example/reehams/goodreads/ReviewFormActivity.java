@@ -69,7 +69,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 reviewText = review.getText().toString();
                                 String name = WelcomeActivity.facebookName;
                                 String userId = WelcomeActivity.userId1;
-                                final Review review1 = new Review(movieId, rating, reviewText);
+                                final Review review1 = new Review(movieId, rating, reviewText, movieName);
                                 // TODO THING WITH LISTS
                                 myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(
                                         new ValueEventListener() {

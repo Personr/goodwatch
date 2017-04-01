@@ -163,7 +163,6 @@ public class FollowActivity extends SideBar {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if (childSnapshot.getValue(String.class).equals(userId1 + "," + userName1)) {
                         isFollowing = true;
-
                     }
                 }
                 final List<String> l = (ArrayList<String>) dataSnapshot.getValue();

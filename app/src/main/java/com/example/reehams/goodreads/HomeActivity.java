@@ -21,18 +21,19 @@ public class HomeActivity extends SideBar {
         super.onCreateDrawer();
         final String userId = getIntent().getStringExtra("user_id");
         final DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
-        myDatabase.child(userId).child("email").setValue("hi");
-        /**
-        myDatabase.child(userId).child("followingIds").addListenerForSingleValueEvent(
+
+        myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         // Get user value
                        //List l = dataSnapshot.getValue(List.class);
                         List<String> l = (ArrayList<String>) dataSnapshot.getValue();
-                        l.remove(0);
-                        l.add("yo");
-                        myDatabase.child(userId).child("followingIds").setValue(l);
+                        for (String s : l) {
+                            // TODO NEED TO PARSE THE STRING TO GET THE TITLE, RATING AND TEXT
+                            Toast.makeText(HomeActivity.this, s, Toast.LENGTH_SHORT).show();
+                        }
+                       // myDatabase.child(userId).child("followingIds").setValue(l);
 
                         //user.email now has your email value
                     }
@@ -40,6 +41,6 @@ public class HomeActivity extends SideBar {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                }); */
+                });
     }
 }
