@@ -191,24 +191,5 @@ public class FollowActivity extends SideBar {
 
             }
         });
-        // TODO PROBABLY NEED TO NOT DO THIS
-        Intent i = new Intent(FollowActivity.this,FollowingListActivity.class);
-        Bundle extras = new Bundle();
-        extras.putString("user_id", userId1);
-        extras.putString("person_id", getIntent().getStringExtra("id"));
-        i.putExtras(extras);
-       // startActivity(i);
-
-    }
-
-    protected void followingOfTheUser(View view) {
-        Intent i = new Intent(FollowActivity.this, WhoIsFollowingUser.class);
-        i.putExtra("idOfCurrentPage",getIntent().getStringExtra("id"));
-        startActivity(i);
-    }
-    protected void followersOfTheUser(View view) {
-        Intent i = new Intent(FollowActivity.this, FollowersofUser.class);
-        i.putExtra("idOfCurrentPage",getIntent().getStringExtra("id"));
-        startActivity(i);
     }
 }
