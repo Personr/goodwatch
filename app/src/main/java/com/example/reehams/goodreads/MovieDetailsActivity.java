@@ -127,7 +127,7 @@ public class MovieDetailsActivity extends SideBar {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         final List<String> l = (ArrayList<String>) dataSnapshot.getValue();
                         Button watchButton = (Button) findViewById(R.id.watchlist_button);
-                        if (l.contains(movieId)) {
+                        if (l.contains(movieId + "," + movieName)) {
                                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                                         MovieDetailsActivity.this);
 
