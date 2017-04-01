@@ -13,7 +13,7 @@ public class User {
     public List<String> watchlist;
     public List<String> followingIds;
     public List<String> followerIds;
-    public List<String> reviews;
+    public List<Review> reviews;
 
 
 
@@ -36,7 +36,7 @@ public class User {
     }
 
 
-    public User(String name, String email,  String id, List<String> watchlist, List<String> reviews,
+    public User(String name, String email,  String id, List<String> watchlist, List<Review> reviews,
                 List<String> followingIds , List<String> followerIds) {
         this.email = email;
         this.name = name;

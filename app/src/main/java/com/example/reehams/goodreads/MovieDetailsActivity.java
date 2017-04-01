@@ -47,6 +47,7 @@ public class MovieDetailsActivity extends SideBar {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_details_activity);
         super.onCreateDrawer();
+        userId = getIntent().getStringExtra("user_id");
         myDatabase = FirebaseDatabase.getInstance().getReference();
         // Variables to save movie data
         String name = "n/a";
@@ -62,7 +63,6 @@ public class MovieDetailsActivity extends SideBar {
             // Get movie ID from intent
             String id = getIntent().getStringExtra("JSON_Data");
             movieId = id;
-            userId = getIntent().getStringExtra("user_id");
             // Get movie details in JSON object
             String[] queryArr = new String[1];
             queryArr[0] = "http://www.omdbapi.com/?i=" + id;
@@ -147,12 +147,10 @@ public class MovieDetailsActivity extends SideBar {
                                                 if (l.isEmpty()) {
                                                     l.add("null");
                                                 }
+                                                Button watchButton = (Button) findViewById(R.id.watchlist_button);
+                                                watchButton.setText("Add to Watchlist");
                                                 myDatabase.child(userId).child("watchlist").setValue(l);
-                                                Intent i = new Intent(MovieDetailsActivity.this,WatchlistActivity.class);
-                                                Bundle extras = new Bundle();
-                                                extras.putString("user_id", userId);
-                                                extras.putString("movie_id", movieId);
-                                                i.putExtras(extras);
+
                                             }
                                         })
                                         .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -169,38 +167,22 @@ public class MovieDetailsActivity extends SideBar {
                                 alertDialog.show();
                         }
                         else {
-                            myDatabase.child(userId).child("watchlist").addListenerForSingleValueEvent(
-                                    new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            List<String> l = (ArrayList<String>) dataSnapshot.getValue();
-                                            if (l.get(0).equals("null")) {
-                                                l.remove(0);
-                                            }
-                                            String s = movieId + "," + movieName;
-                                            if (!l.contains(s)) {
-                                                l.add(s);
-                                            }
-                                            myDatabase.child(userId).child("watchlist").setValue(l);
-                                        }
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-                            Intent i = new Intent(MovieDetailsActivity.this,WatchlistActivity.class);
-                            Bundle extras = new Bundle();
-                            extras.putString("user_id", userId);
-                            extras.putString("movie_id", movieId);
-                            i.putExtras(extras);
+                            if (l.get(0).equals("null")) {
+                                l.remove(0);
+                            }
+                            String s = movieId + "," + movieName;
+                            if (!l.contains(s)) {
+                                l.add(s);
+                            }
+                            watchButton.setText("Remove from Watchlist");
+                            myDatabase.child(userId).child("watchlist").setValue(l);
                         }
-                    }
-
+                     }
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
+
                     }
                 });
-
     }
 
 

@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.*;
 import com.google.firebase.database.*;
 
@@ -76,16 +78,12 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                             @Override
                                             public void onDataChange(DataSnapshot dataSnapshot) {
                                                 // Get user value
-                                                //List l = dataSnapshot.getValue(List.class);
-
-                                                List<String> l = (ArrayList<String>) dataSnapshot.getValue();
-                                                if (l.get(0).equals("null")) {
+                                                List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+                                                if (l.get(0).get("movieId").equals("null")) {
                                                     l.remove(0);
                                                 }
-                                                l.add(review1.toString());
+                                               l.add(review1.getMapping());
                                                 myDatabase.child(ReviewFormActivity.this.userId).child("reviews").setValue(l);
-
-                                                //user.email now has your email value
                                             }
                                             @Override
                                             public void onCancelled(DatabaseError databaseError) {
@@ -156,7 +154,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
         });
 
 
-        this.ratingSpinner = new String[] {"0.0", "0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0"};
+        this.ratingSpinner = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -171,37 +169,37 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
         // parent.getItemAtPosition(pos)
         switch(pos) {
             case 0:
-                rating = "0.0";
+                rating = "0";
                 break;
             case 1:
-                rating = "0.5";
+                rating = "1";
                 break;
             case 2:
-                rating = "1.0";
+                rating = "2";
                 break;
             case 3:
-                rating = "1.5";
+                rating = "3";
                 break;
             case 4:
-                rating = "2.0";
+                rating = "4";
                 break;
             case 5:
-                rating = "2.5";
+                rating = "5";
                 break;
             case 6:
-                rating = "3.0";
+                rating = "6";
                 break;
             case 7:
-                rating = "3.5";
+                rating = "7";
                 break;
             case 8:
-                rating = "4.0";
+                rating = "8";
                 break;
             case 9:
-                rating = "4.5";
+                rating = "9";
                 break;
             case 10:
-                rating = "5.0";
+                rating = "10";
                 break;
         }
     }

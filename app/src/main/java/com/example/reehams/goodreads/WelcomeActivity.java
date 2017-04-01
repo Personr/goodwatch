@@ -85,7 +85,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                     @Override
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         List<String> watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
-                                        List<String> reviews = (ArrayList<String>) dataSnapshot.child(userId1).child("reviews").getValue();
+                                        List<Review> reviews = (ArrayList<Review>) dataSnapshot.child(userId1).child("reviews").getValue();
                                         List<String> following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
                                         List<String> followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
                                         if (watchlist == null) {
@@ -93,8 +93,10 @@ public class WelcomeActivity extends AppCompatActivity {
                                             watchlist.add("null");
                                         }
                                         if (reviews == null) {
-                                            reviews = new ArrayList<String>();
-                                            reviews.add("null");
+                                            reviews = new ArrayList<Review>();
+                                           // reviews.add("null");
+                                            reviews.add(new Review(("null")));
+
                                         }
                                         if (following == null) {
                                             following = new ArrayList<String>();
@@ -135,7 +137,6 @@ public class WelcomeActivity extends AppCompatActivity {
                 //Facebook userId(the numerical one)
                 userId1 = loginResult.getAccessToken().getUserId();
                 i.putExtra("user_id", userId1);
-                startActivity(i);
                 GraphRequest request = GraphRequest.newMeRequest(
                         loginResult.getAccessToken(),
                         new GraphRequest.GraphJSONObjectCallback() {
@@ -150,23 +151,26 @@ public class WelcomeActivity extends AppCompatActivity {
                                     myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            List<String> watchlist = new ArrayList<String>();
-                                            List<String> reviews = new ArrayList<String>();
-                                            List<String> following = new ArrayList<String>();
-                                            List<String> followers = new ArrayList<String>();
-
-                                            // Handle case where user is in database alread
-                                            if (dataSnapshot.hasChild(userId1)) {
-                                                watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
-                                                reviews = (ArrayList<String>) dataSnapshot.child(userId1).child("reviews").getValue();
-                                                following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
-                                                followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
-                                            }
-                                            // Handle case where user is not database alread
-                                            else {
+                                            List<String> watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
+                                            List<Review> reviews = (ArrayList<Review>) dataSnapshot.child(userId1).child("reviews").getValue();
+                                            List<String> following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
+                                            List<String> followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
+                                            if (watchlist == null) {
+                                                watchlist = new ArrayList<String>();
                                                 watchlist.add("null");
-                                                reviews.add("null");
+                                            }
+                                            if (reviews == null) {
+                                                reviews = new ArrayList<Review>();
+                                                // reviews.add("null");
+                                                reviews.add(new Review(("null")));
+
+                                            }
+                                            if (following == null) {
+                                                following = new ArrayList<String>();
                                                 following.add("null");
+                                            }
+                                            if (followers == null) {
+                                                followers = new ArrayList<String>();
                                                 followers.add("null");
                                             }
                                             User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
@@ -189,6 +193,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 parameters.putString("fields", "id,name,email,gender, birthday");
                 request.setParameters(parameters);
                 request.executeAsync();
+                startActivity(i);
+
             }
 
             @Override

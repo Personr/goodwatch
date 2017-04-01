@@ -28,7 +28,7 @@
             android:layout_alignEnd="@+id/textView9" />
 
         <TextView
-            android:text="Rate this movie out of 5!"
+            android:text="Rate this movie out of 10!"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView9"

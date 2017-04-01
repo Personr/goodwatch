@@ -46,9 +46,15 @@ public class WatchlistActivity extends SideBar {
         reference.child(userId).child("watchlist").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean isEmpty = false;
                 Set<String> set = new HashSet<String>();
                 for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
                     String movieTitle = childSnapshot.getValue(String.class);
+                    if (movieTitle.equals("null")) {
+                        set.add("Watchlist Empty");
+                        isEmpty = true;
+                        break;
+                    }
                     int idx = movieTitle.indexOf(',');
                     movieTitle = movieTitle.substring(idx + 1, movieTitle.length());
                     set.add(movieTitle);
@@ -56,17 +62,23 @@ public class WatchlistActivity extends SideBar {
                 myMovies.clear();
                 myMovies.addAll(set);
                 arrayAdapter.notifyDataSetChanged();
-                searchResults = new String[myMovies.size()];
-                for (String movie : myMovies) {
-                    try {
-                        String movieId = search(movie.replace(" ", "%20")).getJSONObject(0).get("id").toString();
-                        searchResults[myMovies.indexOf(movie)] = movieId;
-                        //Toast.makeText(WatchlistActivity.this, movie + " Index: " + myMovies.indexOf(movie), Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(WatchlistActivity.this, movie + "Search Results value: " + movieId, Toast.LENGTH_SHORT).show();
-                        //Toast.makeText(WatchlistActivity.this, "Movies shown: " + i, Toast.LENGTH_SHORT).show();
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
+                if (isEmpty) {
+                    searchResults = new String[1];
+                    searchResults[0] = "empty";
+                }
+                else {
+                    searchResults = new String[myMovies.size()];
+                    for (String movie : myMovies) {
+                        try {
+                            String movieId = search(movie.replace(" ", "%20")).getJSONObject(0).get("id").toString();
+                            searchResults[myMovies.indexOf(movie)] = movieId;
+                            //Toast.makeText(WatchlistActivity.this, movie + " Index: " + myMovies.indexOf(movie), Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(WatchlistActivity.this, movie + "Search Results value: " + movieId, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(WatchlistActivity.this, "Movies shown: " + i, Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
                     }
                 }
 
@@ -84,6 +96,9 @@ public class WatchlistActivity extends SideBar {
                 // Do nothing if there is no result
                 if (searchResults[position] == null) {
                     Toast.makeText(WatchlistActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (searchResults[position].equals("empty")) {
                     return;
                 }
                 if (searchResults[position].equals("") || searchResults[position].equals("No Results Found")) {

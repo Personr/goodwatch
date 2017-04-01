@@ -44,6 +44,10 @@ public class FollowerListActivity extends SideBar {
                 Set<String> set = new HashSet<String>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String following = childSnapshot.getValue(String.class);
+                    if (following.equals("null")) {
+                        set.add("No followers");
+                        break;
+                    }
                     int idx = following.indexOf(",");
                     following = following.substring(idx + 1, following.length());
                     set.add(following);
