@@ -112,7 +112,6 @@ public class HomeActivity extends SideBar {
                                 //List l = dataSnapshot.getValue(List.class);
                                 List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
                                 for (HashMap<String, String> s : l) {
-                                    // TODO NEED TO PARSE THE STRING TO GET THE TITLE, RATING AND TEXT
                                     String movieId = s.get("movieId");
                                     if (movieId.equals("null")) continue;
                                     String movieTitle = s.get("movieTitle");

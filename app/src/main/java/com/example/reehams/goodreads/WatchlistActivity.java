@@ -41,6 +41,9 @@ public class WatchlistActivity extends SideBar {
         mListView = (ListView) findViewById(R.id.watchlistView);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myMovies);
         mListView.setAdapter(arrayAdapter);
+        myMovies.clear();
+        myMovies.add("Loading...");
+        arrayAdapter.notifyDataSetChanged();
         userId = WelcomeActivity.userId1;
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userId).child("watchlist").addListenerForSingleValueEvent(new ValueEventListener() {
