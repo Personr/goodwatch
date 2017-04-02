@@ -20,7 +20,7 @@ public class Review implements Comparable<Review> {
     public Review(String s) {
         this.movieId = s;
         this.reviewText = s;
-        this.rating = s;
+        this.rating = "0";
         this.movieTitle = s;
         this.time = System.currentTimeMillis() + "";
     }

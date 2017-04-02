@@ -24,6 +24,7 @@ public class HomeActivity extends SideBar {
     static boolean firstTime = true;
     static boolean followersDone = false;
     static boolean userDone = false;
+    final String userId = WelcomeActivity.userId1;
 
 
     final Set<Review> set = new TreeSet<Review>();
@@ -35,12 +36,17 @@ public class HomeActivity extends SideBar {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity_layout);
         super.onCreateDrawer();
+        myReviewList = (ListView) findViewById(R.id.yourReviewList);
+        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);
+        myReviewList.setAdapter(arrayAdapter2);
+        myReviews.clear();
+        myReviews.add("Loading...");
+        arrayAdapter2.notifyDataSetChanged();
         if (firstTime) {
-            helper(1700);
             firstTime = false;
+            waitForFirebase();
         } else {
-            helper(0);
-// todo stuff here
+            waitForFirebase();
         }
 
     }
@@ -51,9 +57,6 @@ public class HomeActivity extends SideBar {
         myReviewList = (ListView) findViewById(R.id.yourReviewList);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);
         myReviewList.setAdapter(arrayAdapter2);
-        myReviews.clear();
-        myReviews.add("Loading...");
-        arrayAdapter2.notifyDataSetChanged();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -79,6 +82,9 @@ public class HomeActivity extends SideBar {
                                                         String movieTitle = s.get("movieTitle");
                                                         String rating = s.get("rating");
                                                         String reviewText = s.get("reviewText");
+                                                        if (reviewText.length() > 175) {
+                                                            reviewText = reviewText.substring(0, 175) + "...";
+                                                        }
                                                         String time = s.get("time");
                                                         Review r = new Review(movieId, rating, reviewText, movieTitle, time);
                                                         set.add(r);
@@ -112,6 +118,9 @@ public class HomeActivity extends SideBar {
                                     String movieTitle = s.get("movieTitle");
                                     String rating = s.get("rating");
                                     String reviewText = s.get("reviewText");
+                                    if (reviewText.length() > 175) {
+                                        reviewText = reviewText.substring(0, 175) + "...";
+                                    }
                                     String time = s.get("time");
                                     Review r = new Review(movieId, rating, reviewText, movieTitle, time);
                                     set.add(r);
@@ -136,9 +145,14 @@ public class HomeActivity extends SideBar {
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);
         myReviewList.setAdapter(arrayAdapter2);
         myReviews.clear();
-        for (Review rev : set) {
-            String displayText = rev.movieTitle + "\n" + rev.getStars() + "\n\"" + rev.reviewText + "\"";
-            myReviews.add(displayText);
+        if (set.isEmpty()) {
+            myReviews.add("No reviews yet");
+        }
+        else {
+            for (Review rev : set) {
+                String displayText = rev.movieTitle + "\n" + rev.getStars() + "\n\"" + rev.reviewText + "\"";
+                myReviews.add(displayText);
+            }
         }
         arrayAdapter2.notifyDataSetChanged();
     }
@@ -151,10 +165,27 @@ public class HomeActivity extends SideBar {
         userDone = true;
     }
 
-    private String getStars() {
-        String blackStar = "★";
-        String whiteStar = 	"☆";
-        return blackStar + whiteStar;
+    private void waitForFirebase() {
+        final DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
+        myDatabase.child(userId).child("followingIds").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        List<String> l = (ArrayList<String>) dataSnapshot.getValue();
+                        if (l == null) {
+                            waitForFirebase();
+                        }
+                        else {
+                            helper(0);
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
+
+
 }
 
