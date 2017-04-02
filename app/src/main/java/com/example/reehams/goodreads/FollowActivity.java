@@ -192,4 +192,15 @@ public class FollowActivity extends SideBar {
             }
         });
     }
+
+    protected void followingOfTheUser(View view) {
+        Intent i = new Intent(FollowActivity.this, WhoIsFollowingUser.class);
+        i.putExtra("idOfCurrentPage",getIntent().getStringExtra("id"));
+        startActivity(i);
+    }
+    protected void followersOfTheUser(View view) {
+        Intent i = new Intent(FollowActivity.this, FollowersofUser.class);
+        i.putExtra("idOfCurrentPage",getIntent().getStringExtra("id"));
+        startActivity(i);
+    }
 }
