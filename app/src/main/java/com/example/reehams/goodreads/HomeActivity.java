@@ -21,12 +21,9 @@ public class HomeActivity extends SideBar {
 
     private ListView myReviewList;
     private ArrayList<String> myReviews = new ArrayList<>();
-    static boolean firstTime = true;
     static boolean followersDone = false;
     static boolean userDone = false;
     final String userId = WelcomeActivity.userId1;
-
-
     final Set<Review> set = new TreeSet<Review>();
 
     @Override
@@ -42,13 +39,7 @@ public class HomeActivity extends SideBar {
         myReviews.clear();
         myReviews.add("Loading...");
         arrayAdapter2.notifyDataSetChanged();
-        if (firstTime) {
-            firstTime = false;
-            waitForFirebase();
-        } else {
-            waitForFirebase();
-        }
-
+        waitForFirebase();
     }
 
     public void helper(long delay) {
