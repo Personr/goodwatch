@@ -119,7 +119,7 @@ public class MovieDetailsActivity extends SideBar {
                 });
     }
 
-    // TODO IMPLEMENT LATER ONCE WE HAVE FUNCTIONALITY
+
     protected void watchlistOnButtonPressed(View view) {
         myDatabase.child(userId).child("watchlist").addListenerForSingleValueEvent(
                 new ValueEventListener() {
