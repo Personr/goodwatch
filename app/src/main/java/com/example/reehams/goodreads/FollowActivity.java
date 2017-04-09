@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import static com.example.reehams.goodreads.WelcomeActivity.userId1;
 
@@ -64,7 +65,7 @@ public class FollowActivity extends SideBar {
         myDatabase.child(userId1).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Set<String> set = new HashSet<String>();
+                Set<String> set = new TreeSet<String>();
                 followButton = (Button) findViewById(R.id.followbotton);
                 followButton.setText("+Follow");
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
