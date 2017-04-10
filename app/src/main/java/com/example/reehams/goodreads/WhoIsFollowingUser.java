@@ -44,6 +44,7 @@ public class WhoIsFollowingUser extends SideBar {
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whouserIsFollowing);
         mListView.setAdapter(arrayAdapter2);
         userId = getIntent().getStringExtra("idOfCurrentPage");
+        Toast.makeText(getApplicationContext(), userId, Toast.LENGTH_SHORT).show();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -75,10 +76,9 @@ public class WhoIsFollowingUser extends SideBar {
                 final Intent i = new Intent(WhoIsFollowingUser.this, FollowActivity.class);
                 final String name = whouserIsFollowing.get(position);
                 i.putExtra("name", name);
-                userId = getIntent().getStringExtra("idOfCurrentPage");
-                i.putExtra("userId1", userId);
-                i.putExtra("userName1", name);
-                reference.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
+                i.putExtra("userId1", userId1);
+                i.putExtra("userName1", WelcomeActivity.facebookName);
+                reference.child(WelcomeActivity.userId1).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Set<String> set = new TreeSet<String>();
@@ -117,6 +117,7 @@ public class WhoIsFollowingUser extends SideBar {
 
                 });
             }
+
         });
     }
 }

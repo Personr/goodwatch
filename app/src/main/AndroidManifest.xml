@@ -49,10 +49,10 @@
             android:label="Follower List" />
         <activity
             android:name=".WhoIsFollowingUser"
-            android:label="Following List" />
+            android:label="Followings" />
         <activity
             android:name=".FollowersofUser"
-            android:label="Follower List" />
+            android:label="Followers" />
         <activity
             android:name=".HomeActivity"
             android:label="Home Screen" />

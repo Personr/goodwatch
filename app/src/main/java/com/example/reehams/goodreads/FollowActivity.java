@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,6 +38,9 @@ public class FollowActivity extends SideBar {
     TextView userName;
     Button followButton;
     ProfilePictureView image;
+    private ListView userReviewsView;
+    private ArrayList<String> userReviewsList = new ArrayList<>();
+    final Set<Review> set = new TreeSet<Review>();
 
     private DatabaseReference myDatabase;
 
@@ -45,7 +51,7 @@ public class FollowActivity extends SideBar {
         super.onCreateDrawer();
         FacebookSdk.sdkInitialize(getApplicationContext());
         String imageUsed = getIntent().getStringExtra("id");
-        final String userId1 = getIntent().getStringExtra("userId1");
+        final String userId1 = WelcomeActivity.userId1;
         if (imageUsed.equals(WelcomeActivity.userId1)) {
             Intent i = new Intent(FollowActivity.this, MyAccountActivity.class);
             startActivity(i);
@@ -62,7 +68,7 @@ public class FollowActivity extends SideBar {
         image = (ProfilePictureView) findViewById(R.id.image2);
         image.setPresetSize(ProfilePictureView.NORMAL);
         image.setProfileId(imageUsed);
-        myDatabase.child(userId1).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
+        myDatabase.child(WelcomeActivity.userId1).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new TreeSet<String>();
@@ -79,6 +85,51 @@ public class FollowActivity extends SideBar {
 
             }
         });
+        userReviewsView = (ListView) findViewById(R.id.userReviewsList);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, userReviewsList);
+        userReviewsView.setAdapter(arrayAdapter);
+        userReviewsList.clear();
+        userReviewsList.add("Loading...");
+        arrayAdapter.notifyDataSetChanged();
+        DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
+        myDatabase.child(imageUsed).child("reviews").addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        //List l = dataSnapshot.getValue(List.class);
+                        List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+                        for (HashMap<String, String> s : l) {
+                            String movieId = s.get("movieId");
+                            if (movieId.equals("null")) continue;
+                            String movieTitle = s.get("movieTitle");
+                            String rating = s.get("rating");
+                            String reviewText = s.get("reviewText");
+                            if (reviewText.length() > 175) {
+                                reviewText = reviewText.substring(0, 175) + "...";
+                            }
+                            String time = s.get("time");
+                            Review r = new Review(movieId, rating, reviewText, movieTitle, time);
+                            set.add(r);
+                        }
+                        userReviewsList.clear();
+                        if (set.isEmpty()) {
+                            userReviewsList.add(userName2 + " has no reviews");
+                        }
+                        else {
+                            for (Review rev : set) {
+                                String displayText = rev.movieTitle + "\n" + rev.getStars() + "\n\"" + rev.reviewText + "\"";
+                                userReviewsList.add(displayText);
+                            }
+                        }
+                        arrayAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+        //waitForFirebase();
     }
 
     protected void followThisUser(View view) {

@@ -19,6 +19,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static com.example.reehams.goodreads.WelcomeActivity.userId1;
+
 /**
  * Created by reehams on 3/29/17.
  */
@@ -72,10 +74,9 @@ public class FollowersofUser extends SideBar {
                 final Intent i = new Intent(FollowersofUser.this, FollowActivity.class);
                 final String name = whouserIsFollowing.get(position);
                 i.putExtra("name", name);
-                userId = getIntent().getStringExtra("idOfCurrentPage");
-                i.putExtra("userId1", userId);
-                i.putExtra("userName1", name);
-                reference.child(userId).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
+                i.putExtra("userId1", userId1);
+                i.putExtra("userName1", WelcomeActivity.facebookName);
+                reference.child(WelcomeActivity.userId1).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Set<String> set = new TreeSet<String>();
