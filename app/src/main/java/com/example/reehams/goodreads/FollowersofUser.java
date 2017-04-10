@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +43,7 @@ public class FollowersofUser extends SideBar {
         mListView = (ListView) findViewById(R.id.FollowersofUserList);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whouserIsFollowing);
         mListView.setAdapter(arrayAdapter2);
-        userId = getIntent().getStringExtra("idOfCurrentPage");
+        userId = WelcomeActivity.userId1;
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userId).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

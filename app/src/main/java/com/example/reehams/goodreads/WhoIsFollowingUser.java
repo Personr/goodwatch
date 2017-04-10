@@ -44,7 +44,6 @@ public class WhoIsFollowingUser extends SideBar {
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whouserIsFollowing);
         mListView.setAdapter(arrayAdapter2);
         userId = getIntent().getStringExtra("idOfCurrentPage");
-        Toast.makeText(getApplicationContext(), userId, Toast.LENGTH_SHORT).show();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
