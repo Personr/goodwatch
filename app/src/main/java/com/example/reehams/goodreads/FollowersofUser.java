@@ -43,7 +43,7 @@ public class FollowersofUser extends SideBar {
         mListView = (ListView) findViewById(R.id.FollowersofUserList);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whouserIsFollowing);
         mListView.setAdapter(arrayAdapter2);
-        userId = WelcomeActivity.userId1;
+        userId = getIntent().getStringExtra("idOfCurrentPage");
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userId).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -77,7 +77,7 @@ public class FollowersofUser extends SideBar {
                 i.putExtra("name", name);
                 i.putExtra("userId1", userId1);
                 i.putExtra("userName1", WelcomeActivity.facebookName);
-                reference.child(WelcomeActivity.userId1).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
+                reference.child(userId).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Set<String> set = new TreeSet<String>();

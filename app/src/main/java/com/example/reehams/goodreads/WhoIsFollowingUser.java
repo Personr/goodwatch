@@ -74,10 +74,11 @@ public class WhoIsFollowingUser extends SideBar {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Intent i = new Intent(WhoIsFollowingUser.this, FollowActivity.class);
                 final String name = whouserIsFollowing.get(position);
+                //Toast.makeText(getApplicationContext(), name, Toast.LENGTH_SHORT).show();
                 i.putExtra("name", name);
                 i.putExtra("userId1", userId1);
                 i.putExtra("userName1", WelcomeActivity.facebookName);
-                reference.child(WelcomeActivity.userId1).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
+                reference.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Set<String> set = new TreeSet<String>();
@@ -118,5 +119,6 @@ public class WhoIsFollowingUser extends SideBar {
             }
 
         });
+
     }
 }
