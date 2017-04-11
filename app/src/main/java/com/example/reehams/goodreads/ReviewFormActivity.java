@@ -3,14 +3,20 @@ package com.example.reehams.goodreads;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.*;
 import com.google.firebase.database.*;
@@ -62,8 +68,8 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                 alertDialogBuilder
                         .setMessage("Are you sure you want to submit this review?")
                         .setCancelable(false)
-                        .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, close
                                 // current activity
                                 reviewText = review.getText().toString();
@@ -80,15 +86,50 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                                 if (l.get(0).get("movieId").equals("null")) {
                                                     l.remove(0);
                                                 }
-                                               l.add(review1.getMapping());
+                                                l.add(review1.getMapping());
                                                 myDatabase.child(ReviewFormActivity.this.userId).child("reviews").setValue(l);
                                             }
+
                                             @Override
                                             public void onCancelled(DatabaseError databaseError) {
 
                                             }
                                         });
-                                Intent i = new Intent(ReviewFormActivity.this,MovieDetailsActivity.class);
+                                boolean b = myDatabase.child(movieId).getDatabase() != null;
+                                myDatabase.addListenerForSingleValueEvent(
+                                        new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                if (dataSnapshot.child(movieId).exists()) {
+                                                    myDatabase.child(movieId).addListenerForSingleValueEvent(
+                                                            new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                    // Get user value
+                                                                    List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+                                                                    l.add(review1.getMapping());
+                                                                    myDatabase.child(movieId).setValue(l);
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                                }
+                                                            });
+                                                } else {
+                                                    List<HashMap<String, String>> l = new ArrayList<HashMap<String, String>>();
+                                                    l.add(review1.getMapping());
+                                                    myDatabase.child(movieId).setValue(l);
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+
+                                            }
+                                        });
+                                Intent i = new Intent(ReviewFormActivity.this, MovieDetailsActivity.class);
                                 Bundle extras = new Bundle();
                                 extras.putString("user_id", userId);
                                 extras.putString("JSON_Data", movieId);
@@ -96,8 +137,8 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 startActivity(i);
                             }
                         })
-                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, just close
                                 // the dialog box and do nothing
                                 dialog.cancel();
@@ -124,8 +165,8 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                 alertDialogBuilder
                         .setMessage("Are you sure you want to cancel your review?")
                         .setCancelable(false)
-                        .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, close
                                 // current activity
                                 Intent i = new Intent(ReviewFormActivity.this, MovieDetailsActivity.class);
@@ -136,8 +177,8 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 startActivity(i);
                             }
                         })
-                        .setNegativeButton("No",new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, just close
                                 // the dialog box and do nothing
                                 dialog.cancel();
@@ -152,7 +193,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
         });
 
 
-        this.ratingSpinner = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        this.ratingSpinner = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -162,9 +203,10 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
 
 
     }
+
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
-        switch(pos) {
+        switch (pos) {
             case 0:
                 rating = "0";
                 break;
@@ -204,4 +246,91 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
     public void onNothingSelected(AdapterView<?> parent) {
         // Another Interface callback
     }
+
+    @Override
+    protected void onCreateDrawer() {
+        mDrawerList = (ListView) findViewById(R.id.navList);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mActivityTitle = getTitle().toString();
+        userId = getIntent().getStringExtra("user_id");
+
+        addDrawerItems();
+        setupDrawer();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+    }
+
+   @Override
+   protected void addDrawerItems() {
+       String[] osArray = { "Home", "My Account", "My Watchlist", "Movie Search", "User Search", "About Us", "Log Out"};
+       mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
+       mDrawerList.setAdapter(mAdapter);
+       mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+               AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                       ReviewFormActivity.this);
+
+               // set title
+               alertDialogBuilder.setTitle("Cancel Review");
+
+               // set dialog message
+               alertDialogBuilder
+                       .setMessage("Nagivating away will cancel your review! Are you sure you want to proceed?")
+                       .setCancelable(false)
+                       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                           public void onClick(DialogInterface dialog, int id) {
+                               if (position == 0) {
+                                   Intent i = new Intent(ReviewFormActivity.this,  HomeActivity.class);
+                                   i.putExtra("user_id", userId);
+                                   startActivity(i);
+                               }
+                               if (position == 1) {
+                                   Intent i = new Intent(ReviewFormActivity.this,  MyAccountActivity.class);
+                                   i.putExtra("user_id", userId);
+                                   startActivity(i);
+                               }
+                               if (position == 2) {
+                                   Intent i = new Intent(ReviewFormActivity.this,  WatchlistActivity.class);
+                                   i.putExtra("user_id", userId);
+                                   startActivity(i);
+                               }
+                               if (position == 3) {
+                                   Intent i = new Intent(ReviewFormActivity.this,  MovieActivity.class);
+                                   i.putExtra("user_id", userId);
+                                   startActivity(i);
+                               }
+                               if (position == 4) {
+                                   Intent i = new Intent(ReviewFormActivity.this,  UserSearch.class);
+                                   i.putExtra("user_id", userId);
+                                   startActivity(i);
+                               }
+                               if (position == 5) {
+                                   Intent i = new Intent(ReviewFormActivity.this, AboutUs.class);
+                                   i.putExtra("user_id", userId);
+                                   startActivity(i);
+                               }
+                               if (position == 6) {
+                                   Intent i = new Intent(ReviewFormActivity.this, LogOutActivity.class);
+                                   i.putExtra("user_id", userId);
+                                   startActivity(i);
+                               }
+                           }
+                       })
+                       .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                           public void onClick(DialogInterface dialog, int id) {
+                               // if this button is clicked, just close
+                               // the dialog box and close drawer too
+                               dialog.cancel();
+                               mDrawerLayout.closeDrawer(Gravity.LEFT);
+                           }
+                       });
+               // create alert dialog
+               AlertDialog alertDialog = alertDialogBuilder.create();
+
+               // show it
+               alertDialog.show();
+           }
+       });
+   }
 }

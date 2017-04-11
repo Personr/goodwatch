@@ -21,12 +21,12 @@ import android.widget.Toast;
  */
 
 public class SideBar extends AppCompatActivity {
-    private ListView mDrawerList;
-    private DrawerLayout mDrawerLayout;
-    private ArrayAdapter<String> mAdapter;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private String mActivityTitle;
-    private String userId;
+    protected ListView mDrawerList;
+    protected DrawerLayout mDrawerLayout;
+    protected ArrayAdapter<String> mAdapter;
+    protected ActionBarDrawerToggle mDrawerToggle;
+    protected String mActivityTitle;
+    protected String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class SideBar extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
     }
 
-    private void addDrawerItems() {
+    protected void addDrawerItems() {
         String[] osArray = { "Home", "My Account", "My Watchlist", "Movie Search", "User Search", "About Us", "Log Out"};
         mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
         mDrawerList.setAdapter(mAdapter);
@@ -102,7 +102,7 @@ public class SideBar extends AppCompatActivity {
         });
     }
 
-    private void setupDrawer() {
+    protected void setupDrawer() {
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close) {
 

@@ -1,5 +1,6 @@
 package com.example.reehams.goodreads;
 
+import java.util.*;
 /**
  * Created by reehams on 3/20/17.
  */
@@ -7,14 +8,11 @@ package com.example.reehams.goodreads;
 public class Movie {
     public String id;
     public String name;
+    List<Review> reviews = new ArrayList<Review>();
 
-    public Movie(String id, String name, String personId, String personName) {
+    public Movie(String id, String name) {
         this.id = id;
         this.name = name;
+        reviews.add(new Review("null"));
     }
-
-    public String returnID() {
-        return this.id;
-    }
-
 }
