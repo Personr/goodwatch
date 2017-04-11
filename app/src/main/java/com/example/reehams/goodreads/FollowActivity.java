@@ -227,7 +227,7 @@ public class FollowActivity extends SideBar {
                     myDatabase.child(userId2).child("followerIds").setValue(l);
                 }
                 else {
-                    if (l.get(0).equals("null")) {
+                   if (l.get(0).equals("null")) {
                         l.remove(0);
                     }
                     String s = userId1 + "," + userName1;

@@ -58,6 +58,7 @@ public class HomeActivity extends SideBar {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 List<String> l = (ArrayList<String>) dataSnapshot.getValue();
                                 for (String s : l) {
+                                    if (s==null) break;
                                     if (s.equals("null")) break;
                                     int commaIdx = s.indexOf(',');
                                     String id = s.substring(0, commaIdx);
