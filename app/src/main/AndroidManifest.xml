@@ -57,6 +57,9 @@
             android:name=".HomeActivity"
             android:label="Home Screen" />
         <activity
+            android:name=".TopChartsActivity"
+            android:label="Top Charts" />
+        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
