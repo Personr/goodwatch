@@ -54,7 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:listSelector="@android:color/transparent"
             android:id="@+id/userReviewsList"
             android:layout_below="@+id/button9" />
 
