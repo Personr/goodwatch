@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 
 public class AboutUs extends SideBar {
-
+    //About us activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
