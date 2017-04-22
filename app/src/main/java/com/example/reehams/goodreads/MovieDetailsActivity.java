@@ -6,8 +6,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,12 +23,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-
-import static com.example.reehams.goodreads.WelcomeActivity.facebookName;
-import static com.example.reehams.goodreads.WelcomeActivity.userId1;
+import java.util.TreeSet;
 
 /**
  * Created by rahulkooverjee on 3/9/17.
@@ -40,6 +41,13 @@ public class MovieDetailsActivity extends SideBar {
     String movieName;
 
     private DatabaseReference myDatabase;
+
+    String[] searchResults = new String[5]; // Options to be shown in list view
+    private ArrayList<String> movieReviewsList = new ArrayList<>();
+
+    ListView movieReviewsListView;
+    final Set<Review> set = new TreeSet<Review>();
+
 
 
     @Override
@@ -59,6 +67,7 @@ public class MovieDetailsActivity extends SideBar {
         String director = "n/a";
         String rating = "n/a";
         String actors = "n/a";
+
         try {
             // Get movie ID from intent
             String id = getIntent().getStringExtra("JSON_Data");
@@ -117,6 +126,120 @@ public class MovieDetailsActivity extends SideBar {
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
+
+
+
+        /****************/
+        movieReviewsListView = (ListView) findViewById(R.id.movieReviewsList);
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, movieReviewsList);
+        movieReviewsListView.setAdapter(arrayAdapter);
+        movieReviewsList.clear();
+//        movieReviewsList.add("Loading...");
+        arrayAdapter.notifyDataSetChanged();
+        DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
+
+
+            myDatabase.child(movieId).addListenerForSingleValueEvent(
+                    new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                        List l = dataSnapshot.getValue(List.class);
+                                List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+                            if (l != null) {
+                                for (HashMap<String, String> s : l) {
+                                    String movieId = s.get("movieId");
+                                    if (movieId.equals("null")) continue;
+                                    String movieTitle = s.get("movieTitle");
+                                    String rating = s.get("rating");
+                                    String reviewText = s.get("reviewText");
+                                    if (reviewText.length() > 175) {
+                                        reviewText = reviewText.substring(0, 175) + "...";
+                                    }
+                                    String time = s.get("time");
+                                    Review r = new Review(movieId, rating, reviewText, movieTitle, time);
+                                    if(set.size() < 6) {
+                                        set.add(r);
+                                    }
+                                }
+
+                            } else {
+                                searchResults = new String[1];
+                                searchResults[0] = "empty";
+                                movieReviewsList.clear();
+                                movieReviewsList.add("Movie has not been reviewed yet");
+                                return;
+                            }
+                            movieReviewsList.clear();
+                            if (set.isEmpty()) {
+                                searchResults = new String[1];
+                                searchResults[0] = "empty";
+                                movieReviewsList.clear();
+                                movieReviewsList.add("Movie has no reviews");
+                                return;
+                            } else {
+                                searchResults = new String[set.size()];
+                                int i = 0;
+                                for (Review rev : set) {
+                                    searchResults[i] = rev.movieId;
+                                    String displayText = rev.movieTitle + "\n" + rev.getStars() + "\n\"" + rev.reviewText + "\"";
+                                    movieReviewsList.add(displayText);
+                                    i++;
+                                }
+                            }
+                            arrayAdapter.notifyDataSetChanged();
+                            movieReviewsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
+                                    // Do nothing if there is no result
+                                    if (searchResults[position] == null) {
+                                        Toast.makeText(MovieDetailsActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    if (searchResults[position].equals("empty")) {
+                                        return;
+                                    }
+                                    // Pass the data of the clicked movie to the movieDetails class
+                                    Intent i = new Intent(MovieDetailsActivity.this, MovieDetailsActivity.class);
+                                    i.putExtra("user_id", userId);
+                                    try {
+                                        // Pass the IMBD movie id to the details page
+                                        String movieId = searchResults[position];
+                                        String[] queryArr = new String[1];
+                                        queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
+                                                "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
+                                        AsyncTask search = new MovieBackend().execute(queryArr);
+                                        JSONObject json = null;
+                                        json = (JSONObject) search.get();
+                                        String imbdId = json.get("imdb_id").toString();
+                                        boolean isInvalid = (imbdId == null);
+                                        if (!isInvalid) {
+                                            isInvalid = imbdId.equals("") || imbdId.equals("null");
+                                        }
+                                        if (isInvalid) {
+                                            Toast.makeText(MovieDetailsActivity.this, "More movie details cannot be found in IMBD Database",
+                                                    Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        if (imbdId.charAt(imbdId.length() - 1) == '/') {
+                                            imbdId = imbdId.substring(0, imbdId.length() - 1);
+                                        }
+                                        i.putExtra("JSON_Data", imbdId);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    startActivity(i);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
     }
 
 
