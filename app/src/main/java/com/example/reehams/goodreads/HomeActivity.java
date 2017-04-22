@@ -1,7 +1,11 @@
 package com.example.reehams.goodreads;
 
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -9,6 +13,8 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.*;
+
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -23,6 +29,7 @@ public class HomeActivity extends SideBar {
     private ArrayList<String> myReviews = new ArrayList<>();
     static boolean followersDone = false;
     static boolean userDone = false;
+    String[] searchResults;
     final String userId = WelcomeActivity.userId1;
     final Set<Review> set = new TreeSet<Review>();
 
@@ -138,14 +145,64 @@ public class HomeActivity extends SideBar {
         myReviews.clear();
         if (set.isEmpty()) {
             myReviews.add("No reviews yet");
+            searchResults = new String[1];
+            searchResults[0] = "empty";
         }
         else {
+            searchResults = new String[set.size()];
+            int i = 0;
             for (Review rev : set) {
                 String displayText = rev.movieTitle + "\n" + rev.getStars() + "\n\"" + rev.reviewText + "\"";
                 myReviews.add(displayText);
+                searchResults[i] = rev.movieId;
+                i++;
             }
         }
         arrayAdapter2.notifyDataSetChanged();
+        myReviewList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
+                // Do nothing if there is no result
+                if (searchResults[position] == null) {
+                    Toast.makeText(HomeActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (searchResults[position].equals("empty")) {
+                    return;
+                }
+                // Pass the data of the clicked movie to the movieDetails class
+                Intent i = new Intent(HomeActivity.this,  MovieDetailsActivity.class);
+                i.putExtra("user_id", userId);
+                try {
+                    // Pass the IMBD movie id to the details page
+                    String movieId = searchResults[position];
+                    String[] queryArr = new String[1];
+                    queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
+                            "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
+                    AsyncTask search = new MovieBackend().execute(queryArr);
+                    JSONObject json = null;
+                    json = (JSONObject) search.get();
+                    String imbdId = json.get("imdb_id").toString();
+                    boolean isInvalid = (imbdId == null);
+                    if (!isInvalid) {
+                        isInvalid = imbdId.equals("") || imbdId.equals("null");
+                    }
+                    if (isInvalid) {
+                        Toast.makeText(HomeActivity.this, "More movie details cannot be found in IMBD Database",
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if (imbdId.charAt(imbdId.length() - 1) == '/') {
+                        imbdId = imbdId.substring(0, imbdId.length() - 1);
+                    }
+                    i.putExtra("JSON_Data", imbdId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                startActivity(i);
+            }
+        });
     }
 
     private void makeFollowersTrue() {

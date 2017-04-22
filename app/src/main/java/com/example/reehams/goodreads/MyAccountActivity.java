@@ -2,11 +2,13 @@ package com.example.reehams.goodreads;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,6 +42,7 @@ public class MyAccountActivity extends SideBar {
     TextView userName;
     ProfilePictureView image;
     private ListView userReviewsView;
+    String[] searchResults;
     private ArrayList<String> userReviewsList = new ArrayList<>();
     final Set<Review> set = new TreeSet<Review>();
 
@@ -84,15 +89,65 @@ public class MyAccountActivity extends SideBar {
                         }
                         userReviewsList.clear();
                         if (set.isEmpty()) {
+                            searchResults = new String[1];
+                            searchResults[0] = "empty";
                             userReviewsList.add("You have no reviews");
                         }
                         else {
+                            searchResults = new String[set.size()];
+                            int i = 0;
                             for (Review rev : set) {
+                                searchResults[i] = rev.movieId;
                                 String displayText = rev.movieTitle + "\n" + rev.getStars() + "\n\"" + rev.reviewText + "\"";
                                 userReviewsList.add(displayText);
+                                i++;
                             }
                         }
                         arrayAdapter.notifyDataSetChanged();
+                        userReviewsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
+                                // Do nothing if there is no result
+                                if (searchResults[position] == null) {
+                                    Toast.makeText(MyAccountActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                if (searchResults[position].equals("empty")) {
+                                    return;
+                                }
+                                // Pass the data of the clicked movie to the movieDetails class
+                                Intent i = new Intent(MyAccountActivity.this,  MovieDetailsActivity.class);
+                                i.putExtra("user_id", userId);
+                                try {
+                                    // Pass the IMBD movie id to the details page
+                                    String movieId = searchResults[position];
+                                    String[] queryArr = new String[1];
+                                    queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
+                                            "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
+                                    AsyncTask search = new MovieBackend().execute(queryArr);
+                                    JSONObject json = null;
+                                    json = (JSONObject) search.get();
+                                    String imbdId = json.get("imdb_id").toString();
+                                    boolean isInvalid = (imbdId == null);
+                                    if (!isInvalid) {
+                                        isInvalid = imbdId.equals("") || imbdId.equals("null");
+                                    }
+                                    if (isInvalid) {
+                                        Toast.makeText(MyAccountActivity.this, "More movie details cannot be found in IMBD Database",
+                                                Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    if (imbdId.charAt(imbdId.length() - 1) == '/') {
+                                        imbdId = imbdId.substring(0, imbdId.length() - 1);
+                                    }
+                                    i.putExtra("JSON_Data", imbdId);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                startActivity(i);
+                            }
+                        });
                     }
 
                     @Override
