@@ -187,11 +187,13 @@
 
 
 
+
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_weight="0.05">
+
 
 
 
@@ -223,21 +225,16 @@
                     android:onClick="reviewOnButtonPressed" />
 
 
+
             </LinearLayout>
 
             <ListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:id="@+id/movieReviewsList"
-                android:layout_below="@+id/watchlist_button"
-                android:layout_marginTop="40dp"/>
-
-
-
+                android:layout_marginTop="40dp"
+                android:layout_width="388dp"
+                android:layout_height="103dp"
+                android:id="@+id/movieReviewsList"/>
 
         </LinearLayout>
-
 
     </LinearLayout>
     <!-- Side navigation drawer UI -->
@@ -247,5 +244,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="left|start"
         android:background="#ffeeeeee"/>
+
 
 </android.support.v4.widget.DrawerLayout>
