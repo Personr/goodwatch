@@ -310,7 +310,6 @@ public class MovieDetailsActivity extends SideBar {
 
 
 
-    // TODO IMPLEMENT LATER ONCE WE HAVE FUNCTIONALITY
     protected void reviewOnButtonPressed(View view) {
         Intent i = new Intent(MovieDetailsActivity.this, ReviewFormActivity.class);
         Bundle extras = new Bundle();

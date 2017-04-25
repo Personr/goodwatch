@@ -89,7 +89,6 @@ public class UserSearch extends SideBar {
                     arrayAdapter.notifyDataSetChanged();
                 }
                 else {
-                    // TODO SHOW NOW RESULTS
                     hasResults = false;
                     listView.setAdapter(noResultsAdaptor);
                     noResultsAdaptor.notifyDataSetChanged();
@@ -123,7 +122,6 @@ public class UserSearch extends SideBar {
                     Toast.makeText(UserSearch.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                // TODO STUFF HERE
             }
         });
     }

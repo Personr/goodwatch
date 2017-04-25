@@ -16,8 +16,6 @@ public class User {
     public List<Review> reviews;
 
 
-
-
     public User(String name, String email,  String id) {
         this.email = email;
         this.name = name;
