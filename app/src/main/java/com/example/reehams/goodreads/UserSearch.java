@@ -34,7 +34,7 @@ public class UserSearch extends SideBar {
     ListView listView;
     private boolean hasResults = true;
     private ArrayList<User> results = new ArrayList<>();
-    private static String[] searchResultsIds = new String[5]; // Options to be shown in list view
+    private static String[] searchResultsIds = new String[10]; // Options to be shown in list view
     String name;
     String email;
     String id2;
@@ -71,7 +71,7 @@ public class UserSearch extends SideBar {
                 List<User> list = new ArrayList<User>();
                 int i = 0;
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    if (i > 4) {
+                    if (i > 10) {
                         break;
                     }
                    // Toast.makeText(UserSearch.this, childSnapshot.toString(), )
