@@ -187,50 +187,6 @@ public class MovieDetailsActivity extends SideBar {
                                 }
                             }
                             arrayAdapter.notifyDataSetChanged();
-                            movieReviewsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
-                                    // Do nothing if there is no result
-                                    if (searchResults[position] == null) {
-                                        Toast.makeText(MovieDetailsActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-                                    if (searchResults[position].equals("empty")) {
-                                        return;
-                                    }
-                                    // Pass the data of the clicked movie to the movieDetails class
-                                    Intent i = new Intent(MovieDetailsActivity.this, MovieDetailsActivity.class);
-                                    i.putExtra("user_id", userId);
-                                    try {
-                                        // Pass the IMBD movie id to the details page
-                                        String movieId = searchResults[position];
-                                        String[] queryArr = new String[1];
-                                        queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
-                                                "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
-                                        AsyncTask search = new MovieBackend().execute(queryArr);
-                                        JSONObject json = null;
-                                        json = (JSONObject) search.get();
-                                        String imbdId = json.get("imdb_id").toString();
-                                        boolean isInvalid = (imbdId == null);
-                                        if (!isInvalid) {
-                                            isInvalid = imbdId.equals("") || imbdId.equals("null");
-                                        }
-                                        if (isInvalid) {
-                                            Toast.makeText(MovieDetailsActivity.this, "More movie details cannot be found in IMBD Database",
-                                                    Toast.LENGTH_SHORT).show();
-                                            return;
-                                        }
-                                        if (imbdId.charAt(imbdId.length() - 1) == '/') {
-                                            imbdId = imbdId.substring(0, imbdId.length() - 1);
-                                        }
-                                        i.putExtra("JSON_Data", imbdId);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                    startActivity(i);
-                                }
-                            });
                         }
 
                         @Override
