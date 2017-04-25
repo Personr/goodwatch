@@ -71,6 +71,9 @@ public class UserSearch extends SideBar {
                 List<User> list = new ArrayList<User>();
                 int i = 0;
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                    if (i > 4) {
+                        break;
+                    }
                    // Toast.makeText(UserSearch.this, childSnapshot.toString(), )
                     String userName = childSnapshot.child("name").getValue(String.class);
                     if (userName != null && userName.toLowerCase().contains(searchQuery.toLowerCase())) {
