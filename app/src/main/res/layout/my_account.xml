@@ -51,16 +51,6 @@
             android:layout_marginTop="11dp"
             android:id="@+id/userName" />
 
-        <TextView
-            android:text="gender: "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/userName"
-            android:layout_marginTop="11dp"
-            android:id="@+id/gender"
-            android:layout_alignLeft="@+id/userName"
-            android:layout_alignStart="@+id/userName" />
-
         <ListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -74,8 +64,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/button5"
             android:layout_centerVertical="true"
-            android:layout_alignLeft="@+id/gender"
-            android:layout_alignStart="@+id/gender"
+            android:layout_alignLeft="@+id/userName2"
+            android:layout_alignStart="@+id/userName2"
             android:onClick="myFollowers"/>
 
         <Button

@@ -38,7 +38,6 @@ import java.util.TreeSet;
 
 public class MyAccountActivity extends SideBar {
     TextView email;
-    TextView gender;
     TextView userName;
     ProfilePictureView image;
     private ListView userReviewsView;
@@ -54,8 +53,6 @@ public class MyAccountActivity extends SideBar {
         super.onCreateDrawer();
         email = (TextView) findViewById(R.id.email);
         email.setText("Email:" + " " + WelcomeActivity.email);
-        gender = (TextView) findViewById(R.id.gender);
-        gender.setText("Gender:" + " " +WelcomeActivity.gender);
         userName = (TextView) findViewById(R.id.userName);
         userName.setText("Name:" + " " + WelcomeActivity.facebookName);
         image = (ProfilePictureView) findViewById(R.id.image);
