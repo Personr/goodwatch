@@ -82,12 +82,24 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void setProfileToView(JSONObject jsonObject) {
         try {
-            this.email = (jsonObject.getString("email"));
-            this.gender = (jsonObject.getString("gender"));
-            this.facebookName = (jsonObject.getString("name"));
-            this.profilePicId = (jsonObject.getString("id"));
+            this.email = jsonObject.getString("email");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, "Exception arises when querying JSON object\n", e);
+            Log.e(DEBUG_TAG, "User doesn't have an email.\n", e);
+        }
+        try {
+            this.gender = jsonObject.getString("gender");
+        } catch (JSONException e) {
+            Log.e(DEBUG_TAG, "User doesn't have a gender.\n", e);
+        }
+        try {
+            this.facebookName = jsonObject.getString("name");
+        } catch (JSONException e) {
+            Log.e(DEBUG_TAG, "User doesn't have an name.\n", e);
+        }
+        try {
+            this.profilePicId = jsonObject.getString("id");
+        } catch (JSONException e) {
+            Log.e(DEBUG_TAG, "User doesn't have a profile pic.\n", e);
         }
     }
 
@@ -115,16 +127,6 @@ public class WelcomeActivity extends AppCompatActivity {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 Log.v("Main", response.toString());
-                try {
-                    WelcomeActivity.this.facebookName = object.getString("name");
-                } catch (JSONException e) {
-                    Log.e(DEBUG_TAG, "Exception arises inside GraphRequest\n", e);
-                }
-                try {
-                    WelcomeActivity.this.email = object.getString("email");
-                } catch (JSONException e) {
-                    Log.e(DEBUG_TAG, "Exception arises inside GraphRequest\n", e);
-                }
                 setProfileToView(object);
 
                 myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -158,7 +160,6 @@ public class WelcomeActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
             }
