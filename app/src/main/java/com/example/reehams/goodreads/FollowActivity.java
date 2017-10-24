@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,12 +26,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static com.example.reehams.goodreads.WelcomeActivity.userId1;
 
 /**
  * Created by reehams on 3/26/17.
@@ -47,6 +44,7 @@ public class FollowActivity extends SideBar {
     private ArrayList<String> userReviewsList = new ArrayList<>();
     final Set<Review> set = new TreeSet<Review>();
 
+    private final String DEBUG_TAG = getClass().getSimpleName();
     private DatabaseReference myDatabase;
 
     @Override
@@ -172,7 +170,7 @@ public class FollowActivity extends SideBar {
                                     }
                                     i.putExtra("JSON_Data", imbdId);
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    Log.e(DEBUG_TAG, "Exception arises when querying movie database with IMDB id\n", e);
                                 }
                                 startActivity(i);
                             }

@@ -1,6 +1,7 @@
 package com.example.reehams.goodreads;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.content.Intent;
 import android.widget.AdapterView;
@@ -32,6 +33,7 @@ import java.util.TreeSet;
 
 public class TopChartsActivity extends SideBar {
 
+    private final String DEBUG_TAG = getClass().getSimpleName();
     private ListView topChartListView;
     private final ArrayList<String> topChartList = new ArrayList<>();
     final String userId = WelcomeActivity.userId1;
@@ -176,7 +178,7 @@ public class TopChartsActivity extends SideBar {
                     }
                     i.putExtra("JSON_Data", imbdId);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(DEBUG_TAG, "moviedb API call exception\n", e);
                 }
                 startActivity(i);
             }

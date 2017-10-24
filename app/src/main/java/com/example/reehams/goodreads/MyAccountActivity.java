@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import android.support.v7.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -37,6 +38,7 @@ import java.util.TreeSet;
  */
 
 public class MyAccountActivity extends SideBar {
+    private final String DEBUG_TAG = getClass().getSimpleName();
     TextView email;
     TextView userName;
     ProfilePictureView image;
@@ -140,7 +142,7 @@ public class MyAccountActivity extends SideBar {
                                     }
                                     i.putExtra("JSON_Data", imbdId);
                                 } catch (Exception e) {
-                                    e.printStackTrace();
+                                    Log.e(DEBUG_TAG, "moviedb API call results in exception\n", e);
                                 }
                                 startActivity(i);
                             }

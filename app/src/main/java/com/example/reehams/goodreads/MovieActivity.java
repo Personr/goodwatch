@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 
 public class MovieActivity extends SideBar {
 
+    private final String DEBUG_TAG = getClass().getSimpleName();
     EditText editText; // the input textbox
     String[] searchResults = new String[5]; // Options to be shown in list view
     JSONArray resultsArr; // the results of the query
@@ -50,7 +52,7 @@ public class MovieActivity extends SideBar {
             json = (JSONObject) search.get();
             resultsArr = json.getJSONArray("results");
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(DEBUG_TAG, "moviedb API call exception\n", e);
         }
     }
 
@@ -90,7 +92,7 @@ public class MovieActivity extends SideBar {
                 searchResults[i] = "";
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(DEBUG_TAG, "moviedb API call exception\n", e);
         }
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 R.layout.movie_list, searchResults);
@@ -131,7 +133,7 @@ public class MovieActivity extends SideBar {
                     }
                     i.putExtra("JSON_Data", imbdId);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(DEBUG_TAG, "moviedb API call exception\n", e);
                 }
                 startActivity(i);
             }
