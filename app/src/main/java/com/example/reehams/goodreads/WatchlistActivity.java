@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -27,6 +28,7 @@ import static com.example.reehams.goodreads.WelcomeActivity.facebookName;
 import static com.example.reehams.goodreads.WelcomeActivity.userId1;
 
 public class WatchlistActivity extends SideBar {
+    private final String DEBUG_TAG = getClass().getSimpleName();
     DatabaseReference reference;
     private ListView mListView;
     String[] searchResults; // Options to be shown in list view
@@ -79,7 +81,7 @@ public class WatchlistActivity extends SideBar {
                             //Toast.makeText(WatchlistActivity.this, movie + "Search Results value: " + movieId, Toast.LENGTH_SHORT).show();
                             //Toast.makeText(WatchlistActivity.this, "Movies shown: " + i, Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            Log.e(DEBUG_TAG, "Exception arose when searching watchlist\n", e);
 
                         }
                     }

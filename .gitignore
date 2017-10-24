@@ -1,0 +1,6 @@
+.idea/*
+.DS_Store
+app/google-services.json
+.gradle/
+*.iml
+/build

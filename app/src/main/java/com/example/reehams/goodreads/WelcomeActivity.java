@@ -34,6 +34,7 @@ import java.util.Map;
 public class WelcomeActivity extends AppCompatActivity {
 
 
+    private final String DEBUG_TAG = getClass().getSimpleName();
     private LoginButton btnLogin;
     private CallbackManager callbackManager;
     static String email;
@@ -77,10 +78,14 @@ public class WelcomeActivity extends AppCompatActivity {
                             Log.v("Main", response.toString());
                             try {
                                 WelcomeActivity.this.facebookName = object.getString("name");
-                            } catch(JSONException ex) {}
+                            } catch(JSONException e) {
+                                Log.e(DEBUG_TAG, "Exception arises inside GraphRequest\n", e);
+                            }
                             try {
                                 WelcomeActivity.this.email = object.getString("email");
-                            } catch(JSONException ex) {}
+                            } catch(JSONException e) {
+                                Log.e(DEBUG_TAG, "Exception arises inside GraphRequest\n", e);
+                            }
                             setProfileToView(object);
 
                             myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -185,7 +190,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e(DEBUG_TAG, "Exception arises when registering callback\n", e);
                                 }
                             }
                         });
@@ -231,7 +236,7 @@ public class WelcomeActivity extends AppCompatActivity {
             this.facebookName = (jsonObject.getString("name"));
             this.profilePicId = (jsonObject.getString("id"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(DEBUG_TAG, "Exception arises when querying JSON object\n", e);
         }
     }
 

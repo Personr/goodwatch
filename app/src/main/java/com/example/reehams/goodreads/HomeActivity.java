@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +26,7 @@ import java.util.*;
 
 public class HomeActivity extends SideBar {
 
+    private final String DEBUG_TAG = getClass().getSimpleName();
     private ListView myReviewList;
     private ArrayList<String> myReviews = new ArrayList<>();
     static boolean followersDone = false;
@@ -197,7 +199,7 @@ public class HomeActivity extends SideBar {
                     }
                     i.putExtra("JSON_Data", imbdId);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    Log.e(DEBUG_TAG, "Exception arises when querying moviedb API by IMDB ID\n", e);
                 }
                 startActivity(i);
             }

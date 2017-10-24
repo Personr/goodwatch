@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,6 +47,8 @@ public class MovieDetailsActivity extends SideBar {
     ListView movieReviewsListView;
     final Set<Review> set = new TreeSet<Review>();
 
+    private final String DEBUG_TAG = this.getClass().getName();
+
 
 
     @Override
@@ -75,6 +76,8 @@ public class MovieDetailsActivity extends SideBar {
             // Get movie details in JSON object
             String[] queryArr = new String[1];
             queryArr[0] = "http://www.omdbapi.com/?i=" + id;
+
+            // TODO: Likely source of a NullPointerException
             AsyncTask search = new MovieBackend().execute(queryArr);
             JSONObject json = null;
             json = (JSONObject) search.get();
@@ -94,8 +97,7 @@ public class MovieDetailsActivity extends SideBar {
             actors = getActorString(json.get("Actors").toString());
             genres = json.get("Genre").toString();
         } catch (Exception e) {
-            Toast.makeText(MovieDetailsActivity.this, e + "", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+            Log.e(DEBUG_TAG, "Call to the OMDB API results in error", e);
         }
         // Set movie info to view
         ((TextView) findViewById(R.id.movie_name)).setText(name);
