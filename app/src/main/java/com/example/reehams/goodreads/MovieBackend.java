@@ -10,12 +10,8 @@ import android.os.AsyncTask;
 
 import org.json.*;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
-import java.util.concurrent.Exchanger;
-import java.util.concurrent.ExecutionException;
 
 public class MovieBackend extends AsyncTask<String, Void, JSONObject> {
 
