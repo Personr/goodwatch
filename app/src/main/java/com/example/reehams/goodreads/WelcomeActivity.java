@@ -75,48 +75,48 @@ public class WelcomeActivity extends AppCompatActivity {
                         @Override
                         public void onCompleted(JSONObject object, GraphResponse response) {
                             Log.v("Main", response.toString());
-
                             try {
                                 WelcomeActivity.this.facebookName = object.getString("name");
+                            } catch(JSONException ex) {}
+                            try {
                                 WelcomeActivity.this.email = object.getString("email");
-                                setProfileToView(object);
+                            } catch(JSONException ex) {}
+                            setProfileToView(object);
 
-                                myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        List<String> watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
-                                        List<Review> reviews = (ArrayList<Review>) dataSnapshot.child(userId1).child("reviews").getValue();
-                                        List<String> following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
-                                        List<String> followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
-                                        if (watchlist == null) {
-                                            watchlist = new ArrayList<String>();
-                                            watchlist.add("null");
-                                        }
-                                        if (reviews == null) {
-                                            reviews = new ArrayList<Review>();
-                                           // reviews.add("null");
-                                            reviews.add(new Review(("null")));
-
-                                        }
-                                        if (following == null) {
-                                            following = new ArrayList<String>();
-                                            following.add("null");
-                                        }
-                                        if (followers == null) {
-                                            followers = new ArrayList<String>();
-                                            followers.add("null");
-                                        }
-                                        User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
-                                        myDatabase.child(userId1).setValue(user);
+                            myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    List<String> watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
+                                    List<Review> reviews = (ArrayList<Review>) dataSnapshot.child(userId1).child("reviews").getValue();
+                                    List<String> following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
+                                    List<String> followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
+                                    if (watchlist == null) {
+                                        watchlist = new ArrayList<String>();
+                                        watchlist.add("null");
                                     }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
+                                    if (reviews == null) {
+                                        reviews = new ArrayList<Review>();
+                                       // reviews.add("null");
+                                        reviews.add(new Review(("null")));
 
                                     }
-                                });
-                            } catch (Exception e) {
-                            }
+                                    if (following == null) {
+                                        following = new ArrayList<String>();
+                                        following.add("null");
+                                    }
+                                    if (followers == null) {
+                                        followers = new ArrayList<String>();
+                                        followers.add("null");
+                                    }
+                                    User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
+                                    myDatabase.child(userId1).setValue(user);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
                         }
                     });
             Bundle parameters = new Bundle();
