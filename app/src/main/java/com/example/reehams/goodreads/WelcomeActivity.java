@@ -34,6 +34,7 @@ import java.util.Map;
 public class WelcomeActivity extends AppCompatActivity {
 
 
+    private final String DEBUG_TAG = getClass().getSimpleName();
     private LoginButton btnLogin;
     private CallbackManager callbackManager;
     static String email;
@@ -116,6 +117,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                     }
                                 });
                             } catch (Exception e) {
+                                Log.e(DEBUG_TAG, "Exception arises inside GraphRequest\n", e);
                             }
                         }
                     });
@@ -185,7 +187,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
 
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Log.e(DEBUG_TAG, "Exception arises when registering callback\n", e);
                                 }
                             }
                         });
@@ -231,7 +233,7 @@ public class WelcomeActivity extends AppCompatActivity {
             this.facebookName = (jsonObject.getString("name"));
             this.profilePicId = (jsonObject.getString("id"));
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(DEBUG_TAG, "Exception arises when querying JSON object\n", e);
         }
     }
 
