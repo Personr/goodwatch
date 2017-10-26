@@ -259,46 +259,34 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                        .setCancelable(false)
                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                            public void onClick(DialogInterface dialog, int id) {
+                               Class targetActivity = null;
                                if (position == 0) {
-                                   Intent i = new Intent(ReviewFormActivity.this,  HomeActivity.class);
-                                   i.putExtra("user_id", userId);
-                                   startActivity(i);
+                                   targetActivity = HomeActivity.class;
                                }
                                if (position == 1) {
-                                   Intent i = new Intent(ReviewFormActivity.this,  MyAccountActivity.class);
-                                   i.putExtra("user_id", userId);
-                                   startActivity(i);
+                                   targetActivity = MyAccountActivity.class;
                                }
                                if (position == 2) {
-                                   Intent i = new Intent(ReviewFormActivity.this,  WatchlistActivity.class);
-                                   i.putExtra("user_id", userId);
-                                   startActivity(i);
+                                   targetActivity = WatchlistActivity.class;
                                }
                                if (position == 3) {
-                                   Intent i = new Intent(ReviewFormActivity.this,  TopChartsActivity.class);
-                                   i.putExtra("user_id", userId);
-                                   startActivity(i);
+                                   targetActivity = TopChartsActivity.class;
                                }
                                if (position == 4) {
-                                   Intent i = new Intent(ReviewFormActivity.this,  MovieActivity.class);
-                                   i.putExtra("user_id", userId);
-                                   startActivity(i);
+                                   targetActivity = MovieActivity.class;
                                }
                                if (position == 5) {
-                                   Intent i = new Intent(ReviewFormActivity.this,  UserSearch.class);
-                                   i.putExtra("user_id", userId);
-                                   startActivity(i);
+                                   targetActivity = UserSearch.class;
                                }
                                if (position == 6) {
-                                   Intent i = new Intent(ReviewFormActivity.this, AboutUs.class);
-                                   i.putExtra("user_id", userId);
-                                   startActivity(i);
+                                   targetActivity = AboutUs.class;
                                }
                                if (position == 7) {
-                                   Intent i = new Intent(ReviewFormActivity.this, LogOutActivity.class);
-                                   i.putExtra("user_id", userId);
-                                   startActivity(i);
+                                   targetActivity = LogOutActivity.class;
                                }
+                               Intent i = new Intent(ReviewFormActivity.this, targetActivity);
+                               i.putExtra("user_id", userId);
+                               startActivity(i);
                            }
                        })
                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
