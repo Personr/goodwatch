@@ -215,43 +215,10 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         // An item was selected. You can retrieve the selected item using
-        switch (pos) {
-            case 0:
-                rating = "blank";
-                break;
-            case 1:
-                rating = "0";
-                break;
-            case 2:
-                rating = "1";
-                break;
-            case 3:
-                rating = "2";
-                break;
-            case 4:
-                rating = "3";
-                break;
-            case 5:
-                rating = "4";
-                break;
-            case 6:
-                rating = "5";
-                break;
-            case 7:
-                rating = "6";
-                break;
-            case 8:
-                rating = "7";
-                break;
-            case 9:
-                rating = "8";
-                break;
-            case 10:
-                rating = "9";
-                break;
-            case 11:
-                rating = "10";
-                break;
+        if (pos == 0) {
+            rating = "blank";
+        } else if (1 <= pos && pos <= 11) {
+            rating = Integer.toString(pos - 1);
         }
     }
 
