@@ -33,12 +33,12 @@ public class WelcomeActivity extends AppCompatActivity {
     private final String DEBUG_TAG = getClass().getSimpleName();
     private LoginButton btnLogin;
     private CallbackManager callbackManager;
-    static String email;
-    static String facebookName;
+    private static String email;
+    private static String facebookName;
     static String gender;
-    static String profilePicId;
+    private static String profilePicId;
     private DatabaseReference myDatabase;
-    static String userId1;
+    private static String userId1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +72,26 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    //Getter method for email
+    protected static String getEmail() {
+        return email;
+    }
+
+    //Getter method for Facebook name
+    protected static String getFacebookName() {
+        return facebookName;
+    }
+
+    //Getter method for Profile pic Id
+    protected static String getProfilePicId() {
+        return profilePicId;
+    }
+
+    //Getter method for
+    protected static String getUserId1() {
+        return userId1;
     }
 
     @Override

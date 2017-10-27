@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.example.reehams.goodreads.WelcomeActivity.userId1;
+//import static com.example.reehams.goodreads.WelcomeActivity.userId1;
 
 /**
  * Created by reehams on 3/29/17.
@@ -72,8 +72,8 @@ public class FollowersofUser extends SideBar {
                 final Intent i = new Intent(FollowersofUser.this, FollowActivity.class);
                 final String name = whouserIsFollowing.get(position);
                 i.putExtra("name", name);
-                i.putExtra("userId1", userId1);
-                i.putExtra("userName1", WelcomeActivity.facebookName);
+                i.putExtra("userId1", WelcomeActivity.getUserId1());
+                i.putExtra("userName1", WelcomeActivity.getFacebookName());
                 reference.child(userId).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

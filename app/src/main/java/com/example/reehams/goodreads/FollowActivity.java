@@ -54,8 +54,8 @@ public class FollowActivity extends SideBar {
         super.onCreateDrawer();
         FacebookSdk.sdkInitialize(getApplicationContext());
         String imageUsed = getIntent().getStringExtra("id");
-        final String userId1 = WelcomeActivity.userId1;
-        if (imageUsed.equals(WelcomeActivity.userId1)) {
+        final String userId1 = WelcomeActivity.getUserId1();
+        if (imageUsed.equals(WelcomeActivity.getUserId1())) {
             Intent i = new Intent(FollowActivity.this, MyAccountActivity.class);
             startActivity(i);
         }
@@ -71,7 +71,7 @@ public class FollowActivity extends SideBar {
         image = (ProfilePictureView) findViewById(R.id.image2);
         image.setPresetSize(ProfilePictureView.NORMAL);
         image.setProfileId(imageUsed);
-        myDatabase.child(WelcomeActivity.userId1).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
+        myDatabase.child(WelcomeActivity.getUserId1()).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new TreeSet<String>();

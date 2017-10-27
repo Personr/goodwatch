@@ -32,7 +32,7 @@ public class HomeActivity extends SideBar {
     static boolean followersDone = false;
     static boolean userDone = false;
     String[] searchResults;
-    final String userId = WelcomeActivity.userId1;
+    final String userId = WelcomeActivity.getUserId1();
     final Set<Review> set = new TreeSet<Review>();
 
     @Override
@@ -52,7 +52,7 @@ public class HomeActivity extends SideBar {
     }
 
     public void helper(long delay) {
-        final String userId = WelcomeActivity.userId1;
+        final String userId = WelcomeActivity.getUserId1();
         final DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
         myReviewList = (ListView) findViewById(R.id.yourReviewList);
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);

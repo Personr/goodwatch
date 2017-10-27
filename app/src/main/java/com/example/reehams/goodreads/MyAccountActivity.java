@@ -52,12 +52,12 @@ public class MyAccountActivity extends SideBar {
         setContentView(R.layout.my_account);
         super.onCreateDrawer();
         email = (TextView) findViewById(R.id.email);
-        email.setText("Email:" + " " + WelcomeActivity.email);
+        email.setText("Email:" + " " + WelcomeActivity.getEmail());
         userName = (TextView) findViewById(R.id.userName);
-        userName.setText("Name:" + " " + WelcomeActivity.facebookName);
+        userName.setText("Name:" + " " + WelcomeActivity.getFacebookName());
         image = (ProfilePictureView) findViewById(R.id.image);
         image.setPresetSize(ProfilePictureView.NORMAL);
-        image.setProfileId(WelcomeActivity.profilePicId);
+        image.setProfileId(WelcomeActivity.getProfilePicId());
         userReviewsView = (ListView) findViewById(R.id.userReviewsList);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, userReviewsList);
         userReviewsView.setAdapter(arrayAdapter);
@@ -65,7 +65,7 @@ public class MyAccountActivity extends SideBar {
         userReviewsList.add("Loading...");
         arrayAdapter.notifyDataSetChanged();
         DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
-        myDatabase.child(WelcomeActivity.userId1).child("reviews").addListenerForSingleValueEvent(
+        myDatabase.child(WelcomeActivity.getUserId1()).child("reviews").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -162,12 +162,12 @@ public class MyAccountActivity extends SideBar {
 
     protected void whoIamFollowing(View view) {
         Intent i = new Intent(this, FollowingListActivity.class);
-        i.putExtra("user_id", WelcomeActivity.userId1);
+        i.putExtra("user_id", WelcomeActivity.getUserId1());
         startActivity(i);
     }
     protected void myFollowers(View view) {
         Intent i = new Intent(this, FollowerListActivity.class);
-        i.putExtra("user_id", WelcomeActivity.userId1);
+        i.putExtra("user_id", WelcomeActivity.getUserId1());
         startActivity(i);
     }
 }

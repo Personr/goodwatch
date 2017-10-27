@@ -106,8 +106,8 @@ public class UserSearch extends SideBar {
                 i.putExtra("name", name);
                 i.putExtra("email", email);
                 i.putExtra("id", id2);
-                i.putExtra("userId1", WelcomeActivity.userId1);
-                i.putExtra("userName1", WelcomeActivity.facebookName);
+                i.putExtra("userId1", WelcomeActivity.getUserId1());
+                i.putExtra("userName1", WelcomeActivity.getFacebookName());
                 startActivity(i);
                 // Do nothing if there is no result
                 if (results.get(position) == null) {
