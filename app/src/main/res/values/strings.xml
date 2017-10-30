@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">GoodWatch</string>
-    <string name="facebook_app_id">156571434849954</string>
+    <string name="facebook_app_id">298942793956089</string>
+    <string name="fb_login_protocol_scheme">fb298942793956089</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
