@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "948288771759",
+    "firebase_url": "https://good-7c89f.firebaseio.com",
+    "project_id": "good-7c89f",
+    "storage_bucket": "good-7c89f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948288771759:android:3444abf6dd899eb2",
+        "android_client_info": {
+          "package_name": "com.example.reehams.goodreads"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948288771759-fk8f7gc5is0u2o2svjlotgne117c9d9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANTDL0DzR8NA1JJDf2UFS-saqC7iX76Nw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948288771759:android:5aee6f5851a9eb04",
+        "android_client_info": {
+          "package_name": "edu.upenn.goodwatch"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948288771759-fk8f7gc5is0u2o2svjlotgne117c9d9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANTDL0DzR8NA1JJDf2UFS-saqC7iX76Nw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
