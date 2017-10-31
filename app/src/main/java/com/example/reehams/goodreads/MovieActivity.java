@@ -40,9 +40,7 @@ public class MovieActivity extends SideBar {
     public void search(String query) {
         // Set up query
         String[] queryArr = new String[1];
-        queryArr[0] = "https://api.themoviedb.org/3/search/movie?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US&query="
-                + query
-                +"&page=1&include_adult=false";
+        queryArr[0] = Config.getSearchUrl(getBaseContext(), query);
         AsyncTask search = new MovieBackend().execute(queryArr);
         JSONObject json = null;
         // Search and add
@@ -65,8 +63,7 @@ public class MovieActivity extends SideBar {
                 // Pass the IMBD movie id to the details page
                 String movieId = resultsArr.getJSONObject(i).get("id").toString();
                 String[] queryArr = new String[1];
-                queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
-                        "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
+                queryArr[0] = Config.getMovieInfoUrl(getBaseContext(), movieId);
                 AsyncTask search = new MovieBackend().execute(queryArr);
                 JSONObject json = null;
                 json = (JSONObject) search.get();
@@ -112,8 +109,7 @@ public class MovieActivity extends SideBar {
                     // Pass the IMBD movie id to the details page
                     String movieId = resultsArr.getJSONObject(position).get("id").toString();
                     String[] queryArr = new String[1];
-                    queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
-                            "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
+                    queryArr[0] = Config.getMovieInfoUrl(getBaseContext(), movieId);
                     AsyncTask search = new MovieBackend().execute(queryArr);
                     JSONObject json = null;
                     json = (JSONObject) search.get();

@@ -150,8 +150,7 @@ public class FollowActivity extends SideBar {
                                     // Pass the IMBD movie id to the details page
                                     String movieId = searchResults[position];
                                     String[] queryArr = new String[1];
-                                    queryArr[0] = "https://api.themoviedb.org/3/movie/" + movieId +
-                                            "?api_key=9f4d052245dda68f14bcbd986787dc7b&language=en-US";
+                                    queryArr[0] = Config.getMovieInfoUrl(getBaseContext(), movieId);
                                     AsyncTask search = new MovieBackend().execute(queryArr);
                                     JSONObject json = null;
                                     json = (JSONObject) search.get();
