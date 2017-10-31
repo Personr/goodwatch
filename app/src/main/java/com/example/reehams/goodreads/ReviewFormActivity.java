@@ -28,7 +28,6 @@ import java.util.List;
 
 public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSelectedListener {
 
-
     private String[] ratingSpinner;
     private String rating;
     private EditText review;
@@ -86,58 +85,14 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 String name = WelcomeActivity.getFacebookName();
                                 String userId = WelcomeActivity.getUserId1();
                                 final Review review1 = new Review(movieId, rating, reviewText, movieName);
-                                myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(
-                                        new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                // Get user value
-                                                List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
-                                                if (l.get(0).get("movieId").equals("null")) {
-                                                    l.remove(0);
-                                                }
-                                                l.add(review1.getMapping());
-                                                myDatabase.child(ReviewFormActivity.this.userId).child("reviews").setValue(l);
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
+                                ReviewFormValueEventListener listener = new ReviewFormValueEventListener(review1,
+                                        myDatabase, ReviewFormActivity.this.userId);
+                                myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(listener);
                                 boolean b = myDatabase.child(movieId).getDatabase() != null;
-                                myDatabase.addListenerForSingleValueEvent(
-                                        new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                if (dataSnapshot.child(movieId).exists()) {
-                                                    myDatabase.child(movieId).addListenerForSingleValueEvent(
-                                                            new ValueEventListener() {
-                                                                @Override
-                                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                    // Get user value
-                                                                    List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
-                                                                    l.add(review1.getMapping());
-                                                                    myDatabase.child(movieId).setValue(l);
-                                                                }
 
-                                                                @Override
-                                                                public void onCancelled(DatabaseError databaseError) {
+                                ReviewFormValueMovieEventListener listenerMovie = new ReviewFormValueMovieEventListener(myDatabase, movieId, review1);
+                                myDatabase.addListenerForSingleValueEvent(listenerMovie);
 
-                                                                }
-                                                            });
-                                                } else {
-                                                    List<HashMap<String, String>> l = new ArrayList<HashMap<String, String>>();
-                                                    l.add(review1.getMapping());
-                                                    myDatabase.child(movieId).setValue(l);
-                                                }
-
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
                                 Intent i = new Intent(ReviewFormActivity.this, MovieDetailsActivity.class);
                                 Bundle extras = new Bundle();
                                 extras.putString("user_id", userId);
