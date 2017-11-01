@@ -11,9 +11,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.reehams.goodreads.FileAccess.Config;
-import com.example.reehams.goodreads.FileAccess.Messages;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,7 +49,7 @@ public class MovieActivity extends SideBar {
             json = (JSONObject) search.get();
             resultsArr = json.getJSONArray("results");
         } catch (Exception e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "movie.dbException"), e);
+            Log.e(DEBUG_TAG, "moviedb API call exception\n", e);
         }
     }
 
@@ -85,13 +82,13 @@ public class MovieActivity extends SideBar {
             for (int i = max; i < 5; i++) {
                 // If there are no results, say so
                 if (i == 0) {
-                    searchResults[i] = Messages.getMessage(getBaseContext(), "movie.noMovie");
+                    searchResults[i] = "No Movies Found";
                     continue;
                 }
                 searchResults[i] = "";
             }
         } catch (Exception e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "movie.dbException"), e);
+            Log.e(DEBUG_TAG, "moviedb API call exception\n", e);
         }
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 R.layout.movie_list, searchResults);
@@ -102,7 +99,7 @@ public class MovieActivity extends SideBar {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Do nothing if there is no result
-                if (searchResults[position].equals("") || searchResults[position].equals(Messages.getMessage(getBaseContext(), "movie.noMovie"))) {
+                if (searchResults[position].equals("") || searchResults[position].equals("No Movies Found")) {
                     return;
                 }
                 // Pass the data of the clicked movie to the movieDetails class
@@ -122,7 +119,7 @@ public class MovieActivity extends SideBar {
                         isInvalid = imbdId.equals("") || imbdId.equals("null");
                     }
                     if (isInvalid) {
-                        Toast.makeText(MovieActivity.this, Messages.getMessage(getBaseContext(), "follow.detailsNotFound"),
+                        Toast.makeText(MovieActivity.this, "More movie details cannot be found in IMBD Database",
                                 Toast.LENGTH_SHORT).show();
                         return;
                     }
@@ -131,7 +128,7 @@ public class MovieActivity extends SideBar {
                     }
                     i.putExtra("JSON_Data", imbdId);
                 } catch (Exception e) {
-                    Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "movie.dbException"), e);
+                    Log.e(DEBUG_TAG, "moviedb API call exception\n", e);
                 }
                 startActivity(i);
             }

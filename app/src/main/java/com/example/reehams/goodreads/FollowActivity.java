@@ -14,8 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.reehams.goodreads.FileAccess.Config;
-import com.example.reehams.goodreads.FileAccess.Messages;
 import com.facebook.FacebookSdk;
 import com.facebook.login.widget.ProfilePictureView;
 import com.google.firebase.database.DataSnapshot;
@@ -67,9 +65,9 @@ public class FollowActivity extends SideBar {
 
         String userEmail = getIntent().getStringExtra("email");
         email = (TextView) findViewById(R.id.email2);
-        email.setText(Messages.getMessage(getBaseContext(), "follow.email") + " " + userEmail);
+        email.setText("Email:" + " " + userEmail);
         userName = (TextView) findViewById(R.id.userName2);
-        userName.setText(Messages.getMessage(getBaseContext(), "follow.name") + " " + userName2);
+        userName.setText("Name:" + " " + userName2);
         image = (ProfilePictureView) findViewById(R.id.image2);
         image.setPresetSize(ProfilePictureView.NORMAL);
         image.setProfileId(imageUsed);
@@ -78,10 +76,10 @@ public class FollowActivity extends SideBar {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new TreeSet<String>();
                 followButton = (Button) findViewById(R.id.followbotton);
-                followButton.setText(Messages.getMessage(getBaseContext(), "follow.follow"));
+                followButton.setText("+Follow");
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     if (childSnapshot.getValue(String.class).equals(userId2 + "," + userName2)) {
-                        followButton.setText(Messages.getMessage(getBaseContext(), "follow.unfollow"));
+                        followButton.setText("-Unfollow");
                     }
                 }
             }
@@ -94,7 +92,7 @@ public class FollowActivity extends SideBar {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, userReviewsList);
         userReviewsView.setAdapter(arrayAdapter);
         userReviewsList.clear();
-        userReviewsList.add(Messages.getMessage(getBaseContext(), "follow.loading"));
+        userReviewsList.add("Loading...");
         arrayAdapter.notifyDataSetChanged();
         DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
         myDatabase.child(imageUsed).child("reviews").addListenerForSingleValueEvent(
@@ -120,7 +118,7 @@ public class FollowActivity extends SideBar {
                         if (set.isEmpty()) {
                             searchResults = new String[1];
                             searchResults[0] = "empty";
-                            userReviewsList.add(Messages.noReview(getBaseContext(), userName2));
+                            userReviewsList.add(userName2 + " has no reviews");
                         }
                         else {
                             searchResults = new String[set.size()];
@@ -139,9 +137,7 @@ public class FollowActivity extends SideBar {
                                 //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
                                 // Do nothing if there is no result
                                 if (searchResults[position] == null) {
-                                    Toast.makeText(FollowActivity.this,
-                                            Messages.getMessage(getBaseContext(), "follow.nullId"),
-                                            Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FollowActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
                                 if (searchResults[position].equals("empty")) {
@@ -164,8 +160,7 @@ public class FollowActivity extends SideBar {
                                         isInvalid = imbdId.equals("") || imbdId.equals("null");
                                     }
                                     if (isInvalid) {
-                                        Toast.makeText(FollowActivity.this,
-                                                Messages.getMessage(getBaseContext(), "follow.detailsNotFound"),
+                                        Toast.makeText(FollowActivity.this, "More movie details cannot be found in IMBD Database",
                                                 Toast.LENGTH_SHORT).show();
                                         return;
                                     }
@@ -174,7 +169,7 @@ public class FollowActivity extends SideBar {
                                     }
                                     i.putExtra("JSON_Data", imbdId);
                                 } catch (Exception e) {
-                                    Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "follow.imdbException"), e);
+                                    Log.e(DEBUG_TAG, "Exception arises when querying movie database with IMDB id\n", e);
                                 }
                                 startActivity(i);
                             }
@@ -215,13 +210,12 @@ public class FollowActivity extends SideBar {
                             FollowActivity.this);
 
                     // set title
-                    alertDialogBuilder.setTitle(Messages.getMessage(getBaseContext(), "follow.removeFollowing"));
+                    alertDialogBuilder.setTitle("Remove from Following List");
                     // set dialog message
                     alertDialogBuilder
-                            .setMessage(Messages.getMessage(getBaseContext(), "follow.confirmUnfollow"))
+                            .setMessage("Are you sure you want to unfollow?")
                             .setCancelable(false)
-                            .setPositiveButton(Messages.getMessage(getBaseContext(), "follow.yes")
-                                    , new DialogInterface.OnClickListener() {
+                            .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     // if this button is clicked, close
                                     // current activity
@@ -230,12 +224,11 @@ public class FollowActivity extends SideBar {
                                     if (l.isEmpty()) {
                                         l.add("null");
                                     }
-                                    followButton.setText(Messages.getMessage(getBaseContext(), "follow.follow"));
+                                    followButton.setText("+Follow");
                                     myDatabase.child(userId1).child("followingIds").setValue(l);
                                 }
                             })
-                            .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"),
-                                    new DialogInterface.OnClickListener() {
+                            .setNegativeButton("No",new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,int id) {
                                     // if this button is clicked, just close
                                     // the dialog box and do nothing
@@ -256,7 +249,7 @@ public class FollowActivity extends SideBar {
                     if (!l.contains(s)) {
                         l.add(s);
                     }
-                    followButton.setText(Messages.getMessage(getBaseContext(), "follow.unfollow"));
+                    followButton.setText("-Unfollow");
                     myDatabase.child(userId1).child("followingIds").setValue(l);
                 }
 

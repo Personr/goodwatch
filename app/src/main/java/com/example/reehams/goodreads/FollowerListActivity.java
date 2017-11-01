@@ -7,7 +7,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.example.reehams.goodreads.FileAccess.Messages;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +45,7 @@ public class FollowerListActivity extends SideBar {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String following = childSnapshot.getValue(String.class);
                     if (following.equals("null")) {
-                        set.add(Messages.getMessage(getBaseContext(), "followerList.noFollowers"));
+                        set.add("No followers");
                         break;
                     }
                     int idx = following.indexOf(",");
@@ -78,7 +77,7 @@ public class FollowerListActivity extends SideBar {
                         for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                             String following = childSnapshot.getValue(String.class);
                             if (following.equals("null")) {
-                                set.add(Messages.getMessage(getBaseContext(), "followerList.notFollowing"));
+                                set.add("You're not following anyone");
                                 break;
                             }
                             final String[] followingDetails = following.split(",");

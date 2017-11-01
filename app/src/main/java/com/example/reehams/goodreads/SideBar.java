@@ -14,8 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.example.reehams.goodreads.FileAccess.Messages;
-
 
 /**
  * Created by reehams on 2/19/17.
@@ -115,7 +113,7 @@ public class SideBar extends AppCompatActivity {
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle(Messages.getMessage(getBaseContext(), "sidebar.menu"));
+                getSupportActionBar().setTitle("Navigation Menu");
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 

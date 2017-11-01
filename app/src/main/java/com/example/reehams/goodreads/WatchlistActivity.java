@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.reehams.goodreads.FileAccess.Config;
-import com.example.reehams.goodreads.FileAccess.Messages;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +40,7 @@ public class WatchlistActivity extends SideBar {
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myMovies);
         mListView.setAdapter(arrayAdapter);
         myMovies.clear();
-        myMovies.add(Messages.getMessage(getBaseContext(), "follow.loading"));
+        myMovies.add("Loading...");
         arrayAdapter.notifyDataSetChanged();
         userId = WelcomeActivity.getUserId1();
         reference = FirebaseDatabase.getInstance().getReference();
@@ -54,7 +52,7 @@ public class WatchlistActivity extends SideBar {
                 for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
                     String movieTitle = childSnapshot.getValue(String.class);
                     if (movieTitle.equals("null")) {
-                        set.add(Messages.getMessage(getBaseContext(), "watchlist.empty"));
+                        set.add("Watchlist Empty");
                         isEmpty = true;
                         break;
                     }
@@ -79,7 +77,7 @@ public class WatchlistActivity extends SideBar {
                             //Toast.makeText(WatchlistActivity.this, movie + "Search Results value: " + movieId, Toast.LENGTH_SHORT).show();
                             //Toast.makeText(WatchlistActivity.this, "Movies shown: " + i, Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
-                            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "watchlist.exception"), e);
+                            Log.e(DEBUG_TAG, "Exception arose when searching watchlist\n", e);
 
                         }
                     }
@@ -157,7 +155,7 @@ public class WatchlistActivity extends SideBar {
             return resultsArr;
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(WatchlistActivity.this, Messages.getMessage(getBaseContext(), "watchlist.searchError"),
+            Toast.makeText(WatchlistActivity.this, "Search error",
                     Toast.LENGTH_SHORT).show();
             return null;
         }
