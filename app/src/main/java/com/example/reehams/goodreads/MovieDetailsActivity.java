@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.reehams.goodreads.FileAccess.Config;
+import com.example.reehams.goodreads.FileAccess.Messages;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -59,15 +61,15 @@ public class MovieDetailsActivity extends SideBar {
         userId = WelcomeActivity.getUserId1();
         myDatabase = FirebaseDatabase.getInstance().getReference();
         // Variables to save movie data
-        String name = "n/a";
-        String releaseDate = "n/a";
-        String posterURL = "n/a";
-        String description = "n/a";
-        String runtime = "n/a";
-        String genres  = "n/a";
-        String director = "n/a";
-        String rating = "n/a";
-        String actors = "n/a";
+        String name = Messages.getMessage(getBaseContext(), "movie.noInfo");
+        String releaseDate = Messages.getMessage(getBaseContext(), "movie.noInfo");
+        String posterURL = Messages.getMessage(getBaseContext(), "movie.noInfo");
+        String description = Messages.getMessage(getBaseContext(), "movie.noInfo");
+        String runtime = Messages.getMessage(getBaseContext(), "movie.noInfo");
+        String genres  = Messages.getMessage(getBaseContext(), "movie.noInfo");
+        String director = Messages.getMessage(getBaseContext(), "movie.noInfo");
+        String rating = Messages.getMessage(getBaseContext(), "movie.noInfo");
+        String actors = Messages.getMessage(getBaseContext(), "movie.noInfo");
 
         try {
             // Get movie ID from intent
@@ -75,7 +77,7 @@ public class MovieDetailsActivity extends SideBar {
             movieId = id;
             // Get movie details in JSON object
             String[] queryArr = new String[1];
-            queryArr[0] = "http://theapache64.xyz:8080/movie_db/search?keyword=" + id;
+            queryArr[0] = Config.getApacheUrl(getBaseContext(), movieId);
 
             // TODO: Likely source of a NullPointerException
 
@@ -96,9 +98,9 @@ public class MovieDetailsActivity extends SideBar {
             Log.e(DEBUG_TAG, posterURL);
             Log.e(DEBUG_TAG, "HERE2");
 
-            if (posterURL.equalsIgnoreCase("n/a")) {
+            if (posterURL.equalsIgnoreCase(Messages.getMessage(getBaseContext(), "movie.noInfo"))) {
                 Log.e(DEBUG_TAG, "HERE1");
-                posterURL = "http://s3.amazonaws.com/static.betaeasy.com/screenshot/456/456-25984-14192637741419263774.42.jpeg";
+                posterURL = Config.getDefaultPoster(getBaseContext());
             }
             description = CustomJSONParser.getPlot(response);
             director = CustomJSONParser.getDirector(response);
@@ -106,7 +108,7 @@ public class MovieDetailsActivity extends SideBar {
             actors = CustomJSONParser.getActors(response);
             genres = CustomJSONParser.getGenre(response);
         } catch (Exception e) {
-            Log.e(DEBUG_TAG, "Call to the OMDB API results in error", e);
+            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "movie.omdbError"), e);
         }
         // Set movie info to view
         ((TextView) findViewById(R.id.movie_name)).setText(name);
@@ -126,10 +128,10 @@ public class MovieDetailsActivity extends SideBar {
                         List<String> l = (ArrayList<String>) dataSnapshot.getValue();
                         Button watchButton = (Button) findViewById(R.id.watchlist_button);
                         if (l.contains(movieId + "," + movieName)) {
-                            watchButton.setText("Remove from Watchlist");
+                            watchButton.setText(Messages.getMessage(getBaseContext(), "movie.remove"));
                         }
                         else {
-                            watchButton.setText("Add to Watchlist");
+                            watchButton.setText(Messages.getMessage(getBaseContext(), "movie.add"));
                         }
                     }
 
@@ -177,7 +179,7 @@ public class MovieDetailsActivity extends SideBar {
                                 searchResults = new String[1];
                                 searchResults[0] = "empty";
                                 movieReviewsList.clear();
-                                movieReviewsList.add("Movie has not been reviewed yet");
+                                movieReviewsList.add( Messages.getMessage(getBaseContext(), "movie.notReviewed"));
                                 return;
                             }
                             movieReviewsList.clear();
@@ -185,7 +187,7 @@ public class MovieDetailsActivity extends SideBar {
                                 searchResults = new String[1];
                                 searchResults[0] = "empty";
                                 movieReviewsList.clear();
-                                movieReviewsList.add("Movie has no reviews");
+                                movieReviewsList.add( Messages.getMessage(getBaseContext(), "movie.noReview"));
                                 return;
                             } else {
                                 searchResults = new String[set.size()];
