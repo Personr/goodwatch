@@ -23,4 +23,14 @@ public class Config extends FileAccesser {
         url = url.replace("%MOVIE_ID%", movieId);
         return url;
     }
+
+    public static String getApacheUrl(Context context, String movieId) {
+        String url = getProperty(context, "theapache64Address", fileName);
+        url = url.replace("%MOVIE_ID%", movieId);
+        return url;
+    }
+
+    public static String getDefaultPoster(Context context) {
+        return getProperty(context, "defaultPosterUrl", fileName);
+    }
 }

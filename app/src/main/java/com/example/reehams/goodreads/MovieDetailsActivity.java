@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.reehams.goodreads.FileAccess.Config;
 import com.example.reehams.goodreads.FileAccess.Messages;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -76,7 +77,7 @@ public class MovieDetailsActivity extends SideBar {
             movieId = id;
             // Get movie details in JSON object
             String[] queryArr = new String[1];
-            queryArr[0] = "http://theapache64.xyz:8080/movie_db/search?keyword=" + id;
+            queryArr[0] = Config.getApacheUrl(getBaseContext(), movieId);
 
             // TODO: Likely source of a NullPointerException
 
@@ -99,7 +100,7 @@ public class MovieDetailsActivity extends SideBar {
 
             if (posterURL.equalsIgnoreCase(Messages.getMessage(getBaseContext(), "movie.noInfo"))) {
                 Log.e(DEBUG_TAG, "HERE1");
-                posterURL = "http://s3.amazonaws.com/static.betaeasy.com/screenshot/456/456-25984-14192637741419263774.42.jpeg";
+                posterURL = Config.getDefaultPoster(getBaseContext());
             }
             description = CustomJSONParser.getPlot(response);
             director = CustomJSONParser.getDirector(response);
