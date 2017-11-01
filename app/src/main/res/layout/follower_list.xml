@@ -14,7 +14,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context="com.example.reehams.goodreads.FollowerListActivity">
+        tools:context="com.upenn.reehams.goodreads.edu.upenn.reehams.goodreads.FollowerListActivity">
 
         <ListView
             android:layout_width="match_parent"
