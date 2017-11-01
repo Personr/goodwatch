@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.reehams.goodreads.FileAccess.Messages;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -104,22 +105,22 @@ public class WelcomeActivity extends AppCompatActivity {
         try {
             this.email = jsonObject.getString("email");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, "User doesn't have an email.\n", e);
+            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noEmail"), e);
         }
         try {
             this.gender = jsonObject.getString("gender");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, "User doesn't have a gender.\n", e);
+            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noGender"), e);
         }
         try {
             this.facebookName = jsonObject.getString("name");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, "User doesn't have an name.\n", e);
+            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noName"), e);
         }
         try {
             this.profilePicId = jsonObject.getString("id");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, "User doesn't have a profile pic.\n", e);
+            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noPic"), e);
         }
     }
 
