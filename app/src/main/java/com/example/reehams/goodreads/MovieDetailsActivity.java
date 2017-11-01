@@ -76,27 +76,36 @@ public class MovieDetailsActivity extends SideBar {
             movieId = id;
             // Get movie details in JSON object
             String[] queryArr = new String[1];
-            queryArr[0] = "http://www.omdbapi.com/?i=" + id;
+            queryArr[0] = "http://theapache64.xyz:8080/movie_db/search?keyword=" + id;
 
             // TODO: Likely source of a NullPointerException
+
             AsyncTask search = new MovieBackend().execute(queryArr);
             JSONObject json = null;
             json = (JSONObject) search.get();
+
+            String response = json.toString();
+
             // Set movie info
-            name = json.get("Title").toString();
+            name = CustomJSONParser.getName(response);
             movieName = name;
             nameId = name;
-            releaseDate = json.get("Released").toString();
-            runtime = json.get("Runtime").toString();
-            posterURL = json.get("Poster").toString();
+            releaseDate = CustomJSONParser.getYear(response);
+            //Non available information
+            runtime = "121 minutes";
+            posterURL = CustomJSONParser.getPosterURL(response);
+            Log.e(DEBUG_TAG, posterURL);
+            Log.e(DEBUG_TAG, "HERE2");
+
             if (posterURL.equalsIgnoreCase(Messages.getMessage(getBaseContext(), "movie.noInfo"))) {
+                Log.e(DEBUG_TAG, "HERE1");
                 posterURL = "http://s3.amazonaws.com/static.betaeasy.com/screenshot/456/456-25984-14192637741419263774.42.jpeg";
             }
-            description = json.get("Plot").toString();
-            director = getDirectorString(json.get("Director").toString());
-            rating = json.get("imdbRating").toString();
-            actors = getActorString(json.get("Actors").toString());
-            genres = json.get("Genre").toString();
+            description = CustomJSONParser.getPlot(response);
+            director = CustomJSONParser.getDirector(response);
+            rating = CustomJSONParser.getRating(response);
+            actors = CustomJSONParser.getActors(response);
+            genres = CustomJSONParser.getGenre(response);
         } catch (Exception e) {
             Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "movie.omdbError"), e);
         }
