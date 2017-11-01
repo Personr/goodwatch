@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="edu.upenn.goodwatch.WelcomeActivity">
+        <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,46 +18,46 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="edu.upenn.goodwatch.AboutUs"
+            android:name=".AboutUs"
             android:label="About Us" />
         <activity
-            android:name="edu.upenn.goodwatch.MyAccountActivity"
+            android:name=".MyAccountActivity"
             android:label="My Account" />
         <activity
-            android:name="edu.upenn.goodwatch.SideBar"
+            android:name=".SideBar"
             android:label="Menu" />
         <activity
-            android:name="edu.upenn.goodwatch.LogOutActivity"
+            android:name=".LogOutActivity"
             android:label="Log Out" />
         <activity
-            android:name="edu.upenn.goodwatch.MovieDetailsActivity"
+            android:name=".MovieDetailsActivity"
             android:label="Movie Info" />
         <activity
-            android:name="edu.upenn.goodwatch.MovieActivity"
+            android:name=".MovieActivity"
             android:label="Movie Search" />
         <activity
-            android:name="edu.upenn.goodwatch.UserSearch"
-            android:label="User Search"/>
+            android:name=".UserSearch"
+            android:label="User Search" />
         <activity
-            android:name="edu.upenn.goodwatch.FollowActivity"
+            android:name=".FollowActivity"
             android:label="Follow Activity" />
         <activity
-            android:name="edu.upenn.goodwatch.FollowingListActivity"
+            android:name=".FollowingListActivity"
             android:label="Following List" />
         <activity
-            android:name="edu.upenn.goodwatch.FollowerListActivity"
+            android:name=".FollowerListActivity"
             android:label="Follower List" />
         <activity
-            android:name="edu.upenn.goodwatch.WhoIsFollowingUser"
+            android:name=".WhoIsFollowingUser"
             android:label="Followings" />
         <activity
-            android:name="edu.upenn.goodwatch.FollowersofUser"
+            android:name=".FollowersofUser"
             android:label="Followers" />
         <activity
-            android:name="edu.upenn.goodwatch.HomeActivity"
+            android:name=".HomeActivity"
             android:label="Home Screen" />
         <activity
-            android:name="edu.upenn.goodwatch.TopChartsActivity"
+            android:name=".TopChartsActivity"
             android:label="Top Charts" />
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -70,13 +70,17 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name="edu.upenn.goodwatch.WatchlistActivity"
+            android:name=".WatchlistActivity"
             android:label="Watchlist" />
-        <activity android:name="edu.upenn.goodwatch.ReviewFormActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
+        <activity android:name=".ReviewFormActivity" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
     </application>
 
 </manifest>

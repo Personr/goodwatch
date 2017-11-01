@@ -152,7 +152,6 @@ public class MyAccountActivity extends SideBar {
 
                     }
                 });
-        //waitForFirebase();
     }
 
     protected void watchlistOnButtonPressed(View view) {
