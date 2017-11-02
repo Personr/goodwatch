@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import edu.upenn.goodwatch.FileAccess.Messages;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -45,7 +44,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
         movieName = getIntent().getStringExtra("movie_name");
         movieId = getIntent().getStringExtra("movie_id");
         userId = getIntent().getStringExtra("user_id");
-        reviewHeader.setText(Messages.reviewBelow(getBaseContext(), movieName));
+        reviewHeader.setText("Review " + movieName + " below!");
 
         review = (EditText) findViewById(R.id.reviewEditText);
 
@@ -60,19 +59,18 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                         ReviewFormActivity.this);
 
                 // set title
-                alertDialogBuilder.setTitle(Messages.getMessage(getBaseContext(), "review.submit"));
+                alertDialogBuilder.setTitle("Submit Review");
 
                 if (rating.equals("blank")) {
-                    Toast.makeText(getApplicationContext(), Messages.getMessage(getBaseContext(), "review.select"),
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please select a rating", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 // set dialog message
                 alertDialogBuilder
-                        .setMessage(Messages.getMessage(getBaseContext(), "review.confirmSubmit"))
+                        .setMessage("Are you sure you want to submit this review?")
                         .setCancelable(false)
-                        .setPositiveButton(Messages.getMessage(getBaseContext(), "follow.yes"), new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, close
                                 // current activity
@@ -96,7 +94,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 startActivity(i);
                             }
                         })
-                        .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"), new DialogInterface.OnClickListener() {
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, just close
                                 // the dialog box and do nothing
@@ -118,13 +116,13 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                         ReviewFormActivity.this);
 
                 // set title
-                alertDialogBuilder.setTitle(Messages.getMessage(getBaseContext(), "review.cancel"));
+                alertDialogBuilder.setTitle("Cancel Review");
 
                 // set dialog message
                 alertDialogBuilder
-                        .setMessage(Messages.getMessage(getBaseContext(), "review.confirmCancel"))
+                        .setMessage("Are you sure you want to cancel your review?")
                         .setCancelable(false)
-                        .setPositiveButton(Messages.getMessage(getBaseContext(), "follow.yes"), new DialogInterface.OnClickListener() {
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, close
                                 // current activity
@@ -136,8 +134,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 startActivity(i);
                             }
                         })
-                        .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"),
-                                new DialogInterface.OnClickListener() {
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // if this button is clicked, just close
                                 // the dialog box and do nothing
@@ -153,8 +150,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
         });
 
 
-        this.ratingSpinner = new String[]{Messages.getMessage(getBaseContext(), "review.selectRating"),
-                "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        this.ratingSpinner = new String[]{"Select Rating", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
         Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -193,14 +189,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
 
    @Override
    protected void addDrawerItems() {
-       String[] osArray = { Messages.getMessage(getBaseContext(), "review.home"),
-               Messages.getMessage(getBaseContext(), "review.myAccount"),
-               Messages.getMessage(getBaseContext(), "review.myWatchlist"),
-               Messages.getMessage(getBaseContext(), "review.topCharts"),
-               Messages.getMessage(getBaseContext(), "review.movieSearch"),
-               Messages.getMessage(getBaseContext(), "review.userSearch"),
-               Messages.getMessage(getBaseContext(), "review.aboutUs"),
-               Messages.getMessage(getBaseContext(), "review.logOut")};
+       String[] osArray = { "Home", "My Account", "My Watchlist", "Top Charts", "Movie Search", "User Search", "About Us", "Log Out"};
        mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, osArray);
        mDrawerList.setAdapter(mAdapter);
        mDrawerList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -210,13 +199,13 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                        ReviewFormActivity.this);
 
                // set title
-               alertDialogBuilder.setTitle(Messages.getMessage(getBaseContext(), "review.cancel"));
+               alertDialogBuilder.setTitle("Cancel Review");
 
                // set dialog message
                alertDialogBuilder
-                       .setMessage(Messages.getMessage(getBaseContext(), "review.confirmNavigate"))
+                       .setMessage("Nagivating away will cancel your review! Are you sure you want to proceed?")
                        .setCancelable(false)
-                       .setPositiveButton(Messages.getMessage(getBaseContext(), "follow.yes"), new DialogInterface.OnClickListener() {
+                       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                            public void onClick(DialogInterface dialog, int id) {
                                Class targetActivity = null;
                                if (position == 0) {
@@ -248,7 +237,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                startActivity(i);
                            }
                        })
-                       .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"), new DialogInterface.OnClickListener() {
+                       .setNegativeButton("No", new DialogInterface.OnClickListener() {
                            public void onClick(DialogInterface dialog, int id) {
                                // if this button is clicked, just close
                                // the dialog box and close drawer too

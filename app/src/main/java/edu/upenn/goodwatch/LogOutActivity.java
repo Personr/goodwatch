@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 
-import edu.upenn.goodwatch.FileAccess.Messages;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -40,14 +39,13 @@ public class LogOutActivity extends SideBar {
                 context);
 
         // set title
-        alertDialogBuilder.setTitle(Messages.getMessage(getBaseContext(), "logout.logout"));
+        alertDialogBuilder.setTitle("Logout");
 
         // set dialog message
         alertDialogBuilder
-                .setMessage(Messages.getMessage(getBaseContext(), "logout.confirm"))
+                .setMessage("Are you sure you want to logout?")
                 .setCancelable(false)
-                .setPositiveButton(Messages.getMessage(getBaseContext(), "follow.yes"),
-                        new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, close
                         // current activity
@@ -56,8 +54,7 @@ public class LogOutActivity extends SideBar {
                         startActivity(i);
                     }
                 })
-                .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"),
-                        new DialogInterface.OnClickListener() {
+                .setNegativeButton("No",new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, just close
                         // the dialog box and do nothing

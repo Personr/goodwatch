@@ -12,7 +12,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import edu.upenn.goodwatch.FileAccess.Config;
-import edu.upenn.goodwatch.FileAccess.Messages;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.*;
@@ -147,7 +146,7 @@ public class HomeActivity extends SideBar {
         myReviewList.setAdapter(arrayAdapter2);
         myReviews.clear();
         if (set.isEmpty()) {
-            myReviews.add(Messages.getMessage(getBaseContext(), "home.noReview"));
+            myReviews.add("No reviews yet");
             searchResults = new String[1];
             searchResults[0] = "empty";
         }

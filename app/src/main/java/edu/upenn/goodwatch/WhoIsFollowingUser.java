@@ -7,7 +7,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import edu.upenn.goodwatch.FileAccess.Messages;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,7 +49,7 @@ public class WhoIsFollowingUser extends SideBar {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String following = childSnapshot.getValue(String.class);
                     if (following.equals("null")) {
-                        set.add(Messages.getMessage(getBaseContext(), "who.noFollow"));
+                        set.add("No users being followed");
                         break;
                     }
                     int idx = following.indexOf(",");

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
-import edu.upenn.goodwatch.FileAccess.Messages;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -15,18 +14,13 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -57,21 +51,7 @@ public class WelcomeActivity extends AppCompatActivity {
             login(accessToken);
         }
         else {
-            btnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-                @Override
-                public void onSuccess(LoginResult loginResult) {
-                    AccessToken accessToken = loginResult.getAccessToken();
-                    login(accessToken);
-                }
-
-                @Override
-                public void onCancel() {
-                }
-
-                @Override
-                public void onError(FacebookException exception) {
-                }
-            });
+            btnLogin.registerCallback(callbackManager, getCustomFacebookCallback());
         }
     }
 
@@ -105,22 +85,22 @@ public class WelcomeActivity extends AppCompatActivity {
         try {
             this.email = jsonObject.getString("email");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noEmail"), e);
+            Log.e(DEBUG_TAG, "User doesn't have an email.\n", e);
         }
         try {
             this.gender = jsonObject.getString("gender");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noGender"), e);
+            Log.e(DEBUG_TAG, "User doesn't have a gender.\n", e);
         }
         try {
             this.facebookName = jsonObject.getString("name");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noName"), e);
+            Log.e(DEBUG_TAG, "User doesn't have an name.\n", e);
         }
         try {
             this.profilePicId = jsonObject.getString("id");
         } catch (JSONException e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noPic"), e);
+            Log.e(DEBUG_TAG, "User doesn't have a profile pic.\n", e);
         }
     }
 
@@ -149,40 +129,26 @@ public class WelcomeActivity extends AppCompatActivity {
             public void onCompleted(JSONObject object, GraphResponse response) {
                 Log.v("Main", response.toString());
                 setProfileToView(object);
+                WelcomeActivityEventListener listener = new WelcomeActivityEventListener(userId1, facebookName, email, myDatabase);
+                myDatabase.addListenerForSingleValueEvent(listener);
+            }
+        };
+    }
 
-                myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        List<String> watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
-                        List<Review> reviews = (ArrayList<Review>) dataSnapshot.child(userId1).child("reviews").getValue();
-                        List<String> following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
-                        List<String> followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
-                        if (watchlist == null) {
-                            watchlist = new ArrayList<String>();
-                            watchlist.add("null");
-                        }
-                        if (reviews == null) {
-                            reviews = new ArrayList<Review>();
-                            // reviews.add("null");
-                            reviews.add(new Review(("null")));
+    private FacebookCallback<LoginResult> getCustomFacebookCallback() {
+        return new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                AccessToken accessToken = loginResult.getAccessToken();
+                login(accessToken);
+            }
 
-                        }
-                        if (following == null) {
-                            following = new ArrayList<String>();
-                            following.add("null");
-                        }
-                        if (followers == null) {
-                            followers = new ArrayList<String>();
-                            followers.add("null");
-                        }
-                        User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
-                        myDatabase.child(userId1).setValue(user);
-                    }
+            @Override
+            public void onCancel() {
+            }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
+            @Override
+            public void onError(FacebookException exception) {
             }
         };
     }
