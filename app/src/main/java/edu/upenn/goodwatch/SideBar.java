@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import edu.upenn.goodwatch.FileAccess.Messages;
 
+
 /**
  * Created by reehams on 2/19/17.
  */
@@ -114,7 +115,7 @@ public class SideBar extends AppCompatActivity {
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle("Navigation Menu");
+                getSupportActionBar().setTitle(Messages.getMessage(getBaseContext(), "sidebar.menu"));
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 

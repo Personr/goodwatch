@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import edu.upenn.goodwatch.FileAccess.Config;
+import edu.upenn.goodwatch.FileAccess.Messages;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,7 +49,7 @@ public class TopChartsActivity extends SideBar {
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, topChartList);
         topChartListView.setAdapter(arrayAdapter2);
         topChartList.clear();
-        topChartList.add("Loading...");
+        topChartList.add(Messages.getMessage(getBaseContext(), "follow.loading"));
         arrayAdapter2.notifyDataSetChanged();
         getTopChart();
     }
@@ -116,11 +117,11 @@ public class TopChartsActivity extends SideBar {
         boolean isEmpty = set.isEmpty();
         final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, topChartList);
         topChartListView.setAdapter(arrayAdapter2);
-        topChartList.add("Loading...");
+        topChartList.add(Messages.getMessage(getBaseContext(), "follow.loading"));
         arrayAdapter2.notifyDataSetChanged();
         topChartList.clear();
         if (isEmpty) {
-            topChartList.add("No reviews yet");
+            topChartList.add(Messages.getMessage(getBaseContext(), "home.noReview"));
             searchResults = new String[1];
             searchResults[0] = "empty";
         }
@@ -133,7 +134,7 @@ public class TopChartsActivity extends SideBar {
                     break;
                 }
                 searchResults[i] = s.id;
-                topChartList.add(s.name + "\n -Average rating in the past week: " + s.avgRating);
+                topChartList.add(Messages.averageRating(getBaseContext(), s.name, Double.toString(s.avgRating)));
                 i++;
             }
         }

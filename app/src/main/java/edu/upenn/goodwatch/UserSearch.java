@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import edu.upenn.goodwatch.FileAccess.Messages;
+
 import com.google.firebase.database.*;
 
 import java.util.*;
@@ -50,7 +52,7 @@ public class UserSearch extends SideBar {
     private void search(final String searchQuery) {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
         ArrayList<String> noResultsList = new ArrayList<String>();
-        noResultsList.add("No Users Found");
+        noResultsList.add(Messages.getMessage(getBaseContext(), "user.noUser"));
         final ArrayAdapter<String> noResultsAdaptor = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, noResultsList);
         final ArrayAdapter<User> arrayAdapter = new ArrayAdapter<User>(this, android.R.layout.simple_list_item_1, results);
         listView.setAdapter(arrayAdapter);
@@ -111,7 +113,8 @@ public class UserSearch extends SideBar {
                 startActivity(i);
                 // Do nothing if there is no result
                 if (results.get(position) == null) {
-                    Toast.makeText(UserSearch.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(UserSearch.this, Messages.getMessage(getBaseContext(), "follow.nullId"),
+                            Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
