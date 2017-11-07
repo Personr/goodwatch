@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import edu.upenn.goodwatch.FileAccess.Messages;
 import com.facebook.AccessToken;
@@ -70,6 +71,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
                 @Override
                 public void onError(FacebookException exception) {
+                    Toast.makeText(getApplicationContext(), "Error logging you in, please check your connection and try again.",
+                            Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -130,9 +133,7 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void login(AccessToken accessToken) {
-        Intent i = new Intent(WelcomeActivity.this, HomeActivity.class);
         userId1 = accessToken.getUserId();
-        i.putExtra("user_id", userId1);
         GraphRequest request = GraphRequest.newMeRequest(
                 accessToken,
                 getRefreshDatabaseGraphRequest());
@@ -140,17 +141,16 @@ public class WelcomeActivity extends AppCompatActivity {
         parameters.putString("fields", "id,name,email,gender, birthday");
         request.setParameters(parameters);
         request.executeAsync();
-        startActivity(i);
     }
 
     private GraphRequest.GraphJSONObjectCallback getRefreshDatabaseGraphRequest() {
         return new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
-                Log.v("Main", response.toString());
-                setProfileToView(object);
-
-                myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                try {
+                    Log.v("Main", response.toString());
+                    setProfileToView(object);
+                    myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         List<String> watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
@@ -182,7 +182,14 @@ public class WelcomeActivity extends AppCompatActivity {
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
-                });
+                    });
+                    Intent i = new Intent(WelcomeActivity.this, HomeActivity.class);
+                    i.putExtra("user_id", userId1);
+                    startActivity(i);
+                } catch (Exception ex) {
+                    Toast.makeText(getApplicationContext(), "Error logging you in, please check your connection and try again.",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         };
     }
