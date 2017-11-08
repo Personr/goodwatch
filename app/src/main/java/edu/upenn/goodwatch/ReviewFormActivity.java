@@ -223,7 +223,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                    targetActivity = HomeActivity.class;
                                }
                                if (position == 1) {
-                                   targetActivity = MyAccountActivity.class;
+                                   targetActivity = AccountInformationActivity.class;
                                }
                                if (position == 2) {
                                    targetActivity = WatchlistActivity.class;

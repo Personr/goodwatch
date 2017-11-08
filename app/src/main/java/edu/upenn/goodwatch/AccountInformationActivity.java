@@ -37,9 +37,9 @@ import java.util.TreeSet;
  * Created by reehams on 3/26/17.
  */
 
-public class FollowActivity extends SideBar {
-    TextView email;
-    TextView userName;
+public class AccountInformationActivity extends SideBar {
+    TextView emailView;
+    TextView userNameView;
     Button followButton;
     ProfilePictureView image;
     private ListView userReviewsView;
@@ -47,58 +47,69 @@ public class FollowActivity extends SideBar {
     private ArrayList<String> userReviewsList = new ArrayList<>();
     final Set<Review> set = new TreeSet<Review>();
 
+    private String accountName;
+    private String accountID;
+    private String accountEmail;
+
+
     private final String DEBUG_TAG = getClass().getSimpleName();
     private DatabaseReference myDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.follow_activity);
+        setContentView(R.layout.account_information_activity);
         super.onCreateDrawer();
         FacebookSdk.sdkInitialize(getApplicationContext());
-        String imageUsed = getIntent().getStringExtra("id");
-        final String userId1 = WelcomeActivity.getUserId1();
-        if (imageUsed.equals(WelcomeActivity.getUserId1())) {
-            Intent i = new Intent(FollowActivity.this, MyAccountActivity.class);
-            startActivity(i);
-        }
-        myDatabase = FirebaseDatabase.getInstance().getReference();
-        final String userName2 = getIntent().getStringExtra("name");
-        final String userId2 = getIntent().getStringExtra("id");
 
-        String userEmail = getIntent().getStringExtra("email");
-        email = (TextView) findViewById(R.id.email2);
-        email.setText(Messages.getMessage(getBaseContext(), "follow.email") + " " + userEmail);
-        userName = (TextView) findViewById(R.id.userName2);
-        userName.setText(Messages.getMessage(getBaseContext(), "follow.name") + " " + userName2);
-        image = (ProfilePictureView) findViewById(R.id.image2);
+        myDatabase = FirebaseDatabase.getInstance().getReference();
+        accountName = getIntent().getStringExtra("name");
+        accountID = getIntent().getStringExtra("id");
+        accountEmail = getIntent().getStringExtra("email");
+
+        emailView = (TextView) findViewById(R.id.email);
+        emailView.setText(Messages.getMessage(getBaseContext(), "follow.email") + " " + accountEmail);
+
+        userNameView = (TextView) findViewById(R.id.userName);
+        userNameView.setText(Messages.getMessage(getBaseContext(), "follow.name") + " " + accountName);
+
+        image = (ProfilePictureView) findViewById(R.id.image);
         image.setPresetSize(ProfilePictureView.NORMAL);
-        image.setProfileId(imageUsed);
-        myDatabase.child(WelcomeActivity.getUserId1()).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Set<String> set = new TreeSet<String>();
-                followButton = (Button) findViewById(R.id.followbotton);
-                followButton.setText(Messages.getMessage(getBaseContext(), "follow.follow"));
-                for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    if (childSnapshot.getValue(String.class).equals(userId2 + "," + userName2)) {
-                        followButton.setText(Messages.getMessage(getBaseContext(), "follow.unfollow"));
+        image.setProfileId(accountID);
+
+        if (userId.equals(accountID)) {
+            followButton = (Button) findViewById(R.id.followbotton);
+            followButton.setVisibility(View.INVISIBLE);
+        } else {
+            myDatabase.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Set<String> set = new TreeSet<String>();
+                    followButton = (Button) findViewById(R.id.followbotton);
+                    followButton.setText(Messages.getMessage(getBaseContext(), "follow.follow"));
+                    for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
+                        if (childSnapshot.getValue(String.class).equals(accountID + "," + accountName)) {
+                            followButton.setText(Messages.getMessage(getBaseContext(), "follow.unfollow"));
+                        }
                     }
                 }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
+
         userReviewsView = (ListView) findViewById(R.id.userReviewsList);
         final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, userReviewsList);
         userReviewsView.setAdapter(arrayAdapter);
         userReviewsList.clear();
         userReviewsList.add(Messages.getMessage(getBaseContext(), "follow.loading"));
         arrayAdapter.notifyDataSetChanged();
+
         DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
-        myDatabase.child(imageUsed).child("reviews").addListenerForSingleValueEvent(
+        myDatabase.child(accountID).child("reviews").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -121,7 +132,7 @@ public class FollowActivity extends SideBar {
                         if (set.isEmpty()) {
                             searchResults = new String[1];
                             searchResults[0] = "empty";
-                            userReviewsList.add(Messages.noReview(getBaseContext(), userName2));
+                            userReviewsList.add(Messages.noReview(getBaseContext(), accountName));
                         }
                         else {
                             searchResults = new String[set.size()];
@@ -140,7 +151,7 @@ public class FollowActivity extends SideBar {
                                 //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
                                 // Do nothing if there is no result
                                 if (searchResults[position] == null) {
-                                    Toast.makeText(FollowActivity.this,
+                                    Toast.makeText(AccountInformationActivity.this,
                                             Messages.getMessage(getBaseContext(), "follow.nullId"),
                                             Toast.LENGTH_SHORT).show();
                                     return;
@@ -149,8 +160,8 @@ public class FollowActivity extends SideBar {
                                     return;
                                 }
                                 // Pass the data of the clicked movie to the movieDetails class
-                                Intent i = new Intent(FollowActivity.this,  MovieDetailsActivity.class);
-                                i.putExtra("user_id", userId);
+                                Intent i = new Intent(AccountInformationActivity.this,  MovieDetailsActivity.class);
+                                i.putExtra("user_id", accountID);
                                 try {
                                     // Pass the IMBD movie id to the details page
                                     String movieId = searchResults[position];
@@ -165,7 +176,7 @@ public class FollowActivity extends SideBar {
                                         isInvalid = imbdId.equals("") || imbdId.equals("null");
                                     }
                                     if (isInvalid) {
-                                        Toast.makeText(FollowActivity.this,
+                                        Toast.makeText(AccountInformationActivity.this,
                                                 Messages.getMessage(getBaseContext(), "follow.detailsNotFound"),
                                                 Toast.LENGTH_SHORT).show();
                                         return;
@@ -191,29 +202,20 @@ public class FollowActivity extends SideBar {
     }
 
     protected void followThisUser(View view) {
-        userName = (TextView) findViewById(R.id.userName2);
-        final String userId1 = getIntent().getStringExtra("userId1");
-        final String userName1 = getIntent().getStringExtra("userName1");
-
-        final String userId2 = getIntent().getStringExtra("id");
-        final String userName2 = getIntent().getStringExtra("name");
-
         // Add the person you followed to your list of followers
-        myDatabase.child(userId1).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
+        myDatabase.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                followButton = (Button) findViewById(R.id.followbotton);
                 boolean isFollowing = false;
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    if (childSnapshot.getValue(String.class).equals(userId2 + "," + userName2)) {
+                    if (childSnapshot.getValue(String.class).equals(accountID + "," + accountName)) {
                         isFollowing = true;
-
                     }
                 }
                 final List<String> l = (ArrayList<String>) dataSnapshot.getValue();
                 if (isFollowing) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                            FollowActivity.this);
+                            AccountInformationActivity.this);
 
                     // set title
                     alertDialogBuilder.setTitle(Messages.getMessage(getBaseContext(), "follow.removeFollowing"));
@@ -226,13 +228,13 @@ public class FollowActivity extends SideBar {
                                 public void onClick(DialogInterface dialog,int id) {
                                     // if this button is clicked, close
                                     // current activity
-                                    String s = userId2 + "," + userName2;
+                                    String s = accountID + "," + accountName;
                                     l.remove(s);
                                     if (l.isEmpty()) {
                                         l.add("null");
                                     }
                                     followButton.setText(Messages.getMessage(getBaseContext(), "follow.follow"));
-                                    myDatabase.child(userId1).child("followingIds").setValue(l);
+                                    myDatabase.child(userId).child("followingIds").setValue(l);
                                 }
                             })
                             .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"),
@@ -253,12 +255,12 @@ public class FollowActivity extends SideBar {
                     if (l.get(0).equals("null")) {
                         l.remove(0);
                     }
-                    String s = userId2 + "," + userName2;
+                    String s = accountID + "," + accountName;
                     if (!l.contains(s)) {
                         l.add(s);
                     }
                     followButton.setText(Messages.getMessage(getBaseContext(), "follow.unfollow"));
-                    myDatabase.child(userId1).child("followingIds").setValue(l);
+                    myDatabase.child(userId).child("followingIds").setValue(l);
                 }
 
             }
@@ -267,34 +269,35 @@ public class FollowActivity extends SideBar {
 
             }
         });
+
         // Add yourself as a follower to the person you just followed
-        myDatabase.child(userId2).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
+        myDatabase.child(accountID).child("followerIds").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean isFollowing = false;
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    if (childSnapshot.getValue(String.class).equals(userId1 + "," + userName1)) {
+                    if (childSnapshot.getValue(String.class).equals(userId + "," + userName)) {
                         isFollowing = true;
                     }
                 }
                 final List<String> l = (ArrayList<String>) dataSnapshot.getValue();
                 if (isFollowing) {
-                    String s = userId1 + "," + userName1;
+                    String s = userId + "," + userName;
                     l.remove(s);
                     if (l.isEmpty()) {
                         l.add("null");
                     }
-                    myDatabase.child(userId2).child("followerIds").setValue(l);
+                    myDatabase.child(accountID).child("followerIds").setValue(l);
                 }
                 else {
                    if (l.get(0).equals("null")) {
                         l.remove(0);
                     }
-                    String s = userId1 + "," + userName1;
+                    String s = userId + "," + userName;
                     if (!l.contains(s)) {
                         l.add(s);
                     }
-                    myDatabase.child(userId2).child("followerIds").setValue(l);
+                    myDatabase.child(accountID).child("followerIds").setValue(l);
                 }
 
             }
@@ -306,13 +309,17 @@ public class FollowActivity extends SideBar {
     }
 
     protected void followingOfTheUser(View view) {
-        Intent i = new Intent(FollowActivity.this, WhoIsFollowingUser.class);
-        i.putExtra("idOfCurrentPage",getIntent().getStringExtra("id"));
+        Intent i = new Intent(AccountInformationActivity.this, UserListActivity.class);
+        i.putExtra("id", accountID);
+        i.putExtra("dataName", "followingIds");
+        i.putExtra("errorID", "followerList.notFollowing");
         startActivity(i);
     }
     protected void followersOfTheUser(View view) {
-        Intent i = new Intent(FollowActivity.this, FollowersofUser.class);
-        i.putExtra("idOfCurrentPage",getIntent().getStringExtra("id"));
+        Intent i = new Intent(AccountInformationActivity.this, UserListActivity.class);
+        i.putExtra("id", accountID);
+        i.putExtra("dataName", "followerIds");
+        i.putExtra("errorID", "followerList.noFollowers");
         startActivity(i);
     }
 }

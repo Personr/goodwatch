@@ -8,57 +8,60 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import edu.upenn.goodwatch.FileAccess.Messages;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
-//import static com.example.reehams.goodreads.WelcomeActivity.userId1;
-
 /**
- * Created by reehams on 3/29/17.
+ * Created by reehams on 3/27/17.
  */
 
-public class WhoIsFollowingUser extends SideBar {
+public class UserListActivity extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
-    private ArrayList<String> whouserIsFollowing = new ArrayList<>();
-    String[] searchResults; // Options to be shown in list view
-    String userId;
-
-
+    private ArrayList<String> users = new ArrayList<>();
+    private String accountID;
+    private String dataName;
+    private String errorID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.whoisfollowinguser);
+        setContentView(R.layout.user_list);
         super.onCreateDrawer();
-        mListView = (ListView) findViewById(R.id.whoisfollowinguserList);
-        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, whouserIsFollowing);
+        mListView = (ListView) findViewById(R.id.followingListView);
+        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);
         mListView.setAdapter(arrayAdapter2);
-        userId = getIntent().getStringExtra("idOfCurrentPage");
+
+        accountID = getIntent().getStringExtra("id");
+        dataName = getIntent().getStringExtra("dataName");
+        errorID = getIntent().getStringExtra("errorID");
+
         reference = FirebaseDatabase.getInstance().getReference();
-        reference.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(accountID).child(dataName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Set<String> set = new TreeSet<String>();
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    String following = childSnapshot.getValue(String.class);
-                    if (following.equals("null")) {
-                        set.add(Messages.getMessage(getBaseContext(), "who.noFollow"));
+                    String person = childSnapshot.getValue(String.class);
+                    if (person.equals("null")) {
+                        set.add(Messages.getMessage(getBaseContext(), errorID));
                         break;
                     }
-                    int idx = following.indexOf(",");
-                    following = following.substring(idx + 1, following.length());
-                    set.add(following);
+                    int idx = person.indexOf(",");
+                    person = person.substring(idx + 1, person.length());
+                    set.add(person);
                 }
-                whouserIsFollowing.clear();
-                whouserIsFollowing.addAll(set);
+                users.clear();
+                users.addAll(set);
                 arrayAdapter2.notifyDataSetChanged();
             }
 
@@ -67,23 +70,22 @@ public class WhoIsFollowingUser extends SideBar {
 
             }
         });
+
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Intent i = new Intent(WhoIsFollowingUser.this, FollowActivity.class);
-                final String name = whouserIsFollowing.get(position);
-                //Toast.makeText(getApplicationContext(), name, Toast.LENGTH_SHORT).show();
+                final Intent i = new Intent(UserListActivity.this, AccountInformationActivity.class);
+                final String name = users.get(position);
                 i.putExtra("name", name);
-                i.putExtra("userId1", WelcomeActivity.getUserId1());
-                i.putExtra("userName1", WelcomeActivity.getFacebookName());
-                reference.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
+
+                reference.child(accountID).child(dataName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Set<String> set = new TreeSet<String>();
                         for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                             String following = childSnapshot.getValue(String.class);
                             if (following.equals("null")) {
-                                set.add("You're not following anyone");
+                                set.add(Messages.getMessage(getBaseContext(), errorID));
                                 break;
                             }
                             final String[] followingDetails = following.split(",");

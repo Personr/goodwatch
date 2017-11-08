@@ -101,7 +101,7 @@ public class UserSearch extends SideBar {
                     return;
                 }
                 //Toast.makeText(UserSearch.this, "Value: " + results.get(position), Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(UserSearch.this, FollowActivity.class);
+                Intent i = new Intent(UserSearch.this, AccountInformationActivity.class);
                 name = results.get(position).name;
                 email = results.get(position).email;
                 id2 = results.get(position).id;

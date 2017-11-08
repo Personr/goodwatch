@@ -27,29 +27,25 @@ public class SideBar extends AppCompatActivity {
     protected ArrayAdapter<String> mAdapter;
     protected ActionBarDrawerToggle mDrawerToggle;
     protected String mActivityTitle;
+
     protected String userId;
+    protected String userEmail;
+    protected String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.side_bar);
-        mDrawerList = (ListView)findViewById(R.id.navList);
-        mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        mActivityTitle = getTitle().toString();
-        userId = getIntent().getStringExtra("user_id");
 
-        addDrawerItems();
-        setupDrawer();
-
-       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-       getSupportActionBar().setHomeButtonEnabled(true);
+        userId = WelcomeActivity.getUserId1();
+        userEmail = WelcomeActivity.getEmail();
+        userName = WelcomeActivity.getFacebookName();
     }
 
     protected void onCreateDrawer() {
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
-        userId = getIntent().getStringExtra("user_id");
 
         addDrawerItems();
         setupDrawer();
@@ -70,8 +66,10 @@ public class SideBar extends AppCompatActivity {
                     startActivity(i);
                 }
                 if (position == 1) {
-                    Intent i = new Intent(SideBar.this,  MyAccountActivity.class);
-                    i.putExtra("user_id", userId);
+                    Intent i = new Intent(SideBar.this,  AccountInformationActivity.class);
+                    i.putExtra("id", userId);
+                    i.putExtra("name", userName);
+                    i.putExtra("email", userEmail);
                     startActivity(i);
                 }
                 if (position == 2) {

@@ -21,9 +21,6 @@
             android:name=".AboutUs"
             android:label="About Us" />
         <activity
-            android:name=".MyAccountActivity"
-            android:label="My Account" />
-        <activity
             android:name=".SideBar"
             android:label="Menu" />
         <activity
@@ -39,20 +36,11 @@
             android:name=".UserSearch"
             android:label="User Search" />
         <activity
-            android:name=".FollowActivity"
+            android:name=".AccountInformationActivity"
             android:label="Follow Activity" />
         <activity
-            android:name=".FollowingListActivity"
+            android:name=".UserListActivity"
             android:label="Following List" />
-        <activity
-            android:name=".FollowerListActivity"
-            android:label="Follower List" />
-        <activity
-            android:name=".WhoIsFollowingUser"
-            android:label="Followings" />
-        <activity
-            android:name=".FollowersofUser"
-            android:label="Followers" />
         <activity
             android:name=".HomeActivity"
             android:label="Home Screen" />
