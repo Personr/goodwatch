@@ -10,7 +10,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +22,7 @@
             android:label="About Us" />
         <activity
             android:name=".MyAccountActivity"
-            android:label="My Account" />S
+            android:label="My Account" />
         <activity
             android:name=".SideBar"
             android:label="Menu" />
@@ -74,6 +73,7 @@
             android:name=".WatchlistActivity"
             android:label="Watchlist" />
         <activity android:name=".ReviewFormActivity" />
+        <service android:name=".BackgroundTasks.WatchlistNotificationService"/>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.

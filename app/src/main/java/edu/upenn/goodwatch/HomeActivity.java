@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import edu.upenn.goodwatch.BackgroundTasks.WatchlistNotificationService;
 import edu.upenn.goodwatch.FileAccess.Config;
 import edu.upenn.goodwatch.FileAccess.Messages;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +52,7 @@ public class HomeActivity extends SideBar {
         myReviews.add("Loading...");
         arrayAdapter2.notifyDataSetChanged();
         waitForFirebase();
+        startAllServices();
     }
 
     public void helper(long delay) {
@@ -234,6 +236,12 @@ public class HomeActivity extends SideBar {
 
                     }
                 });
+    }
+
+    private void startAllServices() {
+        Intent watchlistNotificationIntent = new Intent(this, WatchlistNotificationService.class);
+        watchlistNotificationIntent.putExtra("UserID", userId);
+        startService(watchlistNotificationIntent);
     }
 
 
