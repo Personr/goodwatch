@@ -33,6 +33,13 @@ public class User {
         this.followerIds = followerIds;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public  String getId() {
+        return id;
+    }
 
     public String toString() {
         return this.name;

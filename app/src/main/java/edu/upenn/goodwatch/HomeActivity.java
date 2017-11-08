@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import edu.upenn.goodwatch.FileAccess.Config;
 import edu.upenn.goodwatch.FileAccess.Messages;
+import edu.upenn.goodwatch.LayoutClasses.ReviewListAdapter;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.*;
@@ -30,7 +32,7 @@ public class HomeActivity extends SideBar {
 
     private final String DEBUG_TAG = getClass().getSimpleName();
     private ListView myReviewList;
-    private ArrayList<String> myReviews = new ArrayList<>();
+    private ArrayList<Review> myReviews = new ArrayList<>();
     static boolean followersDone = false;
     static boolean userDone = false;
     String[] searchResults;
@@ -45,10 +47,11 @@ public class HomeActivity extends SideBar {
         setContentView(R.layout.home_activity_layout);
         super.onCreateDrawer();
         myReviewList = (ListView) findViewById(R.id.yourReviewList);
-        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);
+        final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, myReviews);
+        //final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);
         myReviewList.setAdapter(arrayAdapter2);
         myReviews.clear();
-        myReviews.add("Loading...");
+        myReviews.add(new Review("Loading..."));
         arrayAdapter2.notifyDataSetChanged();
         waitForFirebase();
     }
@@ -57,7 +60,7 @@ public class HomeActivity extends SideBar {
         final String userId = WelcomeActivity.getUserId1();
         final DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
         myReviewList = (ListView) findViewById(R.id.yourReviewList);
-        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);
+        final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, myReviews);
         myReviewList.setAdapter(arrayAdapter2);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -72,7 +75,7 @@ public class HomeActivity extends SideBar {
                                     if (s==null) break;
                                     if (s.equals("null")) break;
                                     int commaIdx = s.indexOf(',');
-                                    String id = s.substring(0, commaIdx);
+                                    final String id = s.substring(0, commaIdx);
                                     myDatabase.child(id).child("reviews").addListenerForSingleValueEvent(
                                             new ValueEventListener() {
                                                 @Override
@@ -88,7 +91,23 @@ public class HomeActivity extends SideBar {
                                                             reviewText = reviewText.substring(0, 175) + "...";
                                                         }
                                                         String time = s.get("time");
-                                                        Review r = new Review(movieId, rating, reviewText, movieTitle, time);
+                                                        final Review r = new Review(movieId, rating, reviewText, movieTitle, time);
+                                                        myDatabase.child(id).addListenerForSingleValueEvent(
+                                                                new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                        HashMap<String, String> userFields = (HashMap<String, String>) dataSnapshot.getValue();
+                                                                        User user = new User(userFields.get("name"), userFields.get("email"), userFields.get("id"));
+                                                                        r.setUser(user);
+                                                                        displaySet();
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(DatabaseError databaseError) {
+
+                                                                    }
+                                                                }
+                                                        );
                                                         set.add(r);
                                                     }
                                                     displaySet();
@@ -141,13 +160,12 @@ public class HomeActivity extends SideBar {
     }
 
     public void displaySet() {
-        if (!followersDone) return;
-        if (!userDone) return;
-        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);
+        //if (!followersDone) return;
+        final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, myReviews);
         myReviewList.setAdapter(arrayAdapter2);
         myReviews.clear();
         if (set.isEmpty()) {
-            myReviews.add(Messages.getMessage(getBaseContext(), "home.noReview"));
+            myReviews.add(new Review(Messages.getMessage(getBaseContext(), "home.noReview")));
             searchResults = new String[1];
             searchResults[0] = "empty";
         }
@@ -155,8 +173,7 @@ public class HomeActivity extends SideBar {
             searchResults = new String[set.size()];
             int i = 0;
             for (Review rev : set) {
-                String displayText = rev.movieTitle + "\n" + rev.getStars() + "\n\"" + rev.reviewText + "\"";
-                myReviews.add(displayText);
+                myReviews.add(rev);
                 searchResults[i] = rev.movieId;
                 i++;
             }

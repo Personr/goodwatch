@@ -13,7 +13,7 @@ public class Review implements Comparable<Review> {
     String reviewText;
     String rating;
     String time;
-
+    User user;
 
     public Review(String s) {
         this.movieId = s;
@@ -51,6 +51,22 @@ public class Review implements Comparable<Review> {
         map.put("reviewText", reviewText);
         map.put("time", time);
         return map;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public String getMovieTitle() {
+        return movieTitle;
+    }
+
+    public String getReviewText() {
+        return reviewText;
     }
 
     public String getStars() {
