@@ -25,14 +25,17 @@ public class WatchlistNotificationService extends IntentService {
         super.onCreate();
         mHandler = new Handler();
         notificationManager = new WatchlistNotificationManager();
-
     }
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         String userId = (String) intent.getExtras().get("userId");
         notificationManager.setUserID(userId);
-        String msg = notificationManager.scanForUpdates();
+        notificationManager.scanForUpdates();
+        String msg = notificationManager.getUpdateMsg();
+        if (msg != null) {
+            sendToastToMainThread(msg);
+        }
     }
 
     private void sendToastToMainThread(final String msg) {
