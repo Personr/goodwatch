@@ -226,7 +226,7 @@ public class HomeActivity extends SideBar {
 
     private void startAllServices() {
         Intent watchlistNotificationIntent = new Intent(this, WatchlistNotificationService.class);
-        watchlistNotificationIntent.putExtra("UserID", userId);
+        watchlistNotificationIntent.putExtra("userId", userId);
         startService(watchlistNotificationIntent);
     }
 
