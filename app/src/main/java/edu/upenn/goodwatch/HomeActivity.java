@@ -117,36 +117,9 @@ public class HomeActivity extends SideBar {
                                                 }
                                             });
                                 }
+
                                 makeFollowersTrue();
 
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-                myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                //List l = dataSnapshot.getValue(List.class);
-                                List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
-                                for (HashMap<String, String> s : l) {
-                                    String movieId = s.get("movieId");
-                                    if (movieId.equals("null")) continue;
-                                    String movieTitle = s.get("movieTitle");
-                                    String rating = s.get("rating");
-                                    String reviewText = s.get("reviewText");
-                                    if (reviewText.length() > 175) {
-                                        reviewText = reviewText.substring(0, 175) + "...";
-                                    }
-                                    String time = s.get("time");
-                                    Review r = new Review(movieId, rating, reviewText, movieTitle, time);
-                                    set.add(r);
-                                }
-                                makeUserDoneTrue();
-                                displaySet();
                             }
 
                             @Override
@@ -160,7 +133,6 @@ public class HomeActivity extends SideBar {
     }
 
     public void displaySet() {
-        //if (!followersDone) return;
         final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, myReviews);
         myReviewList.setAdapter(arrayAdapter2);
         myReviews.clear();
@@ -226,10 +198,6 @@ public class HomeActivity extends SideBar {
 
     private void makeFollowersTrue() {
         followersDone = true;
-    }
-
-    private void makeUserDoneTrue() {
-        userDone = true;
     }
 
     private void waitForFirebase() {
