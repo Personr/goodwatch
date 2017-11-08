@@ -81,14 +81,12 @@ public class UserListActivity extends SideBar {
                 reference.child(accountID).child(dataName).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Set<String> set = new TreeSet<String>();
                         for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                            String following = childSnapshot.getValue(String.class);
-                            if (following.equals("null")) {
-                                set.add(Messages.getMessage(getBaseContext(), errorID));
+                            String user = childSnapshot.getValue(String.class);
+                            if (user.equals("null")) {
                                 break;
                             }
-                            final String[] followingDetails = following.split(",");
+                            final String[] followingDetails = user.split(",");
                             i.putExtra("id", followingDetails[0]);
                             if(followingDetails[1].equals(name)) {
                                 reference.child(followingDetails[0]).child("email").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -96,16 +94,14 @@ public class UserListActivity extends SideBar {
                                     public void onDataChange(DataSnapshot dataSnapshot) {
                                         String email = dataSnapshot.getValue(String.class);
                                         i.putExtra("email", email);
-                                        String id2 = followingDetails[0];
-                                        i.putExtra("id", id2);
                                         startActivity(i);
                                     }
 
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
-
                                     }
                                 });
+                                break;
                             }
                         }
                     }

@@ -30,68 +30,81 @@
             android:id="@+id/textView" />
 
         <TextView
-            android:text="User's email: "
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/userName"
+            android:layout_below="@+id/userName"
+            android:text="User's email: " />
+
+        <TextView
+            android:id="@+id/userName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/textView"
-            android:layout_toEndOf="@+id/textView"
-            android:layout_marginLeft="21dp"
-            android:layout_marginStart="21dp"
-            android:layout_marginTop="117dp"
-            android:id="@+id/email" />
+            android:layout_marginLeft="8dp"
+            android:layout_toRightOf="@+id/image"
+            android:text="User's Name: "
+            android:textSize="24dp" />
 
         <TextView
-            android:text="User's Name: "
+            android:text="Bio: "
+            android:id="@+id/userBio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/email"
-            android:layout_alignLeft="@+id/email"
-            android:layout_alignStart="@+id/email"
-            android:layout_marginTop="11dp"
-            android:id="@+id/userName" />
+            android:layout_below="@+id/followButtons" />
 
         <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
             android:id="@+id/userReviewsList"
-            android:layout_below="@+id/button9" />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/userBio" />
+
+
+        <LinearLayout
+            android:id="@+id/followButtons"
+            android:orientation="horizontal"
+            android:paddingLeft="4.0dip"
+            android:paddingTop="5.0dip"
+            android:paddingRight="4.0dip"
+            android:paddingBottom="1.0dip"
+            android:layout_width="fill_parent" android:layout_height="wrap_content"
+            android:layout_below="@+id/image">
 
         <Button
+            android:id="@+id/followers"
+            android:layout_width="0.0dip" android:layout_height="fill_parent"
             android:text="Followers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button8"
-            android:layout_centerVertical="true"
-            android:layout_alignLeft="@+id/userName"
-            android:layout_alignStart="@+id/userName"
-            android:onClick="followersOfTheUser"/>
+            android:onClick="followersOfTheUser"
+            android:layout_weight="1.0" />
 
         <Button
+            android:id="@+id/following"
+            android:layout_width="0.0dip" android:layout_height="fill_parent"
             android:text="Following"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/button9"
-            android:layout_below="@+id/button8"
-            android:layout_alignRight="@+id/button8"
-            android:layout_alignEnd="@+id/button8"
-            android:layout_marginTop="24dp"
-            android:onClick="followingOfTheUser"/>
+            android:onClick="followingOfTheUser"
+            android:layout_weight="1.0" />
+        </LinearLayout>
+
 
         <Button
             android:text="+Follow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/button8"
-            android:layout_toEndOf="@+id/button8"
-            android:layout_marginLeft="35dp"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="24dp"
             android:id="@+id/followbotton"
-            android:onClick="followThisUser"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/image"
+            android:layout_toRightOf="@+id/image"
+            android:onClick="followThisUser" />
 
+        <Button
+            android:text="Edit Profile"
+            android:id="@+id/editButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/image"
+            android:layout_toRightOf="@+id/image"
+            android:onClick="editProfile"/>
 
     </RelativeLayout>
 

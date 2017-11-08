@@ -14,6 +14,11 @@ public class Messages extends FileAccesser {
         return getProperty(context, msgName, fileName);
     }
 
+    public static String noBio(Context context, String name) {
+        String message = getProperty(context, "account.noBio", fileName);
+        return message.replace("%NAME%", name);
+    }
+
     public static String noReview(Context context, String name) {
         String message = getProperty(context, "follow.noReview", fileName);
         return message.replace("%NAME%", name);

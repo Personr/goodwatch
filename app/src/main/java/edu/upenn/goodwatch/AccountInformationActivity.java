@@ -40,9 +40,12 @@ import java.util.TreeSet;
 public class AccountInformationActivity extends SideBar {
     TextView emailView;
     TextView userNameView;
+    TextView userBioView;
     Button followButton;
+    Button editButton;
     ProfilePictureView image;
-    private ListView userReviewsView;
+    ListView userReviewsView;
+
     String[] searchResults;
     private ArrayList<String> userReviewsList = new ArrayList<>();
     final Set<Review> set = new TreeSet<Review>();
@@ -50,7 +53,6 @@ public class AccountInformationActivity extends SideBar {
     private String accountName;
     private String accountID;
     private String accountEmail;
-
 
     private final String DEBUG_TAG = getClass().getSimpleName();
     private DatabaseReference myDatabase;
@@ -68,24 +70,42 @@ public class AccountInformationActivity extends SideBar {
         accountEmail = getIntent().getStringExtra("email");
 
         emailView = (TextView) findViewById(R.id.email);
-        emailView.setText(Messages.getMessage(getBaseContext(), "follow.email") + " " + accountEmail);
+        emailView.setText(accountEmail);
 
         userNameView = (TextView) findViewById(R.id.userName);
-        userNameView.setText(Messages.getMessage(getBaseContext(), "follow.name") + " " + accountName);
+        userNameView.setText(accountName);
 
         image = (ProfilePictureView) findViewById(R.id.image);
         image.setPresetSize(ProfilePictureView.NORMAL);
         image.setProfileId(accountID);
+        followButton = (Button) findViewById(R.id.followbotton);
+        editButton = (Button) findViewById(R.id.editButton);
+
+        userBioView = (TextView) findViewById(R.id.userBio);
+        myDatabase.child(accountID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String accountBio = (String) dataSnapshot.child("bio").getValue();
+                if(accountBio == null)
+                    userBioView.setText(Messages.noBio(getBaseContext(), accountName));
+                else
+                    userBioView.setText(accountBio);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
 
         if (userId.equals(accountID)) {
-            followButton = (Button) findViewById(R.id.followbotton);
             followButton.setVisibility(View.INVISIBLE);
         } else {
+            editButton.setVisibility(View.INVISIBLE);
             myDatabase.child(userId).child("followingIds").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     Set<String> set = new TreeSet<String>();
-                    followButton = (Button) findViewById(R.id.followbotton);
                     followButton.setText(Messages.getMessage(getBaseContext(), "follow.follow"));
                     for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                         if (childSnapshot.getValue(String.class).equals(accountID + "," + accountName)) {
@@ -198,7 +218,6 @@ public class AccountInformationActivity extends SideBar {
 
                     }
                 });
-        //waitForFirebase();
     }
 
     protected void followThisUser(View view) {
@@ -306,6 +325,8 @@ public class AccountInformationActivity extends SideBar {
 
             }
         });
+    }
+    protected void editProfile(View view) {
     }
 
     protected void followingOfTheUser(View view) {
