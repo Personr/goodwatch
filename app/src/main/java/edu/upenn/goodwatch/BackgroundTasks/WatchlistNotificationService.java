@@ -30,9 +30,10 @@ public class WatchlistNotificationService extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-        String userId = (String) intent.getExtras().get("userId");
-        notificationManager.setUserID(userId);
-        String msg = notificationManager.scanForUpdates();
+        String userID = (String) intent.getExtras().get("userID");
+        notificationManager.setUserID(userID);
+        String msg = String.format("User ID passed to service is %s", userID);
+        sendToastToMainThread(msg);
     }
 
     private void sendToastToMainThread(final String msg) {
