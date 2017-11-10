@@ -153,30 +153,19 @@ public class WelcomeActivity extends AppCompatActivity {
                     myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        List<String> watchlist = (ArrayList<String>) dataSnapshot.child(userId1).child("watchlist").getValue();
-                        List<Review> reviews = (ArrayList<Review>) dataSnapshot.child(userId1).child("reviews").getValue();
-                        List<String> following = (ArrayList<String>) dataSnapshot.child(userId1).child("followingIds").getValue();
-                        List<String> followers = (ArrayList<String>) dataSnapshot.child(userId1).child("followerIds").getValue();
-                        if (watchlist == null) {
-                            watchlist = new ArrayList<String>();
-                            watchlist.add("null");
+                        //If this is a new user, create a new entry for them in the database
+                        if(!dataSnapshot.hasChild(userId1)) {
+                            List<String> watchlist = new ArrayList<String>();
+                            List<Review> reviews = new ArrayList<Review>();
+                            List<String> following = new ArrayList<String>();
+                            List<String> followers = new ArrayList<String>();
+                            User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
+                            myDatabase.child(userId1).setValue(user);
                         }
-                        if (reviews == null) {
-                            reviews = new ArrayList<Review>();
-                            // reviews.add("null");
-                            reviews.add(new Review(("null")));
-
+                        else {
+                            facebookName = dataSnapshot.child(userId1).child("name").toString();
+                            email = dataSnapshot.child(userId1).child("email").toString();
                         }
-                        if (following == null) {
-                            following = new ArrayList<String>();
-                            following.add("null");
-                        }
-                        if (followers == null) {
-                            followers = new ArrayList<String>();
-                            followers.add("null");
-                        }
-                        User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
-                        myDatabase.child(userId1).setValue(user);
                     }
 
                     @Override

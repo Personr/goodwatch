@@ -27,7 +27,8 @@ import java.util.TreeSet;
 public class UserListActivity extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
-    private ArrayList<String> users = new ArrayList<>();
+    private ArrayList<String> accountIds = new ArrayList<>();
+    private ArrayList<String> accountNames = new ArrayList<>();
     private String accountID;
     private String dataName;
     private String errorID;
@@ -36,9 +37,10 @@ public class UserListActivity extends SideBar {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_list);
+        setTitle("Users");
         super.onCreateDrawer();
         mListView = (ListView) findViewById(R.id.followingListView);
-        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, users);
+        final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, accountNames);
         mListView.setAdapter(arrayAdapter2);
 
         accountID = getIntent().getStringExtra("id");
@@ -49,72 +51,46 @@ public class UserListActivity extends SideBar {
         reference.child(accountID).child(dataName).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Set<String> set = new TreeSet<String>();
+                //for each accountID listed
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                    String person = childSnapshot.getValue(String.class);
-                    if (person.equals("null")) {
-                        set.add(Messages.getMessage(getBaseContext(), errorID));
+                    String accountID = childSnapshot.getValue(String.class);
+                    if (accountID.equals("null")) {
+                        accountIds.add(null);
+                        accountNames.add(Messages.getMessage(getBaseContext(), errorID));
                         break;
                     }
-                    int idx = person.indexOf(",");
-                    person = person.substring(idx + 1, person.length());
-                    set.add(person);
+                    //get the name of that accountID and add it to the list
+                    reference.child(accountID).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String accountName = dataSnapshot.child("name").getValue(String.class);
+                            String accountID = dataSnapshot.child("id").getValue(String.class);
+                            accountIds.add(accountID);
+                            accountNames.add(accountName);
+                            arrayAdapter2.notifyDataSetChanged();
+                        }
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                        }
+                    });
                 }
-                users.clear();
-                users.addAll(set);
-                arrayAdapter2.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Intent i = new Intent(UserListActivity.this, AccountInformationActivity.class);
-                final String name = users.get(position);
-                i.putExtra("name", name);
-
-                reference.child(accountID).child(dataName).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
-                            String user = childSnapshot.getValue(String.class);
-                            if (user.equals("null")) {
-                                break;
-                            }
-                            final String[] followingDetails = user.split(",");
-                            i.putExtra("id", followingDetails[0]);
-                            if(followingDetails[1].equals(name)) {
-                                reference.child(followingDetails[0]).child("email").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        String email = dataSnapshot.getValue(String.class);
-                                        i.putExtra("email", email);
-                                        startActivity(i);
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-                                    }
-                                });
-                                break;
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-
-                });
+                Intent i = new Intent(UserListActivity.this, AccountInformationActivity.class);
+                String accountId = accountIds.get(position);
+                if(accountId != null) {
+                    i.putExtra("id", accountId);
+                    startActivity(i);
+                }
             }
-
         });
-
     }
 }

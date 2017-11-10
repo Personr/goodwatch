@@ -68,11 +68,9 @@ public class HomeActivity extends SideBar {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 List<String> l = (ArrayList<String>) dataSnapshot.getValue();
-                                for (String s : l) {
-                                    if (s==null) break;
-                                    if (s.equals("null")) break;
-                                    int commaIdx = s.indexOf(',');
-                                    String id = s.substring(0, commaIdx);
+                                for (String id : l) {
+                                    if (id==null) break;
+                                    if (id.equals("null")) break;
                                     myDatabase.child(id).child("reviews").addListenerForSingleValueEvent(
                                             new ValueEventListener() {
                                                 @Override
