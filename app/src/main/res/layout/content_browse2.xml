@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="edu.upenn.goodwatch.BrowseActivity"
+    tools:showIn="@layout/activity_browse2">
+
+    <CheckBox
+        android:id="@+id/ActorsCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="55dp"
+        android:text="Actors"
+        app:layout_constraintEnd_toStartOf="@+id/GenreCheckbox"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="75dp" />
+
+    <CheckBox
+        android:id="@+id/KeywordCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
+        android:layout_marginEnd="55dp"
+        android:layout_marginStart="10dp"
+        android:text="Keyword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/GenreCheckbox"
+        tools:layout_editor_absoluteY="75dp" />
+
+    <CheckBox
+        android:id="@+id/GenreCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginStart="10dp"
+        android:text="Genre"
+        app:layout_constraintEnd_toStartOf="@+id/KeywordCheckbox"
+        app:layout_constraintStart_toEndOf="@+id/ActorsCheckBox"
+        tools:layout_editor_absoluteY="75dp" />
+
+    <Button
+        android:id="@+id/movieSearchButton"
+        android:layout_width="185dp"
+        android:layout_height="45dp"
+        android:layout_marginBottom="116dp"
+        android:layout_marginEnd="95dp"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="52dp"
+        android:text="Submit Search!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.714"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText4" />
+
+    <EditText
+        android:id="@+id/SearchCriteriaText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="52dp"
+        android:layout_marginEnd="85dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="124dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="  Put Search Word Here"
+        app:layout_constraintBottom_toTopOf="@+id/movieSearchButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/KeywordCheckbox"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="282dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="54dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="5dp"
+        android:text="       Please check search criteria!  "
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/ActorsCheckBox"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</android.support.constraint.ConstraintLayout>

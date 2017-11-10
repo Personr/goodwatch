@@ -96,7 +96,6 @@ public class MovieDetailsActivity extends SideBar {
             runtime = "121 minutes";
             posterURL = CustomJSONParser.getPosterURL(response);
             Log.e(DEBUG_TAG, posterURL);
-            Log.e(DEBUG_TAG, "HERE2");
 
             if (posterURL.equalsIgnoreCase(Messages.getMessage(getBaseContext(), "movie.noInfo"))) {
                 Log.e(DEBUG_TAG, "HERE1");

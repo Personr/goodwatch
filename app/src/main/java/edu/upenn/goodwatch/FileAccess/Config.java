@@ -33,4 +33,32 @@ public class Config extends FileAccesser {
     public static String getDefaultPoster(Context context) {
         return getProperty(context, "defaultPosterUrl", fileName);
     }
+
+    public static String getBrowseUrl(Context context) {
+        return getProperty(context, "browsingURL", fileName);
+    }
+
+    public static String getActorIdGetterUrl(Context context) {
+        return getProperty(context, "actorIdUrl", fileName);
+    }
+
+    public static String getActorSummaryGetterUrlStart(Context context) {
+        return getProperty(context, "actorSummaryUrlStart", fileName);
+    }
+
+    public static String getActorSummaryGetterUrlEnd(Context context) {
+        return getProperty(context, "actorSummaryUrlEnd", fileName);
+    }
+
+    public static String getGenreIdList(Context context) {
+        return getProperty(context, "GenreIdListGetter", fileName);
+    }
+
+    public static String getMovieFromGenreId(Context context) {
+        return getProperty(context, "GenreMovieGetter", fileName);
+    }
+
+    public static String keywordMovieGetter(Context context) {
+        return getProperty(context, "KeywordMovieGetter", fileName);
+    }
 }
