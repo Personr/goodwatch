@@ -6,6 +6,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.concurrent.CountDownLatch;
+
 /**
  * Created by Alex on 11/11/17.
  */
@@ -15,11 +17,13 @@ public class WatchlistNotificationListener implements ValueEventListener {
     private String movieId;
     private StringBuffer sb;
     private String title;
+    private CountDownLatch latch;
 
-    public WatchlistNotificationListener(String movieId, String title, StringBuffer sb) {
+    public WatchlistNotificationListener(String movieId, String title, StringBuffer sb, CountDownLatch latch) {
         this.movieId = movieId;
         this.sb = sb;
         this.title = title;
+        this.latch = latch;
     }
 
     @Override
@@ -32,6 +36,8 @@ public class WatchlistNotificationListener implements ValueEventListener {
         } else {
             sb.append(title).append("\n");
         }
+        // Count down so that the WatchlistNotificationManager knows this is done
+        latch.countDown();
     }
 
     @Override

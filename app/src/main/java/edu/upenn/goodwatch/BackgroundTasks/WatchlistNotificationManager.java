@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -28,11 +29,15 @@ public class WatchlistNotificationManager {
     private String userID;
     private String updateMsg;
     private boolean updatesExist;
+    private CountDownLatch latch;
+    private Semaphore startSem;
+    private StringBuffer sb;
 
     public WatchlistNotificationManager() {
         this.listenedForMovies = new ArrayList<>();
-        this.updateMsg = null;
         this.updatesExist = false;
+        this.startSem = new Semaphore(1);
+        sb = new StringBuffer("New reviews have been added to the following movies on your watchlist:\n");
     }
 
     public void registerMovie(WatchlistItem item) {
@@ -53,6 +58,8 @@ public class WatchlistNotificationManager {
      * new has happened, return a message describing the new events
      */
     public void scanForUpdates() {
+        // Acquire the semaphore to indicate that we are waiting for first db query to watchlist
+        startSem.acquireUninterruptibly();
         // Get a reference to our database, and see if the user's list of movies has updated
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         DatabaseReference moviesInWatchlist = db.child(userID).child("watchlist");
@@ -78,15 +85,30 @@ public class WatchlistNotificationManager {
         if (updatesExist) {
             retval = updateMsg;
         }
-        setUpdatesExist(false);
+        this.updatesExist = false;
         updateMsg = null;
         return retval;
     }
 
-
-
-    private void setUpdatesExist(boolean val) {
-        updatesExist = val;
+    public String waitForUpdate() {
+        Log.e("Manager", "Starting to wait");
+        sb = new StringBuffer("New reviews have been added to the following movies on your watchlist:\n");
+        try {
+            Log.e("Manager", "Calling scan");
+            scanForUpdates();
+            Log.e("Manager", "Waiting for semaphore");
+            // Wait for the semaphore
+            startSem.acquire();
+            Log.e("Manager", "Got the semaphore, waiting for latch");
+            // Wait for the latch
+            latch.await();
+            Log.e("Manager", "Latch is done");
+        } catch (InterruptedException e) {
+            startSem.release();
+            Thread.currentThread().interrupt();
+        }
+        startSem.release();
+        return sb.toString();
     }
 
 
@@ -97,14 +119,17 @@ public class WatchlistNotificationManager {
      * @return
      */
     private void lookupMovies(List<String> watchlistItems) {
+        // Create a latch to indicate whether work is done for each movie in watchlist
+        this.latch = new CountDownLatch(watchlistItems.size());
+        // Release the semaphore
+        startSem.release();
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        StringBuffer sb = new StringBuffer("New reviews have been added to the following movies on your watchlist:\n");
         for (final String movie: watchlistItems) {
             // The user's watchlist stores each movie as "MovieTitle,HashCode"
             final String id = movie.split(",")[0];
             final String title = movie.split(",")[1];
             // Add an event listener to every movie. The listener does all the work from here.
-            db.child(id).addListenerForSingleValueEvent(new WatchlistNotificationListener(id, title, sb));
+            db.child(id).addListenerForSingleValueEvent(new WatchlistNotificationListener(id, title, sb, latch));
         }
     }
 
