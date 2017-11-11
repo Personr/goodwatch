@@ -11,5 +11,6 @@
     <string name="title_activity_edit_profile">Edit Profile</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_browse">BrowseActivity</string>
+    <string name="title_activity_edit_review">EditReviewActivity</string>
 
 </resources>

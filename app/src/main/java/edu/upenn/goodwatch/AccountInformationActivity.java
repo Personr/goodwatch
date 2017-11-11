@@ -19,10 +19,12 @@ import edu.upenn.goodwatch.FileAccess.Messages;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.widget.ProfilePictureView;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
@@ -109,6 +111,7 @@ public class AccountInformationActivity extends SideBar {
                 //get reviews, if any
                 List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.child("reviews").getValue();
                 for (HashMap<String, String> s : l) {
+                    if (s == null ) continue;
                     String movieId = s.get("movieId");
                     if (movieId.equals("null")) continue;
                     String movieTitle = s.get("movieTitle");
@@ -179,6 +182,83 @@ public class AccountInformationActivity extends SideBar {
                     }
                 });
 
+        userReviewsView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Log.v(DEBUG_TAG, "LONG PRESS RECEIVED");
+                if (searchResults[position] == null) {
+                    Toast.makeText(AccountInformationActivity.this,
+                            Messages.getMessage(getBaseContext(), "follow.nullId"),
+                            Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                if (searchResults[position].equals("empty")) {
+                    return false;
+                }
+
+
+                //Redirect traffic to review activity to get input
+                Intent i = new Intent(AccountInformationActivity.this, EditReviewActivity.class);
+                Bundle extras = new Bundle();
+                String movieId = searchResults[position];
+                extras.putString("user_id", userId);
+                String movieName = "";
+                String currentReview = "";
+                String currentRating = "";
+                String timeStamp = "";
+
+                //Find the movie with the id
+                for (Review item : set) {
+                    String currentMovieID = item.movieId;
+                    if (currentMovieID.equals(movieId)) {
+                        movieName = item.movieTitle;
+                        currentReview = item.reviewText;
+                        currentRating =  item.rating;
+                        timeStamp = item.time;
+                        //item.
+                    }
+                }
+
+                final String identfier = timeStamp;
+                myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren() ) {
+                                    HashMap<String, String> map = (HashMap<String, String>)  appleSnapshot.getValue();
+                                    if (map == null) continue;
+                                    if (map.get("time").equals(identfier)) {
+                                            appleSnapshot.getRef().removeValue();
+                                        }
+                                    }
+
+
+                                }
+
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                Log.w("TodoApp", "getUser:onCancelled", databaseError.toException());
+                            }
+                        });
+
+                //Pass desired parameters
+                extras.putString("movie_id", movieId);
+                extras.putString("movie_name", movieName);
+                extras.putString("rating", currentRating);
+                extras.putString("review", currentReview);
+                extras.putString("email", accountEmail);
+                extras.putString("username", userName);
+
+                i.putExtras(extras);
+                startActivity(i);
+
+                return true;
+
+            }
+        });
+
         userReviewsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -239,6 +319,7 @@ public class AccountInformationActivity extends SideBar {
                         break;
                     }
                 }
+
                 final List<String> l = (ArrayList<String>) dataSnapshot.getValue();
                 if (isFollowing) {
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
@@ -333,6 +414,7 @@ public class AccountInformationActivity extends SideBar {
             }
         });
     }
+
 
     protected void editProfile(View view) {
         Intent i = new Intent(AccountInformationActivity.this, EditProfileActivity.class);
