@@ -32,7 +32,6 @@ public class WatchlistActivity extends SideBar {
     private ListView mListView;
     String[] searchResults; // Options to be shown in list view
     private ArrayList<String> myMovies = new ArrayList<>();
-    String userId; // retrieves user's unique Id from previous intent for use
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

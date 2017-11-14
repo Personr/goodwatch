@@ -34,8 +34,6 @@ import java.util.TreeSet;
  */
 
 public class MovieDetailsActivity extends SideBar {
-
-    String userId;
     String movieId;
     String nameId;
 
