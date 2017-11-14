@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,13 +19,10 @@ import edu.upenn.goodwatch.FileAccess.Config;
 import edu.upenn.goodwatch.FileAccess.Messages;
 
 import com.facebook.FacebookSdk;
-import com.facebook.login.widget.ProfilePictureView;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
@@ -45,8 +43,8 @@ public class AccountInformationActivity extends SideBar {
     TextView userBioView;
     Button followButton;
     Button editButton;
-    ProfilePictureView image;
     ListView userReviewsView;
+    ImageView image;
 
     String[] searchResults;
     private ArrayList<String> userReviewsList = new ArrayList<>();
@@ -56,6 +54,7 @@ public class AccountInformationActivity extends SideBar {
     private String accountName;
     private String accountEmail;
     private String accountBio;
+    private String accountImage;
 
     private final String DEBUG_TAG = getClass().getSimpleName();
     private DatabaseReference myDatabase;
@@ -75,9 +74,7 @@ public class AccountInformationActivity extends SideBar {
         userNameView = (TextView) findViewById(R.id.userName);
         userBioView = (TextView) findViewById(R.id.userBio);
 
-        image = (ProfilePictureView) findViewById(R.id.image);
-        image.setPresetSize(ProfilePictureView.NORMAL);
-        image.setProfileId(accountID);
+        image = (ImageView) findViewById(R.id.image);
 
         followButton = (Button) findViewById(R.id.followbotton);
         editButton = (Button) findViewById(R.id.editButton);
@@ -107,6 +104,16 @@ public class AccountInformationActivity extends SideBar {
                 else {
                     userBioView.setText(accountBio);
                 }
+
+                //get image if it exists
+                accountImage = (String) dataSnapshot.child("photoUrl").getValue();
+                if(accountImage == null) {
+                    //image.setImageBitmap()
+                }
+                else {
+                    new DownloadImageTask(image).execute(accountImage);
+                }
+
 
                 //get reviews, if any
                 List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.child("reviews").getValue();

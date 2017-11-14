@@ -1,7 +1,9 @@
 package edu.upenn.goodwatch;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,6 +18,13 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,12 +44,14 @@ public class WelcomeActivity extends AppCompatActivity {
     private final String DEBUG_TAG = getClass().getSimpleName();
     private LoginButton btnLogin;
     private CallbackManager callbackManager;
+
     private static String email;
-    private static String facebookName;
-    static String gender;
-    private static String profilePicId;
+    private static String name;
+    private static String photoUrl;
+    private static String userId;
+
     private DatabaseReference myDatabase;
-    private static String userId1;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,30 +63,56 @@ public class WelcomeActivity extends AppCompatActivity {
         btnLogin.setReadPermissions(Arrays.asList("public_profile, email, user_birthday"));
         callbackManager = CallbackManager.Factory.create();
         myDatabase = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        if (isLoggedIn()) {
-            AccessToken accessToken = AccessToken.getCurrentAccessToken();
-            login(accessToken);
+        if (currentUser != null) {
+            login(currentUser);
         }
         else {
             btnLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
                 @Override
                 public void onSuccess(LoginResult loginResult) {
                     AccessToken accessToken = loginResult.getAccessToken();
-                    login(accessToken);
+                    handleFacebookAccessToken(accessToken);
                 }
 
                 @Override
                 public void onCancel() {
+                    Toast.makeText(WelcomeActivity.this, Messages.getMessage(getBaseContext(), "login.cancel"),
+                            Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onError(FacebookException exception) {
-                    Toast.makeText(getApplicationContext(), "Error logging you in, please check your connection and try again.",
-                            Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), Messages.getMessage(getBaseContext(), "login.error"),
+                            Toast.LENGTH_LONG).show();
                 }
             });
         }
+    }
+
+    private void handleFacebookAccessToken(AccessToken token) {
+        Log.d(DEBUG_TAG, "handleFacebookAccessToken:" + token);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(DEBUG_TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            login(user);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(DEBUG_TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(WelcomeActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     //Getter method for email
@@ -84,18 +121,18 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     //Getter method for Facebook name
-    protected static String getFacebookName() {
-        return facebookName;
+    protected static String getName() {
+        return name;
     }
 
     //Getter method for Profile pic Id
-    protected static String getProfilePicId() {
-        return profilePicId;
+    protected static String getPhotoUrl() {
+        return photoUrl;
     }
 
     //Getter method for
-    protected static String getUserId1() {
-        return userId1;
+    protected static String getUserId() {
+        return userId;
     }
 
     @Override
@@ -104,84 +141,50 @@ public class WelcomeActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void setProfileToView(JSONObject jsonObject) {
-        try {
-            this.email = jsonObject.getString("email");
-        } catch (JSONException e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noEmail"), e);
-        }
-        try {
-            this.gender = jsonObject.getString("gender");
-        } catch (JSONException e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noGender"), e);
-        }
-        try {
-            this.facebookName = jsonObject.getString("name");
-        } catch (JSONException e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noName"), e);
-        }
-        try {
-            this.profilePicId = jsonObject.getString("id");
-        } catch (JSONException e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "welcome.noPic"), e);
-        }
-    }
 
-    private boolean isLoggedIn() {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken != null;
-    }
+    private void login(FirebaseUser user) {
+        userId = user.getUid();
+        email = user.getEmail();
+        name = user.getDisplayName();
+        Uri photo = user.getPhotoUrl();
+        if(photo == null)
+            photoUrl = null;
+        else
+            photoUrl = photo.toString();
 
-    private void login(AccessToken accessToken) {
-        userId1 = accessToken.getUserId();
-        GraphRequest request = GraphRequest.newMeRequest(
-                accessToken,
-                getRefreshDatabaseGraphRequest());
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,email,gender, birthday");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    private GraphRequest.GraphJSONObjectCallback getRefreshDatabaseGraphRequest() {
-        return new GraphRequest.GraphJSONObjectCallback() {
+        myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                try {
-                    Log.v("Main", response.toString());
-                    setProfileToView(object);
-                    myDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        //If this is a new user, create a new entry for them in the database
-                        if(!dataSnapshot.hasChild(userId1)) {
-                            List<String> watchlist = new ArrayList<String>();
-                            List<Review> reviews = new ArrayList<Review>();
-                            List<String> following = new ArrayList<String>();
-                            List<String> followers = new ArrayList<String>();
-                            User user = new User(facebookName, email, userId1, watchlist, reviews, following, followers);
-                            myDatabase.child(userId1).setValue(user);
-                        }
-                        else {
-                            facebookName = dataSnapshot.child(userId1).child("name").toString();
-                            email = dataSnapshot.child(userId1).child("email").toString();
-                        }
-                    }
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //If this is a new user, create a new entry for them in the database
+                if(!dataSnapshot.hasChild(userId)) {
+                    List<String> watchlist = new ArrayList<>();
+                    watchlist.add("null");
+                    List<Review> reviews = new ArrayList<>();
+                    reviews.add(new Review("null"));
+                    List<String> following = new ArrayList<>();
+                    following.add("null");
+                    List<String> followers = new ArrayList<>();
+                    followers.add("null");
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                    });
-                    Intent i = new Intent(WelcomeActivity.this, HomeActivity.class);
-                    i.putExtra("user_id", userId1);
-                    startActivity(i);
-                } catch (Exception ex) {
-                    Toast.makeText(getApplicationContext(), "Error logging you in, please check your connection and try again.",
-                            Toast.LENGTH_SHORT).show();
+                    User user = new User(name, email, userId, photoUrl, watchlist, reviews, following, followers);
+                    myDatabase.child(userId).setValue(user);
                 }
+                else {
+                    name = dataSnapshot.child(userId).child("name").toString();
+                    email = dataSnapshot.child(userId).child("email").toString();
+                }
+                Intent i = new Intent(WelcomeActivity.this, HomeActivity.class);
+                i.putExtra("user_id", userId);
+                startActivity(i);
+                finish();
             }
-        };
-    }
 
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(WelcomeActivity.this, Messages.getMessage(getBaseContext(), "login.cancel"),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }
 

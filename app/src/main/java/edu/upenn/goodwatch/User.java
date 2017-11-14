@@ -10,6 +10,7 @@ public class User {
     public String email;
     public String name;
     public String id;
+    public String photoUrl;
     public List<String> watchlist;
     public List<String> followingIds;
     public List<String> followerIds;
@@ -22,11 +23,12 @@ public class User {
         this.id = id;
     }
 
-    public User(String name, String email,  String id, List<String> watchlist, List<Review> reviews,
+    public User(String name, String email,  String id, String photoUrl, List<String> watchlist, List<Review> reviews,
                 List<String> followingIds , List<String> followerIds) {
         this.email = email;
         this.name = name;
         this.id = id;
+        this.photoUrl = photoUrl;
         this.reviews = reviews;
         this.watchlist = watchlist;
         this.followingIds = followingIds;

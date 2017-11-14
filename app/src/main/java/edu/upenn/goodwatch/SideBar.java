@@ -2,6 +2,7 @@ package edu.upenn.goodwatch;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -31,15 +32,18 @@ public class SideBar extends AppCompatActivity {
     protected String userId;
     protected String userEmail;
     protected String userName;
+    protected String userPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.side_bar);
 
-        userId = WelcomeActivity.getUserId1();
+        userId = WelcomeActivity.getUserId();
         userEmail = WelcomeActivity.getEmail();
-        userName = WelcomeActivity.getFacebookName();
+        userName = WelcomeActivity.getName();
+        userName = WelcomeActivity.getName();
+        userPhoto = WelcomeActivity.getPhotoUrl();
     }
 
     protected void onCreateDrawer() {

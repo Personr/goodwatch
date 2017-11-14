@@ -36,7 +36,6 @@ public class TopChartsActivity extends SideBar {
     private final String DEBUG_TAG = getClass().getSimpleName();
     private ListView topChartListView;
     private final ArrayList<String> topChartList = new ArrayList<>();
-    final String userId = WelcomeActivity.getUserId1();
     String[] searchResults;
     final TreeSet<MovieAvgRating> set = new TreeSet<MovieAvgRating>();
 

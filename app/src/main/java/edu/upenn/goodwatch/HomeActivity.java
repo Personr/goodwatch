@@ -36,7 +36,6 @@ public class HomeActivity extends SideBar {
     static boolean followersDone = false;
     static boolean userDone = false;
     String[] searchResults;
-    final String userId = WelcomeActivity.getUserId1();
     final Set<Review> set = new TreeSet<Review>();
 
     @Override
@@ -57,7 +56,6 @@ public class HomeActivity extends SideBar {
     }
 
     public void helper(long delay) {
-        final String userId = WelcomeActivity.getUserId1();
         final DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
         myReviewList = (ListView) findViewById(R.id.yourReviewList);
         final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, myReviews);
@@ -74,7 +72,6 @@ public class HomeActivity extends SideBar {
                                 for (String s : l) {
                                     if (s==null) break;
                                     if (s.equals("null")) break;
-                                    int commaIdx = s.indexOf(',');
                                     final String id = s;
                                     myDatabase.child(id).child("reviews").addListenerForSingleValueEvent(
                                             new ValueEventListener() {

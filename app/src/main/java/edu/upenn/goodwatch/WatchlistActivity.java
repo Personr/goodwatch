@@ -45,7 +45,6 @@ public class WatchlistActivity extends SideBar {
         myMovies.clear();
         myMovies.add(Messages.getMessage(getBaseContext(), "follow.loading"));
         arrayAdapter.notifyDataSetChanged();
-        userId = WelcomeActivity.getUserId1();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userId).child("watchlist").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

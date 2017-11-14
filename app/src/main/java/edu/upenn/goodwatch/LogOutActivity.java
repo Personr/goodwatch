@@ -11,6 +11,7 @@ import edu.upenn.goodwatch.FileAccess.Messages;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Created by reehams on 2/20/17.
@@ -51,7 +52,7 @@ public class LogOutActivity extends SideBar {
                     public void onClick(DialogInterface dialog,int id) {
                         // if this button is clicked, close
                         // current activity
-                        LoginManager.getInstance().logOut();
+                        FirebaseAuth.getInstance().signOut();
                         Intent i = new Intent(LogOutActivity.this, WelcomeActivity.class);
                         startActivity(i);
                     }

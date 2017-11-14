@@ -58,7 +58,6 @@ public class MovieDetailsActivity extends SideBar {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movie_details_activity);
         super.onCreateDrawer();
-        userId = WelcomeActivity.getUserId1();
         myDatabase = FirebaseDatabase.getInstance().getReference();
         // Variables to save movie data
         String name = Messages.getMessage(getBaseContext(), "movie.noInfo");

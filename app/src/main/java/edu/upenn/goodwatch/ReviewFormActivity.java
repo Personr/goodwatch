@@ -77,8 +77,6 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 // if this button is clicked, close
                                 // current activity
                                 reviewText = review.getText().toString();
-                                String name = WelcomeActivity.getFacebookName();
-                                String userId = WelcomeActivity.getUserId1();
                                 final Review review1 = new Review(movieId, rating, reviewText, movieName);
                                 ReviewFormValueEventListener listener = new ReviewFormValueEventListener(review1,
                                         myDatabase, ReviewFormActivity.this.userId);
