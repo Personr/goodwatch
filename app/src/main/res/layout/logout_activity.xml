@@ -14,13 +14,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/textView7" />
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center_horizontal"
-            android:onClick="userLoggedOut"/>
     </LinearLayout>
     <ListView
         android:id="@+id/navList"

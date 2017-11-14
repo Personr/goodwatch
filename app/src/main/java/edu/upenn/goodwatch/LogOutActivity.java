@@ -24,19 +24,8 @@ public class LogOutActivity extends SideBar {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.logout_activity);
         super.onCreateDrawer();
-        callbackManager = CallbackManager.Factory.create();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    public void userLoggedOut(View v) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 context);
 
@@ -49,27 +38,35 @@ public class LogOutActivity extends SideBar {
                 .setCancelable(false)
                 .setPositiveButton(Messages.getMessage(getBaseContext(), "follow.yes"),
                         new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, close
-                        // current activity
-                        FirebaseAuth.getInstance().signOut();
-                        Intent i = new Intent(LogOutActivity.this, WelcomeActivity.class);
-                        startActivity(i);
-                    }
-                })
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, close
+                                // current activity
+                                FirebaseAuth.getInstance().signOut();
+                                Intent i = new Intent(LogOutActivity.this, WelcomeActivity.class);
+                                startActivity(i);
+                                finish();
+                            }
+                        })
                 .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"),
                         new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog,int id) {
-                        // if this button is clicked, just close
-                        // the dialog box and do nothing
-                        dialog.cancel();
-                    }
-                });
+                            public void onClick(DialogInterface dialog,int id) {
+                                // if this button is clicked, just close
+                                // the dialog box and do nothing
+                                dialog.cancel();
+                                finish();
+                            }
+                        });
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
 
         // show it
         alertDialog.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }
