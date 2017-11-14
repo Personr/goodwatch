@@ -45,13 +45,13 @@ public class WatchlistNotificationListener implements ValueEventListener {
         // Otherwise, notify user of changes
         } else {
             sb.append(title).append("\n");
-            callingActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    String msg = String.format("New activity for %s in your watchlist!", title);
-                    Toast.makeText(callingActivity, msg, Toast.LENGTH_SHORT).show();
-                }
-            });
+//            callingActivity.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    String msg = String.format("New activity for %s in your watchlist!", title);
+//                    Toast.makeText(callingActivity, msg, Toast.LENGTH_SHORT).show();
+//                }
+//            });
         }
         // Count down so that the WatchlistNotificationManager knows this is done
         latch.countDown();

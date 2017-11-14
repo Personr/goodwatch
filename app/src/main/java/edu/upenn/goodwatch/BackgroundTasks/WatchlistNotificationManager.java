@@ -125,11 +125,14 @@ public class WatchlistNotificationManager {
         startSem.release();
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
         for (final String movie: watchlistItems) {
-            // The user's watchlist stores each movie as "MovieTitle,HashCode"
-            final String id = movie.split(",")[0];
-            final String title = movie.split(",")[1];
-            // Add an event listener to every movie. The listener does all the work from here.
-            db.child(id).addListenerForSingleValueEvent(new WatchlistNotificationListener(id, title, sb, latch));
+            String[] watchlistItem = movie.split(",");
+            if (watchlistItem != null && watchlistItem.length >= 2) {
+                // The user's watchlist stores each movie as "MovieTitle,HashCode"
+                final String id = movie.split(",")[0];
+                final String title = movie.split(",")[1];
+                // Add an event listener to every movie. The listener does all the work from here.
+                db.child(id).addListenerForSingleValueEvent(new WatchlistNotificationListener(id, title, sb, latch));
+            }
         }
     }
 
