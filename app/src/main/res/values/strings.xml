@@ -12,5 +12,5 @@
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_browse">BrowseActivity</string>
     <string name="title_activity_edit_review">EditReviewActivity</string>
-
+    <string name="google_web_client_id">948288771759-fk8f7gc5is0u2o2svjlotgne117c9d9p.apps.googleusercontent.com</string>
 </resources>
