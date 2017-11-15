@@ -5,12 +5,9 @@ import android.os.Looper;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by Alex on 11/11/17.
@@ -18,18 +15,9 @@ import java.util.concurrent.CountDownLatch;
 
 public class WatchlistNotificationListener implements ValueEventListener {
 
-    private String movieId;
-    private StringBuffer sb;
-    private String title;
-    private CountDownLatch latch;
     private Context context;
-    private Handler h;
 
-    public WatchlistNotificationListener(String movieId, String title, StringBuffer sb, CountDownLatch latch, Context caller) {
-        this.movieId = movieId;
-        this.sb = sb;
-        this.title = title;
-        this.latch = latch;
+    public WatchlistNotificationListener(Context caller) {
         this.context = caller;
     }
 
@@ -46,20 +34,10 @@ public class WatchlistNotificationListener implements ValueEventListener {
                 String msg = notification.getValue(String.class);
                 notification.getRef().removeValue();
                 sendToastToMainThread(msg);
-                sb.append(msg);
             }
             // Set a value here, so that the Firebase doesn't erase the now empty mailbox
             userMbox.getRef().setValue(false);
-//            context.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    String msg = String.format("New activity for %s in your watchlist!", title);
-//                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-//                }
-//            });
         }
-        // Count down so that the WatchlistNotificationManager knows this is done
-        latch.countDown();
     }
 
     private void sendToastToMainThread(final String msg) {

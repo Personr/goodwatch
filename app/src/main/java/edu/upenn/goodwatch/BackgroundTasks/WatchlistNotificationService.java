@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 public class WatchlistNotificationService extends IntentService {
 
-    private Handler mHandler;
     private WatchlistNotificationManager notificationManager;
 
     public WatchlistNotificationService() {
@@ -22,7 +21,6 @@ public class WatchlistNotificationService extends IntentService {
     @Override
     public void onCreate() {
         super.onCreate();
-        mHandler = new Handler();
         notificationManager = new WatchlistNotificationManager(getApplicationContext());
     }
 
@@ -30,18 +28,6 @@ public class WatchlistNotificationService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         String userId = (String) intent.getExtras().get("userId");
         notificationManager.setUserId(userId);
-        String msg = notificationManager.waitForUpdate();
-        if (msg != null) {
-            sendToastToMainThread(msg);
-        }
-    }
-
-    private void sendToastToMainThread(final String msg) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(WatchlistNotificationService.this, msg, Toast.LENGTH_LONG).show();
-            }
-        });
+        notificationManager.scanForUpdates();
     }
 }
