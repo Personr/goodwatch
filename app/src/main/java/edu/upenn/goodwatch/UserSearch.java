@@ -70,7 +70,8 @@ public class UserSearch extends SideBar {
                     if (userName != null && userName.toLowerCase().contains(searchQuery.toLowerCase())) {
                         String id = childSnapshot.child("id").getValue(String.class);
                         String email = childSnapshot.child("email").getValue(String.class);
-                        User user = new User(userName, email, id);
+                        String photoUrl = childSnapshot.child("photoUrl").getValue(String.class);
+                        User user = new User(userName, email, id, photoUrl);
                         list.add(user);
                         UserSearch.searchResultsIds[i] = childSnapshot.child("id").getValue(String.class);
                         i++;
