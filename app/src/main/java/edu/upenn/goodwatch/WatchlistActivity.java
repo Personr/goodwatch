@@ -10,8 +10,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import edu.upenn.goodwatch.BackgroundTasks.WatchlistItem;
 import edu.upenn.goodwatch.FileAccess.Config;
 import edu.upenn.goodwatch.FileAccess.Messages;
+import edu.upenn.goodwatch.LayoutClasses.WatchlistArrayAdapter;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,7 +33,7 @@ public class WatchlistActivity extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
     String[] searchResults; // Options to be shown in list view
-    private ArrayList<String> myMovies = new ArrayList<>();
+    private ArrayList<WatchlistItem> myMovies = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,30 +41,42 @@ public class WatchlistActivity extends SideBar {
         setContentView(R.layout.activity_watchlist);
         super.onCreateDrawer();
         mListView = (ListView) findViewById(R.id.watchlistView);
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myMovies);
+        final WatchlistArrayAdapter arrayAdapter = new WatchlistArrayAdapter(this, android.R.layout.simple_list_item_1, myMovies);
         mListView.setAdapter(arrayAdapter);
         myMovies.clear();
-        myMovies.add(Messages.getMessage(getBaseContext(), "follow.loading"));
+        myMovies.add(new WatchlistItem("Loading..."));
         arrayAdapter.notifyDataSetChanged();
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(userId).child("watchlist").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean isEmpty = false;
-                Set<String> set = new HashSet<String>();
+                Set<WatchlistItem> newWatchlistItems = new HashSet<>();
                 for (DataSnapshot childSnapshot: dataSnapshot.getChildren()) {
-                    String movieTitle = childSnapshot.getValue(String.class);
-                    if (movieTitle.equals("null")) {
-                        set.add(Messages.getMessage(getBaseContext(), "watchlist.empty"));
+                    String watchlistEntry = childSnapshot.getValue(String.class);
+                    if (watchlistEntry.equals("null")) {
                         isEmpty = true;
                         break;
                     }
-                    int idx = movieTitle.indexOf(',');
-                    movieTitle = movieTitle.substring(idx + 1, movieTitle.length());
-                    set.add(movieTitle);
+                    String[] elts = watchlistEntry.split(",");
+                    final WatchlistItem i = new WatchlistItem(elts[1]);
+                    newWatchlistItems.add(i);
+                    String movieId = elts[0];
+                    // Get the average user rating (if one exists) for every movie in watchlist
+                    reference.child(movieId).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String avg = getAverageRating(dataSnapshot);
+                            i.setAverageRating(avg);
+                            arrayAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {}
+                    });
                 }
                 myMovies.clear();
-                myMovies.addAll(set);
+                myMovies.addAll(newWatchlistItems);
                 arrayAdapter.notifyDataSetChanged();
                 if (isEmpty) {
                     searchResults = new String[1];
@@ -70,13 +84,10 @@ public class WatchlistActivity extends SideBar {
                 }
                 else {
                     searchResults = new String[myMovies.size()];
-                    for (String movie : myMovies) {
+                    for (WatchlistItem movie : myMovies) {
                         try {
-                            String movieId = search(movie.replace(" ", "%20")).getJSONObject(0).get("id").toString();
+                            String movieId = search(movie.getMovieTitle().replace(" ", "%20")).getJSONObject(0).get("id").toString();
                             searchResults[myMovies.indexOf(movie)] = movieId;
-                            //Toast.makeText(WatchlistActivity.this, movie + " Index: " + myMovies.indexOf(movie), Toast.LENGTH_SHORT).show();
-                            //Toast.makeText(WatchlistActivity.this, movie + "Search Results value: " + movieId, Toast.LENGTH_SHORT).show();
-                            //Toast.makeText(WatchlistActivity.this, "Movies shown: " + i, Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "watchlist.exception"), e);
 
@@ -140,6 +151,21 @@ public class WatchlistActivity extends SideBar {
         });
 
 
+    }
+
+    private String getAverageRating(DataSnapshot dataSnapshot) {
+        if (dataSnapshot == null || dataSnapshot.getValue() == null) {
+            return "Be the first to review!";
+        }
+        double total = 0;
+        double numReviews = 0;
+        for (DataSnapshot reviewEntry : dataSnapshot.getChildren()) {
+            Review r = reviewEntry.getValue(Review.class);
+            total += Integer.parseInt(r.getRating());
+            numReviews += 1;
+        }
+        double avg = (numReviews == 0) ? 0 : total / numReviews;
+        return String.format("Users rated this movie %.2f/10 on average", avg);
     }
 
     public JSONArray search(String query) {

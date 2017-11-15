@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import edu.upenn.goodwatch.BackgroundTasks.WatchlistNotificationService;
 import edu.upenn.goodwatch.FileAccess.Config;
 import edu.upenn.goodwatch.FileAccess.Messages;
 import edu.upenn.goodwatch.LayoutClasses.ReviewListAdapter;
@@ -70,6 +71,7 @@ public class HomeActivity extends SideBar {
         reviewList.clear();
         arrayAdapter.notifyDataSetChanged();
         waitForFirebase();
+        startAllServices();
     }
 
     private void setUpSpinners() {
@@ -263,6 +265,12 @@ public class HomeActivity extends SideBar {
 
                     }
                 });
+    }
+
+    private void startAllServices() {
+        Intent watchlistNotificationIntent = new Intent(this, WatchlistNotificationService.class);
+        watchlistNotificationIntent.putExtra("userId", userId);
+        startService(watchlistNotificationIntent);
     }
 
 

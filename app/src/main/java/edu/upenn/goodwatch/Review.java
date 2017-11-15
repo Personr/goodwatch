@@ -15,6 +15,10 @@ public class Review implements Comparable<Review> {
     String time;
     User user;
 
+    public Review() {
+        // No args constructor needed for DataSnapshot.getValue()
+    }
+
     public Review(String s) {
         this.movieId = s;
         this.reviewText = s;
@@ -69,7 +73,17 @@ public class Review implements Comparable<Review> {
         return reviewText;
     }
 
-    public String getMovieId() { return movieId; }
+    public String getRating() {
+        return rating;
+    }
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public String getTime() {
+        return time;
+    }
 
     public String getRating() { return rating; }
 
@@ -93,4 +107,7 @@ public class Review implements Comparable<Review> {
         return r.time.compareTo(this.time);
     }
 
+    public String getUserName() {
+        return (user == null) ? "Someone" : user.getName();
+    }
 }
