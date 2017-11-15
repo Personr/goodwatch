@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,12 +45,16 @@ public class HomeActivity extends SideBar {
     private ListView reviewListView;
     private TextView noEvalView;
     private TextView loadingView;
+    private Spinner lowRatingSpinner;
+    private Spinner highRatingSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity_layout);
         super.onCreateDrawer();
+
+        setUpSpinners();
 
         reviewListView = (ListView) findViewById(R.id.yourReviewList);
         noEvalView = (TextView) findViewById(R.id.noEvalView);
@@ -64,10 +69,63 @@ public class HomeActivity extends SideBar {
         arrayAdapter = new ReviewListAdapter(this, reviewList);
         reviewListView.setAdapter(arrayAdapter);
         reviewList.clear();
-        reviewList.add(new Review("Loading..."));
         arrayAdapter.notifyDataSetChanged();
         waitForFirebase();
         startAllServices();
+    }
+
+    private void setUpSpinners() {
+        lowRatingSpinner = (Spinner) findViewById(R.id.lowRatingSpinner);
+        highRatingSpinner = (Spinner) findViewById(R.id.highRatingSpinner);
+
+        String[] spinnerValues = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, spinnerValues);
+        lowRatingSpinner.setAdapter(adapter);
+        highRatingSpinner.setAdapter(adapter);
+        highRatingSpinner.setSelection(10);
+
+        lowRatingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                if (Integer.parseInt((String) lowRatingSpinner.getSelectedItem()) > Integer.parseInt((String) highRatingSpinner.getSelectedItem())) {
+                    Toast.makeText(HomeActivity.this, Messages.getMessage(getBaseContext(), "home.boundTooHigh"), Toast.LENGTH_SHORT).show();
+                    lowRatingSpinner.setSelection(0);
+                } else {
+                    displaySet();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        highRatingSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int arg2, long arg3) {
+                if (Integer.parseInt((String) lowRatingSpinner.getSelectedItem()) > Integer.parseInt((String) highRatingSpinner.getSelectedItem())) {
+                    Toast.makeText(HomeActivity.this, Messages.getMessage(getBaseContext(), "home.boundTooLow"), Toast.LENGTH_SHORT).show();
+                    highRatingSpinner.setSelection(10);
+                } else {
+                    displaySet();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
     }
 
     public void helper(long delay) {
@@ -113,26 +171,6 @@ public class HomeActivity extends SideBar {
         return userReviews;
     }
 
-    private boolean isUsersReviewsEmpty() {
-        for (Map.Entry<String, Set<Review>> entry : usersReviews.entrySet())
-        {
-            if (!entry.getValue().isEmpty()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private int usersReviewsLength() {
-        int length = 0;
-        for (Map.Entry<String, Set<Review>> entry : usersReviews.entrySet())
-        {
-            length += entry.getValue().size();
-        }
-
-        return length;
-    }
 
     public void refresh() {
         arrayAdapter.notifyDataSetChanged();
@@ -143,24 +181,29 @@ public class HomeActivity extends SideBar {
         reviewListView.setAdapter(arrayAdapter);
         reviewList.clear();
 
-        if (isUsersReviewsEmpty()) {
-            reviewListView.setVisibility(View.INVISIBLE);
-            noEvalView.setVisibility(View.VISIBLE);
-            loadingView.setVisibility((View.INVISIBLE));
-        }
-        else {
-            reviewListView.setVisibility(View.VISIBLE);
-            noEvalView.setVisibility(View.INVISIBLE);
-            loadingView.setVisibility((View.INVISIBLE));
-
-            for (Map.Entry<String, Set<Review>> entry : usersReviews.entrySet())
-            {
-                for (Review rev : entry.getValue()) {
+        for (Map.Entry<String, Set<Review>> entry : usersReviews.entrySet())
+        {
+            for (Review rev : entry.getValue()) {
+                int rating = Integer.parseInt(rev.getRating());
+                if (rating >= Integer.parseInt((String) lowRatingSpinner.getSelectedItem()) &&
+                        rating <= Integer.parseInt((String) highRatingSpinner.getSelectedItem())) {
                     reviewList.add(rev);
                 }
             }
-            Collections.sort(reviewList);
         }
+
+        if (reviewList.isEmpty()) {
+            reviewListView.setVisibility(View.INVISIBLE);
+            noEvalView.setVisibility(View.VISIBLE);
+            loadingView.setVisibility((View.INVISIBLE));
+        } else {
+            Collections.sort(reviewList);
+
+            reviewListView.setVisibility(View.VISIBLE);
+            noEvalView.setVisibility(View.INVISIBLE);
+            loadingView.setVisibility((View.INVISIBLE));
+        }
+
         refresh();
         reviewListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
