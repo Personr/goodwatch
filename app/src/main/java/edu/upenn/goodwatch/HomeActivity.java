@@ -35,7 +35,6 @@ public class HomeActivity extends SideBar {
     private final String DEBUG_TAG = getClass().getSimpleName();
 
     private ArrayList<Review> reviewList = new ArrayList<>();
-    private String[] searchResults;
     private HomeActivity activity = this;
     private Map<String, Set<Review>> usersReviews = new HashMap<>();
     private ArrayAdapter arrayAdapter;
@@ -152,17 +151,13 @@ public class HomeActivity extends SideBar {
             noEvalView.setVisibility(View.INVISIBLE);
             loadingView.setVisibility((View.INVISIBLE));
 
-            searchResults = new String[usersReviewsLength()];
-            int i = 0;
             for (Map.Entry<String, Set<Review>> entry : usersReviews.entrySet())
             {
                 for (Review rev : entry.getValue()) {
                     reviewList.add(rev);
-                    searchResults[i] = rev.movieId;
-                    i++;
                 }
             }
-
+            Collections.sort(reviewList);
         }
         refresh();
         reviewListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -170,11 +165,8 @@ public class HomeActivity extends SideBar {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
                 // Do nothing if there is no result
-                if (searchResults[position] == null) {
+                if (reviewList.get(position) == null) {
                     Toast.makeText(HomeActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (searchResults[position].equals("empty")) {
                     return;
                 }
                 // Pass the data of the clicked movie to the movieDetails class
@@ -182,7 +174,7 @@ public class HomeActivity extends SideBar {
                 i.putExtra("user_id", userId);
                 try {
                     // Pass the IMBD movie id to the details page
-                    String movieId = searchResults[position];
+                    String movieId = reviewList.get(position).getMovieId();
                     String[] queryArr = new String[1];
                     queryArr[0] = Config.getMovieInfoUrl(getBaseContext(), movieId);
                     AsyncTask search = new MovieBackend().execute(queryArr);

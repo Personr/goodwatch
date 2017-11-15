@@ -69,6 +69,8 @@ public class Review implements Comparable<Review> {
         return reviewText;
     }
 
+    public String getMovieId() { return movieId; }
+
     public String getStars() {
         String blackStar = "★";
         String whiteStar = 	"☆";
