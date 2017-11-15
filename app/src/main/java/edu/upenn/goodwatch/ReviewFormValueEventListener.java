@@ -65,6 +65,9 @@ public class ReviewFormValueEventListener implements ValueEventListener {
                 myDatabase.child(userId).child("reviews").setValue(l);
             }
         }
+        // Notify people with this movie in their watchlist that something new has happened
+        final String postcenterPath = review1.getMovieId() + "-postcenter";
+        myDatabase.child(postcenterPath).addListenerForSingleValueEvent(new WatchlistNotifyValueEventListener(userId, review1));
     }
 
     @Override

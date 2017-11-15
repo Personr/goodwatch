@@ -105,7 +105,7 @@ public class Review implements Comparable<Review> {
         return r.time.compareTo(this.time);
     }
 
-    public Object getUserName() {
-        return user.getName();
+    public String getUserName() {
+        return (user == null) ? "Someone" : user.getName();
     }
 }
