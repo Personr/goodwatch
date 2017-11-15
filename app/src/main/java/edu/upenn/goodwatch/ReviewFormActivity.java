@@ -79,7 +79,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 reviewText = review.getText().toString();
                                 final Review review1 = new Review(movieId, rating, reviewText, movieName);
                                 ReviewFormValueEventListener listener = new ReviewFormValueEventListener(review1,
-                                        myDatabase, ReviewFormActivity.this.userId);
+                                        myDatabase, ReviewFormActivity.this.userId, "-1");
                                 myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(listener);
                                 boolean b = myDatabase.child(movieId).getDatabase() != null;
 
@@ -92,6 +92,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 extras.putString("JSON_Data", movieId);
                                 i.putExtras(extras);
                                 startActivity(i);
+
                             }
                         })
                         .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"), new DialogInterface.OnClickListener() {

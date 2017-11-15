@@ -157,7 +157,7 @@ public class MovieDetailsActivity extends SideBar {
                             if (l != null) {
                                 for (HashMap<String, String> s : l) {
                                     String movieId = s.get("movieId");
-                                    if (movieId.equals("null")) continue;
+                                    if (movieId == null) continue;
                                     String movieTitle = s.get("movieTitle");
                                     String rating = s.get("rating");
                                     String reviewText = s.get("reviewText");
