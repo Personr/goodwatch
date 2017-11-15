@@ -25,12 +25,6 @@
             android:saveEnabled="false" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:id="@+id/textView" />
-
-        <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +40,9 @@
             android:layout_marginLeft="8dp"
             android:layout_toRightOf="@+id/image"
             android:text="User's Name: "
-            android:textSize="24dp" />
+            android:textSize="20sp"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
         <TextView
             android:text="Bio: "
