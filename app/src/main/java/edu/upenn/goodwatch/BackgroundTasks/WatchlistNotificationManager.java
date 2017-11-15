@@ -119,6 +119,9 @@ public class WatchlistNotificationManager {
      * @return
      */
     private void lookupMovies(List<String> watchlistItems) {
+        if (watchlistItems == null) {
+            return;
+        }
         // Create a latch to indicate whether work is done for each movie in watchlist
         this.latch = new CountDownLatch(watchlistItems.size());
         // Release the semaphore

@@ -238,7 +238,9 @@ public class MovieDetailsActivity extends SideBar {
                                                 Button watchButton = (Button) findViewById(R.id.watchlist_button);
                                                 watchButton.setText("Add to Watchlist");
                                                 myDatabase.child(userId).child("watchlist").setValue(l);
-
+                                                // Unsubscribe this user from the movie's notification center
+                                                String mailboxPath = movieId + "-postcenter/" + userId;
+                                                myDatabase.child(mailboxPath).removeValue();
                                             }
                                         })
                                         .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -264,6 +266,9 @@ public class MovieDetailsActivity extends SideBar {
                             }
                             watchButton.setText("Remove from Watchlist");
                             myDatabase.child(userId).child("watchlist").setValue(l);
+                            // Add this user to this movie's notification center
+                            String mailboxPath = movieId + "-postcenter/" + userId;
+                            myDatabase.child(mailboxPath).setValue(false);
                         }
                      }
                     @Override

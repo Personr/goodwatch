@@ -77,7 +77,13 @@ public class Review implements Comparable<Review> {
         return rating;
     }
 
-    public String getMovieId() { return movieId; }
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public String getTime() {
+        return time;
+    }
 
     public String getStars() {
         String blackStar = "★";
@@ -99,4 +105,7 @@ public class Review implements Comparable<Review> {
         return r.time.compareTo(this.time);
     }
 
+    public Object getUserName() {
+        return user.getName();
+    }
 }
