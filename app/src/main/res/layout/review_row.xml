@@ -15,11 +15,18 @@
             android:layout_weight="1"
             android:orientation="vertical" >
 
-            <com.facebook.login.widget.ProfilePictureView
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:orientation="vertical" >
+
+            <ImageView
                 android:id="@+id/profilePic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:saveEnabled="false" />
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
 
             <TextView
                 android:id="@+id/name"
@@ -33,7 +40,7 @@
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_weight="3"
             android:orientation="vertical" >
 
             <TextView
@@ -51,6 +58,14 @@
                 android:paddingRight="5dp">
 
             </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical" >
 
         </LinearLayout>
 

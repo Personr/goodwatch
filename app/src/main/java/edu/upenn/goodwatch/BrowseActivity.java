@@ -11,18 +11,22 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.CheckBox;
 import android.widget.Button;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 import org.json.JSONObject;
+import android.widget.ArrayAdapter;
 import java.net.*;
 import java.io.*;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import edu.upenn.goodwatch.FileAccess.Config;
@@ -68,6 +72,10 @@ public class BrowseActivity extends AppCompatActivity {
         CheckBox keywordCheckbox = (CheckBox) findViewById(R.id.KeywordCheckbox);
         final EditText searchInput = (EditText)  findViewById(R.id.SearchCriteriaText);
         Button submitButton = (Button) findViewById(R.id.movieSearchButton);
+
+        final ListView results = (ListView) findViewById(R.id.searchresults);
+
+
         //Activate Event Listeners
         actorCheckbox.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,10 +119,12 @@ public class BrowseActivity extends AppCompatActivity {
         });
 
         //Submit Listener for the search button
+        final Context context = this;
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Format the string for querying
+                searchQuery = searchQuery.trim();
                 searchQuery = searchQuery.replace(' ', '+');
                 searchQuery = searchQuery.toLowerCase();
 
@@ -143,32 +153,46 @@ public class BrowseActivity extends AppCompatActivity {
                             + id + Config.getActorSummaryGetterUrlEnd(getBaseContext());
                     String actorSummary = ExecuteQuery(actorSummaryQuery);
                     ArrayList<String> movieList = CustomJSONParser.getMovieList(actorSummary);
-                    String results = getToastMessageFromMovieList(movieList);
 
-                    //Dispaly Toast
-                    displayToast(results);
+                    if (movieList.size() == 0) getToastMessageFromMovieList(movieList);
+
+                    else {
+                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, movieList);
+                        results.setAdapter(arrayAdapter);
+                    }
+
                 }
                 else if (isGenreChecked) {
                     String newQuery = Config.getGenreIdList(getBaseContext());
                     String idContents = ExecuteQuery(newQuery);
                     idContents = idContents.toLowerCase();
-
+                    
                     //Parse the response to find Id of the movie
                     int genreID = CustomJSONParser.findGenreFromId(idContents, searchQuery);
+
                     String genreQuery = Config.getMovieFromGenreId(getBaseContext()) + genreID;
                     String response = ExecuteQuery(genreQuery);
 
                     ArrayList<String> movieList = CustomJSONParser.getMovieList(response);
 
-                    String message = getToastMessageFromMovieList(movieList);
-                    displayToast(message);
+                    if (movieList.size() == 0) getToastMessageFromMovieList(movieList);
+
+                    else {
+                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, movieList);
+                        results.setAdapter(arrayAdapter);
+                    }
                 }
                 else if (isKeywordChecked) {
                     String query = Config.keywordMovieGetter(getBaseContext()) + searchQuery;
                     String response = ExecuteQuery(query);
                     ArrayList<String> movieList = CustomJSONParser.getMovieListKeyword(response);
-                    String message = getToastMessageFromMovieList(movieList);
-                    displayToast(message);
+
+                    if (movieList.size() == 0) getToastMessageFromMovieList(movieList);
+
+                    else {
+                        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, movieList);
+                        results.setAdapter(arrayAdapter);
+                    }
                 }
             }
         });

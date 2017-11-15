@@ -9,11 +9,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import edu.upenn.goodwatch.BackgroundTasks.WatchlistNotificationService;
 import edu.upenn.goodwatch.FileAccess.Config;
 import edu.upenn.goodwatch.FileAccess.Messages;
 import edu.upenn.goodwatch.LayoutClasses.ReviewListAdapter;
+import edu.upenn.goodwatch.Listeners.ReviewsListener;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -31,40 +34,51 @@ import java.util.*;
 public class HomeActivity extends SideBar {
 
     private final String DEBUG_TAG = getClass().getSimpleName();
-    private ListView myReviewList;
-    private ArrayList<Review> myReviews = new ArrayList<>();
-    static boolean followersDone = false;
-    static boolean userDone = false;
-    String[] searchResults;
-    final Set<Review> set = new TreeSet<Review>();
+
+    private ArrayList<Review> reviewList = new ArrayList<>();
+    private HomeActivity activity = this;
+    private Map<String, Set<Review>> usersReviews = new HashMap<>();
+    private ArrayAdapter arrayAdapter;
+    private DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
+
+    private ListView reviewListView;
+    private TextView noEvalView;
+    private TextView loadingView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        followersDone = false;
-        userDone = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.home_activity_layout);
         super.onCreateDrawer();
-        myReviewList = (ListView) findViewById(R.id.yourReviewList);
-        final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, myReviews);
-        //final ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, myReviews);
-        myReviewList.setAdapter(arrayAdapter2);
-        myReviews.clear();
-        myReviews.add(new Review("Loading..."));
-        arrayAdapter2.notifyDataSetChanged();
+
+        reviewListView = (ListView) findViewById(R.id.yourReviewList);
+        noEvalView = (TextView) findViewById(R.id.noEvalView);
+        loadingView = (TextView) findViewById(R.id.loadingView);
+
+        noEvalView.setText(Messages.getMessage(getBaseContext(), "home.noReview"));
+        loadingView.setText(Messages.getMessage(getBaseContext(), "follow.loading"));
+        reviewListView.setVisibility(View.INVISIBLE);
+        noEvalView.setVisibility(View.INVISIBLE);
+        loadingView.setVisibility((View.VISIBLE));
+
+        arrayAdapter = new ReviewListAdapter(this, reviewList);
+        reviewListView.setAdapter(arrayAdapter);
+        reviewList.clear();
+        reviewList.add(new Review("Loading..."));
+        arrayAdapter.notifyDataSetChanged();
         waitForFirebase();
+        startAllServices();
     }
 
     public void helper(long delay) {
-        final DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
-        myReviewList = (ListView) findViewById(R.id.yourReviewList);
-        final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, myReviews);
-        myReviewList.setAdapter(arrayAdapter2);
+        reviewListView = (ListView) findViewById(R.id.yourReviewList);
+        final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, reviewList);
+        reviewListView.setAdapter(arrayAdapter2);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                myDatabase.child(userId).child("followingIds").addListenerForSingleValueEvent(
+                myDatabase.child(userId).child("followingIds").addValueEventListener(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -73,49 +87,9 @@ public class HomeActivity extends SideBar {
                                     if (s==null) break;
                                     if (s.equals("null")) break;
                                     final String id = s;
-                                    myDatabase.child(id).child("reviews").addListenerForSingleValueEvent(
-                                            new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
-                                                    for (HashMap<String, String> s : l) {
-                                                        String movieId = s.get("movieId");
-                                                        if (movieId.equals("null")) continue;
-                                                        String movieTitle = s.get("movieTitle");
-                                                        String rating = s.get("rating");
-                                                        String reviewText = s.get("reviewText");
-                                                        if (reviewText.length() > 175) {
-                                                            reviewText = reviewText.substring(0, 175) + "...";
-                                                        }
-                                                        String time = s.get("time");
-                                                        final Review r = new Review(movieId, rating, reviewText, movieTitle, time);
-                                                        myDatabase.child(id).addListenerForSingleValueEvent(
-                                                                new ValueEventListener() {
-                                                                    @Override
-                                                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                        HashMap<String, String> userFields = (HashMap<String, String>) dataSnapshot.getValue();
-                                                                        User user = new User(userFields.get("name"), userFields.get("email"), userFields.get("id"));
-                                                                        r.setUser(user);
-                                                                        displaySet();
-                                                                    }
-
-                                                                    @Override
-                                                                    public void onCancelled(DatabaseError databaseError) {
-
-                                                                    }
-                                                                }
-                                                        );
-                                                        set.add(r);
-                                                    }
-                                                    displaySet();
-                                                }
-                                                @Override
-                                                public void onCancelled(DatabaseError databaseError) {
-                                                }
-                                            });
+                                    myDatabase.child(id).child("reviews").addValueEventListener(
+                                            new ReviewsListener(myDatabase, id, getUserReviews(id), activity));
                                 }
-
-                                makeFollowersTrue();
 
                             }
 
@@ -127,37 +101,74 @@ public class HomeActivity extends SideBar {
             }
 
         }, delay); // wait a while basically
+        displaySet();
+    }
+
+    private Set<Review> getUserReviews(String id) {
+        Set<Review> userReviews = usersReviews.get(id);
+        if (userReviews == null) {
+            userReviews = new TreeSet<>();
+            usersReviews.put(id, userReviews);
+        }
+        return userReviews;
+    }
+
+    private boolean isUsersReviewsEmpty() {
+        for (Map.Entry<String, Set<Review>> entry : usersReviews.entrySet())
+        {
+            if (!entry.getValue().isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private int usersReviewsLength() {
+        int length = 0;
+        for (Map.Entry<String, Set<Review>> entry : usersReviews.entrySet())
+        {
+            length += entry.getValue().size();
+        }
+
+        return length;
+    }
+
+    public void refresh() {
+        arrayAdapter.notifyDataSetChanged();
     }
 
     public void displaySet() {
-        final ArrayAdapter arrayAdapter2 = new ReviewListAdapter(this, myReviews);
-        myReviewList.setAdapter(arrayAdapter2);
-        myReviews.clear();
-        if (set.isEmpty()) {
-            myReviews.add(new Review(Messages.getMessage(getBaseContext(), "home.noReview")));
-            searchResults = new String[1];
-            searchResults[0] = "empty";
+        arrayAdapter = new ReviewListAdapter(this, reviewList);
+        reviewListView.setAdapter(arrayAdapter);
+        reviewList.clear();
+
+        if (isUsersReviewsEmpty()) {
+            reviewListView.setVisibility(View.INVISIBLE);
+            noEvalView.setVisibility(View.VISIBLE);
+            loadingView.setVisibility((View.INVISIBLE));
         }
         else {
-            searchResults = new String[set.size()];
-            int i = 0;
-            for (Review rev : set) {
-                myReviews.add(rev);
-                searchResults[i] = rev.movieId;
-                i++;
+            reviewListView.setVisibility(View.VISIBLE);
+            noEvalView.setVisibility(View.INVISIBLE);
+            loadingView.setVisibility((View.INVISIBLE));
+
+            for (Map.Entry<String, Set<Review>> entry : usersReviews.entrySet())
+            {
+                for (Review rev : entry.getValue()) {
+                    reviewList.add(rev);
+                }
             }
+            Collections.sort(reviewList);
         }
-        arrayAdapter2.notifyDataSetChanged();
-        myReviewList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        refresh();
+        reviewListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(WatchlistActivity.this, "Position: " + position, Toast.LENGTH_SHORT).show();
                 // Do nothing if there is no result
-                if (searchResults[position] == null) {
+                if (reviewList.get(position) == null) {
                     Toast.makeText(HomeActivity.this, "Null searchresult ID", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if (searchResults[position].equals("empty")) {
                     return;
                 }
                 // Pass the data of the clicked movie to the movieDetails class
@@ -165,7 +176,7 @@ public class HomeActivity extends SideBar {
                 i.putExtra("user_id", userId);
                 try {
                     // Pass the IMBD movie id to the details page
-                    String movieId = searchResults[position];
+                    String movieId = reviewList.get(position).getMovieId();
                     String[] queryArr = new String[1];
                     queryArr[0] = Config.getMovieInfoUrl(getBaseContext(), movieId);
                     AsyncTask search = new MovieBackend().execute(queryArr);
@@ -193,12 +204,7 @@ public class HomeActivity extends SideBar {
         });
     }
 
-    private void makeFollowersTrue() {
-        followersDone = true;
-    }
-
     private void waitForFirebase() {
-        final DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
         myDatabase.child(userId).child("followingIds").addListenerForSingleValueEvent(
                 new ValueEventListener() {
                     @Override
@@ -216,6 +222,12 @@ public class HomeActivity extends SideBar {
 
                     }
                 });
+    }
+
+    private void startAllServices() {
+        Intent watchlistNotificationIntent = new Intent(this, WatchlistNotificationService.class);
+        watchlistNotificationIntent.putExtra("userId", userId);
+        startService(watchlistNotificationIntent);
     }
 
 

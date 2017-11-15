@@ -7,10 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.login.widget.ProfilePictureView;
 
+import edu.upenn.goodwatch.DownloadImageTask;
+import edu.upenn.goodwatch.FileAccess.Messages;
 import edu.upenn.goodwatch.R;
 import edu.upenn.goodwatch.Review;
 import edu.upenn.goodwatch.User;
@@ -42,16 +45,15 @@ public class ReviewListAdapter extends ArrayAdapter<Review> {
         TextView titleView = (TextView) rowView.findViewById(R.id.movieTitle);
         TextView ratingView = (TextView) rowView.findViewById(R.id.rating);
         TextView nameView = (TextView) rowView.findViewById(R.id.name);
-        ProfilePictureView profilePic = (ProfilePictureView) rowView.findViewById(R.id.profilePic);
+        ImageView profilePic = (ImageView) rowView.findViewById(R.id.profilePic);
 
         Review rev = reviewsList.get(position);
         titleView.setText(rev.getMovieTitle() + "\n" + rev.getStars());
         ratingView.setText("\"" + rev.getReviewText() + "\"");
-        profilePic.setPresetSize(ProfilePictureView.NORMAL);
         User user = rev.getUser();
         if (user != null) {
             nameView.setText(user.getName());
-            profilePic.setProfileId(user.getId());
+            new DownloadImageTask(profilePic).execute(user.getPhotoUrl(context));
         }
 
 

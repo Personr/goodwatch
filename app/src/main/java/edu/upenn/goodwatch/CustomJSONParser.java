@@ -116,6 +116,7 @@ public class CustomJSONParser {
     public static int findGenreFromId(String input, String targetGenre) {
         //Parse the string till found
         int targetId = -1;
+
         while (true) {
             String regex = "\"id\":";
             int index = input.indexOf(regex);

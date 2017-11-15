@@ -34,6 +34,7 @@ public class ReviewFormValueMovieEventListener implements ValueEventListener{
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             // Get user value
                             List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+                            if (l == null) l = new ArrayList<HashMap<String, String>>();
                             l.add(review1.getMapping());
                             myDatabase.child(movieId).setValue(l);
                         }

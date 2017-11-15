@@ -157,7 +157,7 @@ public class MovieDetailsActivity extends SideBar {
                             if (l != null) {
                                 for (HashMap<String, String> s : l) {
                                     String movieId = s.get("movieId");
-                                    if (movieId.equals("null")) continue;
+                                    if (movieId == null) continue;
                                     String movieTitle = s.get("movieTitle");
                                     String rating = s.get("rating");
                                     String reviewText = s.get("reviewText");
@@ -238,7 +238,9 @@ public class MovieDetailsActivity extends SideBar {
                                                 Button watchButton = (Button) findViewById(R.id.watchlist_button);
                                                 watchButton.setText("Add to Watchlist");
                                                 myDatabase.child(userId).child("watchlist").setValue(l);
-
+                                                // Unsubscribe this user from the movie's notification center
+                                                String mailboxPath = movieId + "-postcenter/" + userId;
+                                                myDatabase.child(mailboxPath).removeValue();
                                             }
                                         })
                                         .setNegativeButton("No",new DialogInterface.OnClickListener() {
@@ -264,6 +266,9 @@ public class MovieDetailsActivity extends SideBar {
                             }
                             watchButton.setText("Remove from Watchlist");
                             myDatabase.child(userId).child("watchlist").setValue(l);
+                            // Add this user to this movie's notification center
+                            String mailboxPath = movieId + "-postcenter/" + userId;
+                            myDatabase.child(mailboxPath).setValue(false);
                         }
                      }
                     @Override

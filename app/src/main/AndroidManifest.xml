@@ -61,6 +61,7 @@
             android:name=".WatchlistActivity"
             android:label="Watchlist" />
         <activity android:name=".ReviewFormActivity" />
+        <service android:name=".BackgroundTasks.WatchlistNotificationService"/>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.

@@ -61,4 +61,8 @@ public class Config extends FileAccesser {
     public static String keywordMovieGetter(Context context) {
         return getProperty(context, "KeywordMovieGetter", fileName);
     }
+
+    public static String getDefaultProfilePicUrl(Context context) {
+        return getProperty(context, "defaultProfilePic", fileName);
+    }
 }

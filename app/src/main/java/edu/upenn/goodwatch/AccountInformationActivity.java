@@ -117,20 +117,32 @@ public class AccountInformationActivity extends SideBar {
 
 
                 //get reviews, if any
-                List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.child("reviews").getValue();
-                for (HashMap<String, String> s : l) {
-                    if (s == null ) continue;
-                    String movieId = s.get("movieId");
-                    if (movieId.equals("null")) continue;
-                    String movieTitle = s.get("movieTitle");
-                    String rating = s.get("rating");
-                    String reviewText = s.get("reviewText");
-                    if (reviewText.length() > 175) {
-                        reviewText = reviewText.substring(0, 175) + "...";
+                List<HashMap<String, String>> l;
+                try {
+                    l = (ArrayList<HashMap<String, String>>) dataSnapshot.child("reviews").getValue();
+                }
+                catch (Throwable e) {
+                    l = new ArrayList<HashMap<String, String>>();
+                    l.add((HashMap<String, String>) dataSnapshot.child("reviews").getValue());
+                }
+                if (l != null) {
+                    for (HashMap<String, String> s : l) {
+                        if (s == null) continue;
+                        String movieId = s.get("movieId");
+                        if (movieId == null) continue;
+                        String movieTitle = s.get("movieTitle");
+                        String rating = s.get("rating");
+                        String reviewText = s.get("reviewText");
+
+                        if (reviewText != null) {
+                            if (reviewText.length() > 175) {
+                                reviewText = reviewText.substring(0, 175) + "...";
+                            }
+                        }
+                        String time = s.get("time");
+                        Review r = new Review(movieId, rating, reviewText, movieTitle, time);
+                        set.add(r);
                     }
-                    String time = s.get("time");
-                    Review r = new Review(movieId, rating, reviewText, movieTitle, time);
-                    set.add(r);
                 }
                 userReviewsList.clear();
                 if (set.isEmpty()) {
@@ -224,32 +236,9 @@ public class AccountInformationActivity extends SideBar {
                         currentReview = item.reviewText;
                         currentRating =  item.rating;
                         timeStamp = item.time;
-                        //item.
                     }
                 }
 
-                final String identfier = timeStamp;
-                myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot appleSnapshot: dataSnapshot.getChildren() ) {
-                                    HashMap<String, String> map = (HashMap<String, String>)  appleSnapshot.getValue();
-                                    if (map == null) continue;
-                                    if (map.get("time").equals(identfier)) {
-                                            appleSnapshot.getRef().removeValue();
-                                        }
-                                    }
-
-
-                                }
-
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.w("TodoApp", "getUser:onCancelled", databaseError.toException());
-                            }
-                        });
 
                 //Pass desired parameters
                 extras.putString("movie_id", movieId);
@@ -258,6 +247,8 @@ public class AccountInformationActivity extends SideBar {
                 extras.putString("review", currentReview);
                 extras.putString("email", accountEmail);
                 extras.putString("username", userName);
+                extras.putString("targetTime", timeStamp);
+                extras.putString("accId", accountID);
 
                 i.putExtras(extras);
                 startActivity(i);
