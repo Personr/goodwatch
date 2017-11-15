@@ -1,21 +1,16 @@
 package edu.upenn.goodwatch.BackgroundTasks;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Handler;
 import android.os.Looper;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.CountDownLatch;
-
-import edu.upenn.goodwatch.HomeActivity;
 
 /**
  * Created by Alex on 11/11/17.
@@ -27,14 +22,15 @@ public class WatchlistNotificationListener implements ValueEventListener {
     private StringBuffer sb;
     private String title;
     private CountDownLatch latch;
-    //TODO pass in activity
-    private Activity callingActivity;
+    private Context context;
+    private Handler h;
 
-    public WatchlistNotificationListener(String movieId, String title, StringBuffer sb, CountDownLatch latch) {
+    public WatchlistNotificationListener(String movieId, String title, StringBuffer sb, CountDownLatch latch, Context caller) {
         this.movieId = movieId;
         this.sb = sb;
         this.title = title;
         this.latch = latch;
+        this.context = caller;
     }
 
     @Override
@@ -49,15 +45,16 @@ public class WatchlistNotificationListener implements ValueEventListener {
             for (DataSnapshot notification: userMbox.getChildren()) {
                 String msg = notification.getValue(String.class);
                 notification.getRef().removeValue();
+                sendToastToMainThread(msg);
                 sb.append(msg);
             }
             // Set a value here, so that the Firebase doesn't erase the now empty mailbox
             userMbox.getRef().setValue(false);
-//            callingActivity.runOnUiThread(new Runnable() {
+//            context.runOnUiThread(new Runnable() {
 //                @Override
 //                public void run() {
 //                    String msg = String.format("New activity for %s in your watchlist!", title);
-//                    Toast.makeText(callingActivity, msg, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 //                }
 //            });
         }
@@ -65,8 +62,16 @@ public class WatchlistNotificationListener implements ValueEventListener {
         latch.countDown();
     }
 
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-
+    private void sendToastToMainThread(final String msg) {
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+            }
+        });
     }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {}
 }

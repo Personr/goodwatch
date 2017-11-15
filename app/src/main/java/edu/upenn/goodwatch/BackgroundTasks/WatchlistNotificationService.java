@@ -23,7 +23,7 @@ public class WatchlistNotificationService extends IntentService {
     public void onCreate() {
         super.onCreate();
         mHandler = new Handler();
-        notificationManager = new WatchlistNotificationManager();
+        notificationManager = new WatchlistNotificationManager(getApplicationContext());
     }
 
     @Override

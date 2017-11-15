@@ -1,5 +1,7 @@
 package edu.upenn.goodwatch.BackgroundTasks;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
@@ -26,8 +28,10 @@ public class WatchlistNotificationManager {
     private CountDownLatch latch;
     private Semaphore startSem;
     private StringBuffer sb;
+    private Context context;
 
-    public WatchlistNotificationManager() {
+    public WatchlistNotificationManager(Context callingActivity) {
+        this.context = callingActivity;
         this.listenedForMovies = new ArrayList<>();
         this.updatesExist = false;
         this.startSem = new Semaphore(1);
@@ -132,7 +136,8 @@ public class WatchlistNotificationManager {
                 final String title = elts[1];
                 // Add an event listener for User's notification mailbox for this movie
                 String userMbox = id + "-postcenter/" + userId;
-                db.child(userMbox).addListenerForSingleValueEvent(new WatchlistNotificationListener(id, title, sb, latch));
+                db.child(userMbox).addListenerForSingleValueEvent(
+                        new WatchlistNotificationListener(id, title, sb, latch, context));
             }
         }
     }
