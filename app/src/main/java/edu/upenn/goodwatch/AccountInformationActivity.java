@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -44,7 +45,7 @@ public class AccountInformationActivity extends SideBar {
     Button followButton;
     Button editButton;
     ListView userReviewsView;
-    ImageView image;
+    ImageView imageView;
 
     String[] searchResults;
     private ArrayList<String> userReviewsList = new ArrayList<>();
@@ -74,7 +75,7 @@ public class AccountInformationActivity extends SideBar {
         userNameView = (TextView) findViewById(R.id.userName);
         userBioView = (TextView) findViewById(R.id.userBio);
 
-        image = (ImageView) findViewById(R.id.image);
+        imageView = (ImageView) findViewById(R.id.image);
 
         followButton = (Button) findViewById(R.id.followbotton);
         editButton = (Button) findViewById(R.id.editButton);
@@ -111,7 +112,7 @@ public class AccountInformationActivity extends SideBar {
                     //image.setImageBitmap()
                 }
                 else {
-                    new DownloadImageTask(image).execute(accountImage);
+                    new DownloadImageTask(imageView).execute(accountImage);
                 }
 
 
@@ -429,6 +430,7 @@ public class AccountInformationActivity extends SideBar {
         i.putExtra("name", accountName);
         i.putExtra("email", accountEmail);
         i.putExtra("bio", accountBio);
+        i.putExtra("photoUrl", accountImage);
         startActivity(i);
     }
 

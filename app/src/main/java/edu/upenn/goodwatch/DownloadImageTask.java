@@ -2,9 +2,12 @@ package edu.upenn.goodwatch;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 
@@ -33,6 +36,11 @@ public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
     }
 
     protected void onPostExecute(Bitmap result) {
-        bmImage.setImageBitmap(result);
+        if(result != null) {
+            bmImage.setImageBitmap(result);
+        } else {
+            bmImage.setImageResource(R.drawable.default_image);
+        }
+
     }
 }
