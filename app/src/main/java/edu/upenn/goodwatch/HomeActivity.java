@@ -64,7 +64,7 @@ public class HomeActivity extends SideBar {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                myDatabase.child(userId).child("followingIds").addListenerForSingleValueEvent(
+                myDatabase.child(userId).child("followingIds").addValueEventListener(
                         new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -73,10 +73,11 @@ public class HomeActivity extends SideBar {
                                     if (s==null) break;
                                     if (s.equals("null")) break;
                                     final String id = s;
-                                    myDatabase.child(id).child("reviews").addListenerForSingleValueEvent(
+                                    myDatabase.child(id).child("reviews").addValueEventListener(
                                             new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    set.clear();
                                                     List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
                                                     for (HashMap<String, String> s : l) {
                                                         if (s != null) {
@@ -90,7 +91,7 @@ public class HomeActivity extends SideBar {
                                                             }
                                                             String time = s.get("time");
                                                             final Review r = new Review(movieId, rating, reviewText, movieTitle, time);
-                                                            myDatabase.child(id).addListenerForSingleValueEvent(
+                                                            myDatabase.child(id).addValueEventListener(
                                                                     new ValueEventListener() {
                                                                         @Override
                                                                         public void onDataChange(DataSnapshot dataSnapshot) {
