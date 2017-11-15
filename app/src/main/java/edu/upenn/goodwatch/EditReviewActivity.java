@@ -16,8 +16,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Button;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import edu.upenn.goodwatch.FileAccess.Messages;
 
@@ -27,8 +35,11 @@ public class EditReviewActivity extends AppCompatActivity {
     private String userId;
     private String userName;
     private String email;
+    private String movieId;
+    private String targetTimeStamp;
     private final String DEBUG_TAG = this.getClass().getName();
     private DatabaseReference myDatabase;
+    private  String accountID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +62,14 @@ public class EditReviewActivity extends AppCompatActivity {
         //Retrieve passed parameters
 
         final String movieName = getIntent().getStringExtra("movie_name");
-        final String movieId = getIntent().getStringExtra("movie_id");
+        movieId = getIntent().getStringExtra("movie_id");
+        targetTimeStamp = getIntent().getStringExtra("targetTime");
         userId = getIntent().getStringExtra("user_id");
         userName = getIntent().getStringExtra("username");
         email = getIntent().getStringExtra("email");
         String initialReview = getIntent().getStringExtra("review");
         int initialRating = Integer.parseInt(getIntent().getStringExtra("rating"));
+        accountID = getIntent().getStringExtra("accId");
 
         //Get references to widgets
         final Spinner spinner = (Spinner) findViewById(R.id.spinnerEditReview);
@@ -95,12 +108,17 @@ public class EditReviewActivity extends AppCompatActivity {
         submitEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                edit();
                 rating = spinner.getSelectedItem().toString();
                 Review editedReview = new Review(movieId, rating, currentReview, movieName);
                 //Add the new review to the database
-                ReviewFormValueEventListener listener = new ReviewFormValueEventListener(editedReview, myDatabase, userId);
+                ReviewFormValueEventListener listener = new ReviewFormValueEventListener(editedReview, myDatabase, userId, targetTimeStamp);
+                ReviewFormValueMovieEventListener movieEventListener = new ReviewFormValueMovieEventListener(myDatabase, movieId, editedReview);
+                myDatabase.addListenerForSingleValueEvent(movieEventListener);
+
                 myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(listener);
-                goBack();
+                Intent i = new Intent(EditReviewActivity.this, HomeActivity.class);
+                startActivity(i);
             }
         });
 
@@ -108,18 +126,44 @@ public class EditReviewActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goBack();
+
+                edit();
+                rating = spinner.getSelectedItem().toString();
+                Review editedReview = new Review(movieId, rating, currentReview, movieName);
+                editedReview.time = targetTimeStamp;
+
+                ReviewFormValueEventListener listener = new ReviewFormValueEventListener(editedReview, myDatabase, userId, targetTimeStamp);
+                myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(listener);
+                Intent i = new Intent(EditReviewActivity.this, HomeActivity.class);
+                startActivity(i);
+
             }
         });
 
     }
 
-    public void goBack() {
-        Intent i = new Intent(EditReviewActivity.this, AccountInformationActivity.class);
-        i.putExtra("id", userId);
-        i.putExtra("name", userName);
-        i.putExtra("email", email);
-        startActivity(i);
+    public void edit() {
+
+        //Remove from movie lists as well
+        myDatabase.child(movieId).addListenerForSingleValueEvent(
+                new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot: dataSnapshot.getChildren() ) {
+                            HashMap<String, String> map = (HashMap<String, String>)  appleSnapshot.getValue();
+                            if (map == null) continue;
+                            if (map.get("time").equals(targetTimeStamp) && map.get("movieId").equals(movieId)) {
+                                appleSnapshot.getRef().setValue(null);
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.w("TodoApp", "getUser:onCancelled", databaseError.toException());
+                    }
+                });
     }
 
 }
