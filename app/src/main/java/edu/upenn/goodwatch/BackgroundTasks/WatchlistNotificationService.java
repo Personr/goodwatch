@@ -2,9 +2,7 @@ package edu.upenn.goodwatch.BackgroundTasks;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 /**
  * Created by Alex on 11/8/17.

@@ -45,7 +45,7 @@ public class WatchlistNotificationListener implements ValueEventListener {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
             }
         });
     }
