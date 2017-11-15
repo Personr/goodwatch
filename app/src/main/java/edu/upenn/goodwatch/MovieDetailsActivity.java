@@ -148,7 +148,7 @@ public class MovieDetailsActivity extends SideBar {
         DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
 
 
-            myDatabase.child(movieId).addListenerForSingleValueEvent(
+            myDatabase.child(movieId).addValueEventListener(
                     new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {

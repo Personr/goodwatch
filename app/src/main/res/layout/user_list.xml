@@ -23,6 +23,13 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:id="@+id/followingListView" />
+
+        <TextView
+            android:id="@+id/emptyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        </TextView>
+
     </RelativeLayout>
         <!-- Side navigation drawer UI -->
     <ListView

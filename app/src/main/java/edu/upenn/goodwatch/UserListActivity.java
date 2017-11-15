@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import edu.upenn.goodwatch.FileAccess.Messages;
 
@@ -15,6 +16,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -27,6 +30,7 @@ import java.util.TreeSet;
 public class UserListActivity extends SideBar {
     DatabaseReference reference;
     private ListView mListView;
+    private TextView emptyTextView;
     private ArrayList<String> accountIds = new ArrayList<>();
     private ArrayList<String> accountNames = new ArrayList<>();
     private String accountID;
@@ -46,6 +50,9 @@ public class UserListActivity extends SideBar {
         accountID = getIntent().getStringExtra("id");
         dataName = getIntent().getStringExtra("dataName");
         errorID = getIntent().getStringExtra("errorID");
+        emptyTextView = (TextView) findViewById(R.id.emptyText);
+        emptyTextView.setText(Messages.getMessage(getBaseContext(), errorID));
+        mListView.setEmptyView(emptyTextView);
 
         reference = FirebaseDatabase.getInstance().getReference();
         reference.child(accountID).child(dataName).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -55,8 +62,6 @@ public class UserListActivity extends SideBar {
                 for (DataSnapshot childSnapshot : dataSnapshot.getChildren()) {
                     String accountID = childSnapshot.getValue(String.class);
                     if (accountID.equals("null")) {
-                        accountIds.add(null);
-                        accountNames.add(Messages.getMessage(getBaseContext(), errorID));
                         break;
                     }
                     //get the name of that accountID and add it to the list

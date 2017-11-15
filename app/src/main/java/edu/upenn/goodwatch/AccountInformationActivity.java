@@ -130,6 +130,7 @@ public class AccountInformationActivity extends SideBar {
                         if (s == null) continue;
                         String movieId = s.get("movieId");
                         if (movieId == null) continue;
+                        if (movieId.equals("null")) continue;
                         String movieTitle = s.get("movieTitle");
                         String rating = s.get("rating");
                         String reviewText = s.get("reviewText");
@@ -191,72 +192,62 @@ public class AccountInformationActivity extends SideBar {
                 }
             });
         }
+        if (userId.equals(accountID)) {
+            userReviewsView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
-        myDatabase.child(accountID).child("reviews").addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                    Log.v(DEBUG_TAG, "LONG PRESS RECEIVED");
+                    if (searchResults[position] == null) {
+                        Toast.makeText(AccountInformationActivity.this,
+                                Messages.getMessage(getBaseContext(), "follow.nullId"),
+                                Toast.LENGTH_SHORT).show();
+                        return false;
                     }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    if (searchResults[position].equals("empty")) {
+                        return false;
                     }
-                });
-
-        userReviewsView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Log.v(DEBUG_TAG, "LONG PRESS RECEIVED");
-                if (searchResults[position] == null) {
-                    Toast.makeText(AccountInformationActivity.this,
-                            Messages.getMessage(getBaseContext(), "follow.nullId"),
-                            Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-                if (searchResults[position].equals("empty")) {
-                    return false;
-                }
 
 
-                //Redirect traffic to review activity to get input
-                Intent i = new Intent(AccountInformationActivity.this, EditReviewActivity.class);
-                Bundle extras = new Bundle();
-                String movieId = searchResults[position];
-                extras.putString("user_id", userId);
-                String movieName = "";
-                String currentReview = "";
-                String currentRating = "";
-                String timeStamp = "";
+                    //Redirect traffic to review activity to get input
+                    Intent i = new Intent(AccountInformationActivity.this, EditReviewActivity.class);
+                    Bundle extras = new Bundle();
+                    String movieId = searchResults[position];
+                    extras.putString("user_id", userId);
+                    String movieName = "";
+                    String currentReview = "";
+                    String currentRating = "";
+                    String timeStamp = "";
 
-                //Find the movie with the id
-                for (Review item : set) {
-                    String currentMovieID = item.movieId;
-                    if (currentMovieID.equals(movieId)) {
-                        movieName = item.movieTitle;
-                        currentReview = item.reviewText;
-                        currentRating =  item.rating;
-                        timeStamp = item.time;
+                    //Find the movie with the id
+                    for (Review item : set) {
+                        String currentMovieID = item.movieId;
+                        if (currentMovieID.equals(movieId)) {
+                            movieName = item.movieTitle;
+                            currentReview = item.reviewText;
+                            currentRating = item.rating;
+                            timeStamp = item.time;
+                        }
                     }
+
+
+                    //Pass desired parameters
+                    extras.putString("movie_id", movieId);
+                    extras.putString("movie_name", movieName);
+                    extras.putString("rating", currentRating);
+                    extras.putString("review", currentReview);
+                    extras.putString("email", accountEmail);
+                    extras.putString("username", userName);
+                    extras.putString("targetTime", timeStamp);
+                    extras.putString("accId", accountID);
+
+                    i.putExtras(extras);
+                    startActivity(i);
+
+                    return true;
                 }
-
-
-                //Pass desired parameters
-                extras.putString("movie_id", movieId);
-                extras.putString("movie_name", movieName);
-                extras.putString("rating", currentRating);
-                extras.putString("review", currentReview);
-                extras.putString("email", accountEmail);
-                extras.putString("username", userName);
-                extras.putString("targetTime", timeStamp);
-                extras.putString("accId", accountID);
-
-                i.putExtras(extras);
-                startActivity(i);
-
-                return true;
-
-            }
-        });
+            });
+        }
 
         userReviewsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
