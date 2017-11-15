@@ -1,5 +1,6 @@
 package edu.upenn.goodwatch;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by rahulkooverjee on 3/9/17.
@@ -49,7 +51,20 @@ public class MovieDetailsActivity extends SideBar {
 
     private final String DEBUG_TAG = this.getClass().getName();
 
+    public static String getMovieJsonInfo(Context context, String movieId) throws ExecutionException, InterruptedException {
+        // Get movie details in JSON object
+        String[] queryArr = new String[1];
+        queryArr[0] = Config.getApacheUrl(context, movieId);
 
+        // TODO: Likely source of a NullPointerException
+
+        AsyncTask search = new MovieBackend().execute(queryArr);
+        JSONObject json = null;
+        json = (JSONObject) search.get();
+
+        String response = json.toString();
+        return response;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,17 +87,8 @@ public class MovieDetailsActivity extends SideBar {
             // Get movie ID from intent
             String id = getIntent().getStringExtra("JSON_Data");
             movieId = id;
-            // Get movie details in JSON object
-            String[] queryArr = new String[1];
-            queryArr[0] = Config.getApacheUrl(getBaseContext(), movieId);
 
-            // TODO: Likely source of a NullPointerException
-
-            AsyncTask search = new MovieBackend().execute(queryArr);
-            JSONObject json = null;
-            json = (JSONObject) search.get();
-
-            String response = json.toString();
+            String response = MovieDetailsActivity.getMovieJsonInfo(getBaseContext(), movieId);
 
             // Set movie info
             name = CustomJSONParser.getName(response);
