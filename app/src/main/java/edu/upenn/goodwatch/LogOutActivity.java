@@ -42,6 +42,7 @@ public class LogOutActivity extends SideBar {
                                 // if this button is clicked, close
                                 // current activity
                                 FirebaseAuth.getInstance().signOut();
+                                LoginManager.getInstance().logOut();
                                 Intent i = new Intent(LogOutActivity.this, WelcomeActivity.class);
                                 startActivity(i);
                                 finish();

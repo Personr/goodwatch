@@ -50,15 +50,6 @@ public class EditReviewActivity extends AppCompatActivity {
 
         myDatabase = FirebaseDatabase.getInstance().getReference();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         //Retrieve passed parameters
 
         final String movieName = getIntent().getStringExtra("movie_name");
@@ -119,6 +110,7 @@ public class EditReviewActivity extends AppCompatActivity {
                 myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(listener);
                 Intent i = new Intent(EditReviewActivity.this, HomeActivity.class);
                 startActivity(i);
+                finish();
             }
         });
 
@@ -136,7 +128,7 @@ public class EditReviewActivity extends AppCompatActivity {
                 myDatabase.child(userId).child("reviews").addListenerForSingleValueEvent(listener);
                 Intent i = new Intent(EditReviewActivity.this, HomeActivity.class);
                 startActivity(i);
-
+                finish();
             }
         });
 

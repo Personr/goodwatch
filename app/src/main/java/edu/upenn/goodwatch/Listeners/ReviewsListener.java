@@ -36,6 +36,7 @@ public class ReviewsListener implements ValueEventListener {
     public void onDataChange(DataSnapshot dataSnapshot) {
         userReviews.clear();
         List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+
         if (l != null) {
             for (HashMap<String, String> s : l) {
                 if (s != null) {

@@ -65,7 +65,7 @@
         android:layout_marginTop="81dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="  Put Search Word Here"
+        android:hint="  Put Search Word Here"
         app:layout_constraintBottom_toTopOf="@+id/movieSearchButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -44,7 +45,7 @@ public class AccountInformationActivity extends SideBar {
     Button followButton;
     Button editButton;
     ListView userReviewsView;
-    ImageView image;
+    ImageView imageView;
 
     String[] searchResults;
     private ArrayList<String> userReviewsList = new ArrayList<>();
@@ -74,7 +75,7 @@ public class AccountInformationActivity extends SideBar {
         userNameView = (TextView) findViewById(R.id.userName);
         userBioView = (TextView) findViewById(R.id.userBio);
 
-        image = (ImageView) findViewById(R.id.image);
+        imageView = (ImageView) findViewById(R.id.image);
 
         followButton = (Button) findViewById(R.id.followbotton);
         editButton = (Button) findViewById(R.id.editButton);
@@ -111,7 +112,7 @@ public class AccountInformationActivity extends SideBar {
                     //image.setImageBitmap()
                 }
                 else {
-                    new DownloadImageTask(image).execute(accountImage);
+                    new DownloadImageTask(imageView).execute(accountImage);
                 }
 
 
@@ -129,6 +130,7 @@ public class AccountInformationActivity extends SideBar {
                         if (s == null) continue;
                         String movieId = s.get("movieId");
                         if (movieId == null) continue;
+                        if (movieId.equals("null")) continue;
                         String movieTitle = s.get("movieTitle");
                         String rating = s.get("rating");
                         String reviewText = s.get("reviewText");
@@ -190,72 +192,62 @@ public class AccountInformationActivity extends SideBar {
                 }
             });
         }
+        if (userId.equals(accountID)) {
+            userReviewsView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
-        myDatabase.child(accountID).child("reviews").addListenerForSingleValueEvent(
-                new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+                    Log.v(DEBUG_TAG, "LONG PRESS RECEIVED");
+                    if (searchResults[position] == null) {
+                        Toast.makeText(AccountInformationActivity.this,
+                                Messages.getMessage(getBaseContext(), "follow.nullId"),
+                                Toast.LENGTH_SHORT).show();
+                        return false;
                     }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    if (searchResults[position].equals("empty")) {
+                        return false;
                     }
-                });
-
-        userReviewsView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Log.v(DEBUG_TAG, "LONG PRESS RECEIVED");
-                if (searchResults[position] == null) {
-                    Toast.makeText(AccountInformationActivity.this,
-                            Messages.getMessage(getBaseContext(), "follow.nullId"),
-                            Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-                if (searchResults[position].equals("empty")) {
-                    return false;
-                }
 
 
-                //Redirect traffic to review activity to get input
-                Intent i = new Intent(AccountInformationActivity.this, EditReviewActivity.class);
-                Bundle extras = new Bundle();
-                String movieId = searchResults[position];
-                extras.putString("user_id", userId);
-                String movieName = "";
-                String currentReview = "";
-                String currentRating = "";
-                String timeStamp = "";
+                    //Redirect traffic to review activity to get input
+                    Intent i = new Intent(AccountInformationActivity.this, EditReviewActivity.class);
+                    Bundle extras = new Bundle();
+                    String movieId = searchResults[position];
+                    extras.putString("user_id", userId);
+                    String movieName = "";
+                    String currentReview = "";
+                    String currentRating = "";
+                    String timeStamp = "";
 
-                //Find the movie with the id
-                for (Review item : set) {
-                    String currentMovieID = item.movieId;
-                    if (currentMovieID.equals(movieId)) {
-                        movieName = item.movieTitle;
-                        currentReview = item.reviewText;
-                        currentRating =  item.rating;
-                        timeStamp = item.time;
+                    //Find the movie with the id
+                    for (Review item : set) {
+                        String currentMovieID = item.movieId;
+                        if (currentMovieID.equals(movieId)) {
+                            movieName = item.movieTitle;
+                            currentReview = item.reviewText;
+                            currentRating = item.rating;
+                            timeStamp = item.time;
+                        }
                     }
+
+
+                    //Pass desired parameters
+                    extras.putString("movie_id", movieId);
+                    extras.putString("movie_name", movieName);
+                    extras.putString("rating", currentRating);
+                    extras.putString("review", currentReview);
+                    extras.putString("email", accountEmail);
+                    extras.putString("username", userName);
+                    extras.putString("targetTime", timeStamp);
+                    extras.putString("accId", accountID);
+
+                    i.putExtras(extras);
+                    startActivity(i);
+
+                    return true;
                 }
-
-
-                //Pass desired parameters
-                extras.putString("movie_id", movieId);
-                extras.putString("movie_name", movieName);
-                extras.putString("rating", currentRating);
-                extras.putString("review", currentReview);
-                extras.putString("email", accountEmail);
-                extras.putString("username", userName);
-                extras.putString("targetTime", timeStamp);
-                extras.putString("accId", accountID);
-
-                i.putExtras(extras);
-                startActivity(i);
-
-                return true;
-
-            }
-        });
+            });
+        }
 
         userReviewsView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -420,6 +412,7 @@ public class AccountInformationActivity extends SideBar {
         i.putExtra("name", accountName);
         i.putExtra("email", accountEmail);
         i.putExtra("bio", accountBio);
+        i.putExtra("photoUrl", accountImage);
         startActivity(i);
     }
 

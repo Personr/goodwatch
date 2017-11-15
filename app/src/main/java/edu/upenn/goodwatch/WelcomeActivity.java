@@ -15,6 +15,7 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -153,6 +154,7 @@ public class WelcomeActivity extends AppCompatActivity {
                             login(user);
                         } else {
                             // If sign in fails, display a message to the user.
+                            FirebaseAuth.getInstance().signOut();
                             Log.w(DEBUG_TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(WelcomeActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();}
@@ -175,6 +177,8 @@ public class WelcomeActivity extends AppCompatActivity {
                             login(user);
                         } else {
                             // If sign in fails, display a message to the user.
+                            FirebaseAuth.getInstance().signOut();
+                            LoginManager.getInstance().logOut();
                             Log.w(DEBUG_TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(WelcomeActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
