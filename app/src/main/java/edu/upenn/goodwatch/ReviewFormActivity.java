@@ -86,6 +86,10 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 ReviewFormValueMovieEventListener listenerMovie = new ReviewFormValueMovieEventListener(myDatabase, movieId, review1);
                                 myDatabase.addListenerForSingleValueEvent(listenerMovie);
 
+                                // Notify people with this movie in their watchlist that something new has happened
+                                final String postcenterPath = review1.getMovieId() + "-postcenter";
+                                myDatabase.child(postcenterPath).addListenerForSingleValueEvent(new WatchlistNotifyValueEventListener(userId, review1));
+
                                 Intent i = new Intent(ReviewFormActivity.this, MovieDetailsActivity.class);
                                 Bundle extras = new Bundle();
                                 extras.putString("user_id", userId);

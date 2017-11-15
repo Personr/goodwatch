@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import edu.upenn.goodwatch.BackgroundTasks.WatchlistNotificationService;
 import edu.upenn.goodwatch.FileAccess.Config;
 import edu.upenn.goodwatch.FileAccess.Messages;
 import edu.upenn.goodwatch.LayoutClasses.ReviewListAdapter;
@@ -66,6 +67,7 @@ public class HomeActivity extends SideBar {
         reviewList.add(new Review("Loading..."));
         arrayAdapter.notifyDataSetChanged();
         waitForFirebase();
+        startAllServices();
     }
 
     public void helper(long delay) {
@@ -220,6 +222,12 @@ public class HomeActivity extends SideBar {
 
                     }
                 });
+    }
+
+    private void startAllServices() {
+        Intent watchlistNotificationIntent = new Intent(this, WatchlistNotificationService.class);
+        watchlistNotificationIntent.putExtra("userId", userId);
+        startService(watchlistNotificationIntent);
     }
 
 
