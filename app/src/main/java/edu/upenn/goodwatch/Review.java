@@ -85,8 +85,6 @@ public class Review implements Comparable<Review> {
         return time;
     }
 
-    public String getRating() { return rating; }
-
     public String getStars() {
         String blackStar = "★";
         String whiteStar = 	"☆";
