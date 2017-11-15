@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -37,14 +38,21 @@ public class WatchlistNotificationListener implements ValueEventListener {
     }
 
     @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
-        // Add the movie to the database if it's not already there
-        if (dataSnapshot == null) {
-            Movie m = new Movie();
-            FirebaseDatabase.getInstance().getReference().child(movieId).setValue(m);
-        // Otherwise, notify user of changes
-        } else {
-            sb.append(title).append("\n");
+    public void onDataChange(DataSnapshot userMbox) {
+        // Should be impossible, but if user doesn't have a mailbox for movie on watchlist, add one
+        if (userMbox == null) {
+            Log.w(getClass().getSimpleName(), "User finds watchlist notification mailbox doesn't exist");
+            userMbox.getRef().setValue(false);
+        }
+        // Otherwise, consume all the notifications
+        else if (userMbox.getChildrenCount() > 0) {
+            for (DataSnapshot notification: userMbox.getChildren()) {
+                String msg = notification.getValue(String.class);
+                notification.getRef().removeValue();
+                sb.append(msg);
+            }
+            // Set a value here, so that the Firebase doesn't erase the now empty mailbox
+            userMbox.getRef().setValue(false);
 //            callingActivity.runOnUiThread(new Runnable() {
 //                @Override
 //                public void run() {

@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -30,7 +29,7 @@ public class WatchlistNotificationService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         String userId = (String) intent.getExtras().get("userId");
-        notificationManager.setUserID(userId);
+        notificationManager.setUserId(userId);
         String msg = notificationManager.waitForUpdate();
         if (msg != null) {
             sendToastToMainThread(msg);

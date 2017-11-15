@@ -1,10 +1,6 @@
 package edu.upenn.goodwatch.BackgroundTasks;
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -13,9 +9,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 
@@ -26,7 +20,7 @@ import java.util.concurrent.Semaphore;
 public class WatchlistNotificationManager {
 
     private List<WatchlistItem> listenedForMovies;
-    private String userID;
+    private String userId;
     private String updateMsg;
     private boolean updatesExist;
     private CountDownLatch latch;
@@ -48,8 +42,8 @@ public class WatchlistNotificationManager {
         listenedForMovies.remove(item);
     }
 
-    public void setUserID(String userID) {
-        this.userID = userID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
 
@@ -62,7 +56,7 @@ public class WatchlistNotificationManager {
         startSem.acquireUninterruptibly();
         // Get a reference to our database, and see if the user's list of movies has updated
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference moviesInWatchlist = db.child(userID).child("watchlist");
+        DatabaseReference moviesInWatchlist = db.child(userId).child("watchlist");
         moviesInWatchlist.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -127,14 +121,18 @@ public class WatchlistNotificationManager {
         // Release the semaphore
         startSem.release();
         final DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-        for (final String movie: watchlistItems) {
-            String[] watchlistItem = movie.split(",");
-            if (watchlistItem != null && watchlistItem.length >= 2) {
+        for (final String entry: watchlistItems) {
+            if (entry != null) {
                 // The user's watchlist stores each movie as "MovieTitle,HashCode"
-                final String id = movie.split(",")[0];
-                final String title = movie.split(",")[1];
-                // Add an event listener to every movie. The listener does all the work from here.
-                db.child(id).addListenerForSingleValueEvent(new WatchlistNotificationListener(id, title, sb, latch));
+                String[] elts = entry.split(",");
+                if (elts.length < 2) {
+                    continue;
+                }
+                final String id =elts[0];
+                final String title = elts[1];
+                // Add an event listener for User's notification mailbox for this movie
+                String userMbox = id + "-postcenter/" + userId;
+                db.child(userMbox).addListenerForSingleValueEvent(new WatchlistNotificationListener(id, title, sb, latch));
             }
         }
     }

@@ -23,7 +23,7 @@ public class WatchlistNotifyValueEventListener implements ValueEventListener {
     public void onDataChange(DataSnapshot dataSnapshot) {
         // If there is a postcenter at all, tell each listening user about a change
         if (dataSnapshot.getValue() != null) {
-            String msg = String.format("%s wrote a review for %s", review1.getUserName(), review1.getMovieTitle());
+            String msg = String.format("%s wrote a review for %s\n", review1.getUserName(), review1.getMovieTitle());
             for (DataSnapshot userMbox : dataSnapshot.getChildren()) {
                 // Don't notify yourself
                 if (!userMbox.getKey().equals(userId)) {
