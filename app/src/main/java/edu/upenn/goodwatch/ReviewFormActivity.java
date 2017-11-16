@@ -137,6 +137,7 @@ public class ReviewFormActivity extends SideBar implements AdapterView.OnItemSel
                                 extras.putString("JSON_Data", movieId);
                                 i.putExtras(extras);
                                 startActivity(i);
+                                finish();
                             }
                         })
                         .setNegativeButton(Messages.getMessage(getBaseContext(), "follow.no"),

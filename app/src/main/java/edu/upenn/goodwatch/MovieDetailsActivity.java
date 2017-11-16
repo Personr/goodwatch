@@ -153,11 +153,13 @@ public class MovieDetailsActivity extends SideBar {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 //                        List l = dataSnapshot.getValue(List.class);
-                                List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
+                            List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
                             if (l != null) {
                                 for (HashMap<String, String> s : l) {
-                                    String movieId = s.get("movieId");
+                                    if (s == null) continue;
                                     if (movieId == null) continue;
+                                    if (movieId.equals("null")) continue;
+                                    String movieId = s.get("movieId");
                                     String movieTitle = s.get("movieTitle");
                                     String rating = s.get("rating");
                                     String reviewText = s.get("reviewText");

@@ -42,6 +42,7 @@ public class ReviewsListener implements ValueEventListener {
         for (HashMap<String, String> s : l) {
             if (s != null) {
                 String movieId = s.get("movieId");
+                if (movieId == null) continue;
                 if (movieId.equals("null")) continue;
                 String movieTitle = s.get("movieTitle");
                 String rating = s.get("rating");
