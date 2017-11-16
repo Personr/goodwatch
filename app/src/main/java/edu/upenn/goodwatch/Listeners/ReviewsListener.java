@@ -36,42 +36,43 @@ public class ReviewsListener implements ValueEventListener {
     public void onDataChange(DataSnapshot dataSnapshot) {
         userReviews.clear();
         List<HashMap<String, String>> l = (ArrayList<HashMap<String, String>>) dataSnapshot.getValue();
-        if(l == null)
-            return;
 
-        for (HashMap<String, String> s : l) {
-            if (s != null) {
-                String movieId = s.get("movieId");
-                if (movieId == null) continue;
-                if (movieId.equals("null")) continue;
-                String movieTitle = s.get("movieTitle");
-                String rating = s.get("rating");
-                String reviewText = s.get("reviewText");
-                if (reviewText.length() > 175) {
-                    reviewText = reviewText.substring(0, 175) + "...";
+        if (l != null) {
+            for (HashMap<String, String> s : l) {
+                if (s != null) {
+                    String movieId = s.get("movieId");
+                    if (movieId == null) continue;
+                    if (movieId.equals("null")) continue;
+                    String movieTitle = s.get("movieTitle");
+                    String rating = s.get("rating");
+                    String reviewText = s.get("reviewText");
+                    if (reviewText.length() > 175) {
+                        reviewText = reviewText.substring(0, 175) + "...";
+                    }
+                    String time = s.get("time");
+                    final Review r = new Review(movieId, rating, reviewText, movieTitle, time);
+                    myDatabase.child(userId).addValueEventListener(
+                            new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    HashMap<String, String> userFields = (HashMap<String, String>) dataSnapshot.getValue();
+                                    User user = new User(userFields.get("name"), userFields.get("email"), userFields.get("id"), userFields.get("photoUrl"));
+                                    r.setUser(user);
+                                    activity.refresh();
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            }
+                    );
+                    userReviews.add(r);
                 }
-                String time = s.get("time");
-                final Review r = new Review(movieId, rating, reviewText, movieTitle, time);
-                myDatabase.child(userId).addValueEventListener(
-                        new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                HashMap<String, String> userFields = (HashMap<String, String>) dataSnapshot.getValue();
-                                User user = new User(userFields.get("name"), userFields.get("email"), userFields.get("id"), userFields.get("photoUrl"));
-                                r.setUser(user);
-                                activity.refresh();
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        }
-                );
-                userReviews.add(r);
             }
-
         }
+
         activity.displaySet();
     }
     @Override
