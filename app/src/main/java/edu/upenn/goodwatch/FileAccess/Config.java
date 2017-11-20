@@ -65,4 +65,14 @@ public class Config extends FileAccesser {
     public static String getDefaultProfilePicUrl(Context context) {
         return getProperty(context, "defaultProfilePic", fileName);
     }
+
+    public static String getNewReleasesUrl(Context context) {
+        String url = getProperty(context, "newReleasesUrl", fileName);
+        url = url.replace("%API_KEY%", getProperty(context, "themoviedbApiKey", fileName));
+        return url;
+    }
+
+    public static String getPosterBaseUrl(Context context) {
+        return getProperty(context, "posterBaseUrl", fileName);
+    }
 }

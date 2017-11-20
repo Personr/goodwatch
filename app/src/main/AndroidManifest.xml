@@ -48,6 +48,9 @@
             android:name=".TopChartsActivity"
             android:label="Top Charts" />
         <activity
+            android:name=".NewReleasesActivity"
+            android:label="New Releases" />
+        <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"

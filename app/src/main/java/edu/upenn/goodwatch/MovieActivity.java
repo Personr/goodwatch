@@ -15,6 +15,7 @@ import edu.upenn.goodwatch.FileAccess.Config;
 import edu.upenn.goodwatch.FileAccess.Messages;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -29,6 +30,7 @@ public class MovieActivity extends SideBar {
     String[] searchResults = new String[5]; // Options to be shown in list view
     JSONArray resultsArr; // the results of the query
     String userId; // retrieves user's unique Id from previous intent for use
+    MovieBackend movieBackend = new MovieBackend();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +43,8 @@ public class MovieActivity extends SideBar {
 
     // Get JSON Object
     public void search(String query) {
-        // Set up query
-        String[] queryArr = new String[1];
-        queryArr[0] = Config.getSearchUrl(getBaseContext(), query);
-        AsyncTask search = new MovieBackend().execute(queryArr);
-        JSONObject json = null;
-        // Search and add
-        try {
-            // Get search results as a JSONArray
-            json = (JSONObject) search.get();
-            resultsArr = json.getJSONArray("results");
-        } catch (Exception e) {
-            Log.e(DEBUG_TAG, Messages.getMessage(getBaseContext(), "movie.dbException"), e);
-        }
+        String url = Config.getSearchUrl(getBaseContext(), query);
+        resultsArr = movieBackend.getThemoviedbResults(url, DEBUG_TAG, getBaseContext());
     }
 
     // This is where we display the results in the listView
